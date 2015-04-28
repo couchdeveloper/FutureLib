@@ -9,8 +9,9 @@
 /* Begin PBXBuildFile section */
 		A116D7C51A80185800A36EC5 /* Future.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A116D7C41A80185800A36EC5 /* Future.framework */; };
 		A116D7C61A8018BD00A36EC5 /* Future.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A14E4F9C1A7B6F18000B0A35 /* Future.framework */; };
-		A14E4F461A7B697E000B0A35 /* Future_OSX_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F451A7B697E000B0A35 /* Future_OSX_Tests.swift */; };
-		A14E4F751A7B6B32000B0A35 /* Future_iOS_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F741A7B6B32000B0A35 /* Future_iOS_Tests.swift */; };
+		A1A3F6C31ADDAC070044C2A9 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F8D1A7B6CBD000B0A35 /* ResultTests.swift */; };
+		A1A3F6C41ADDAC0C0044C2A9 /* FutureFuncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F8A1A7B6CBD000B0A35 /* FutureFuncTests.swift */; };
+		A1A3F6C51ADDAD350044C2A9 /* FutureTests2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F991A7B6D07000B0A35 /* FutureTests2.swift */; };
 		A1E14C521A83E86C007A3C5A /* LoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F8C1A7B6CBD000B0A35 /* LoggerTests.swift */; };
 		A1F01EFB1AB8A6F40079F312 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F8D1A7B6CBD000B0A35 /* ResultTests.swift */; };
 		A1F01EFC1AB8AEEA0079F312 /* FutureFuncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F8A1A7B6CBD000B0A35 /* FutureFuncTests.swift */; };
@@ -21,11 +22,9 @@
 		A116D7C41A80185800A36EC5 /* Future.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Future.framework; path = ../Future/build/Debug/Future.framework; sourceTree = "<group>"; };
 		A14E4F401A7B697E000B0A35 /* Future-OSX-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Future-OSX-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A14E4F441A7B697E000B0A35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A14E4F451A7B697E000B0A35 /* Future_OSX_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Future_OSX_Tests.swift; sourceTree = "<group>"; };
 		A14E4F6A1A7B6B0E000B0A35 /* Future.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Future.framework; path = ../Future/build/Debug/Future.framework; sourceTree = "<group>"; };
 		A14E4F701A7B6B32000B0A35 /* Future-iOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Future-iOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A14E4F731A7B6B32000B0A35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A14E4F741A7B6B32000B0A35 /* Future_iOS_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Future_iOS_Tests.swift; sourceTree = "<group>"; };
 		A14E4F791A7B6B46000B0A35 /* Future.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Future.framework; path = "../Future/build/Debug-iphoneos/Future.framework"; sourceTree = "<group>"; };
 		A14E4F8A1A7B6CBD000B0A35 /* FutureFuncTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureFuncTests.swift; sourceTree = "<group>"; };
 		A14E4F8B1A7B6CBD000B0A35 /* FutureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTests.swift; sourceTree = "<group>"; };
@@ -79,7 +78,6 @@
 		A14E4F421A7B697E000B0A35 /* Future-OSX-Tests */ = {
 			isa = PBXGroup;
 			children = (
-				A14E4F451A7B697E000B0A35 /* Future_OSX_Tests.swift */,
 				A14E4F431A7B697E000B0A35 /* Supporting Files */,
 			);
 			path = "Future-OSX-Tests";
@@ -96,7 +94,6 @@
 		A14E4F711A7B6B32000B0A35 /* Future-iOS-Tests */ = {
 			isa = PBXGroup;
 			children = (
-				A14E4F741A7B6B32000B0A35 /* Future_iOS_Tests.swift */,
 				A14E4F721A7B6B32000B0A35 /* Supporting Files */,
 			);
 			path = "Future-iOS-Tests";
@@ -229,9 +226,9 @@
 			files = (
 				A1F01EFD1AB8AEF00079F312 /* FutureTests.swift in Sources */,
 				A1F01EFB1AB8A6F40079F312 /* ResultTests.swift in Sources */,
-				A14E4F461A7B697E000B0A35 /* Future_OSX_Tests.swift in Sources */,
 				A1F01EFC1AB8AEEA0079F312 /* FutureFuncTests.swift in Sources */,
 				A1E14C521A83E86C007A3C5A /* LoggerTests.swift in Sources */,
+				A1A3F6C51ADDAD350044C2A9 /* FutureTests2.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,7 +236,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A14E4F751A7B6B32000B0A35 /* Future_iOS_Tests.swift in Sources */,
+				A1A3F6C31ADDAC070044C2A9 /* ResultTests.swift in Sources */,
+				A1A3F6C41ADDAC0C0044C2A9 /* FutureFuncTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

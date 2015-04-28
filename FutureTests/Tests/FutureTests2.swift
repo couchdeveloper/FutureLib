@@ -9,11 +9,8 @@
 import XCTest
 import Future
 
-class Foo<T> {
-    typealias ArrayClosure = ([T])->()
-}
 
-class FutureTests: XCTestCase {
+class FutureTests2: XCTestCase {
     
     override func setUp() {
         super.setUp()
@@ -62,35 +59,37 @@ class FutureTests: XCTestCase {
     func testExample3() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let promise = Promise<String>()
-        let future = promise.future
-        future.then {
-            str -> Int in
+        let future = promise.future!
+        
+        let onFinally = { ()->() in println ("**done**"); expect.fulfill() }
+        
+        future.then { str -> Int in
             println ("result 0: \(str)")
             return 1
         }
-//        .then {
-//            x -> Int in
-//            println("result 1: \(x)")
-//            return 2
-//        }
-        .catch {
-            err -> Int in
+        .then { x -> Int in
+            println("result 1: \(x)")
+            return 2
+        }
+        .catch { err -> Int in
             println ("Error: \(err)")
             return -1
         }
-        .then {
-            x -> String in
+        .then { x -> String in
             println("result 2: \(x)")
             return "unused"
         }
-        .finally {
-            x -> () in
-            println ("**done**")
-            expect.fulfill()
+//        .finally(cancellationToken:nil)  { ()->() in
+//            println ("**done**")
+//            expect.fulfill()
+//        }
+        .finally(cancellationToken:nil) {
+            onFinally()
         }
         
+        
         promise.fulfill("OK")
-        waitForExpectationsWithTimeout(2000, handler: nil)
+        waitForExpectationsWithTimeout(2000000, handler: nil)
         //        let runLoop = NSRunLoop.mainRunLoop()
         //        runLoop.run()
         //

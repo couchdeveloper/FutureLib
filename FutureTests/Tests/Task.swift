@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 Andreas Grosam. All rights reserved.
 //
 
-
 import Foundation
 import Future
 

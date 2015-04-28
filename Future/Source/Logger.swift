@@ -7,21 +7,20 @@
 //
 
 import Foundation
+import Darwin
 
 
 
-internal func currentDateTimeString(format:String) -> String {
-    return dateTimeString(time(UnsafeMutablePointer<time_t>()), format)
-}
 
-internal func dateTimeString(t:time_t, format: String) -> String {
+internal func dateTimeString(t:time_t, usec: suseconds_t, format: String) -> String {
     let maxSize: Int = 64
     var buffer: [Int8] = [CChar](count: Int(maxSize), repeatedValue: 0)
     var t_tmp = t;
     let length = strftime(&buffer, maxSize, format, localtime(&t_tmp));
     assert(length > 0)
     let s = String.fromCString(buffer)
-    return s!
+    let s2 = String(format:s!, usec)
+    return s2
 }
 
 
@@ -29,6 +28,7 @@ internal func dateTimeString(t:time_t, format: String) -> String {
 private class Event<T> {
     
     init(category: StaticString, severity: Logger.Severity, message: T, function: StaticString = "", file: StaticString = "" , line: UWord = 0) {
+        gettimeofday(&_timeStamp, nil)
         _category = category
         _severity = severity
         _message = message
@@ -39,54 +39,100 @@ private class Event<T> {
     
     
     init(message: T, severity : Logger.Severity = Logger.Severity.None) {
+        gettimeofday(&_timeStamp, nil)
         _message = message
         _severity = severity
+        _category = ""
+        _function = ""
+        _file = ""
+        _line = 0
     }
     
     
-    private let _timeStamp = time(UnsafeMutablePointer<time_t>())
-    private let _threadId = pthread_self()
-    private var _category: StaticString = ""
-    private var _severity: Logger.Severity
-    private var _message: T
-    private var _function: StaticString = ""
-    private var _file: StaticString = ""
-    private var _line: UWord = 0
+    private var _timeStamp:timeval = timeval()
+    private let _threadId = pthread_mach_thread_np(pthread_self())
+    private let _gcd_queue:String? = String.fromCString(dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL))
+    private let _category: StaticString
+    private let _severity: Logger.Severity
+    private let _message: T
+    private let _function: StaticString
+    private let _file: StaticString
+    private let _line: UWord
 }
 
+
+
+public struct DateTime {
+
+    let year: UInt16
+    let month: UInt8
+    let day: UInt8
+    let hour: UInt8
+    let min: UInt8
+    let sec: Double
+    
+    private init(tval:timeval, localtime:Bool = true) {
+        var t_tmp = tval;
+        var t: tm = tm()
+        let tm_ptr = localtime_r(&t_tmp.tv_sec, &t)
+        
+        year = UInt16(t.tm_year + 1900)
+        month = UInt8(t.tm_mon + 1)
+        day = UInt8(t.tm_mday)
+        hour = UInt8(t.tm_hour)
+        min = UInt8(t.tm_min)
+        sec = Double(t.tm_sec) + Double(tval.tv_usec)/(1000*1000)
+    }
+    
+    public static func localTime(tval:timeval) -> DateTime {
+        return DateTime(tval: tval, localtime: true)
+    }
+    
+}
 
 
 public class Logger {
 
     public enum Severity: Int {
-        case None, Error, Warning, Info, Debug, Message
+        case None, Error, Warning, Info, Debug, Trace
     }
 
 
     public class Format {
     }
+    
+    
+    var dateFormat: (timeval:timeval)-> String
 
     
     private let _category :StaticString;
 
-    var DateTimeFormatString = "%Y-%m-%d %H:%M:%S" // "%Y-%m-%d %H:%M:%S %z"
     var LogLevel = Severity.Error
     
     
-    public init(_ category: StaticString) {
-        _category = category
-    }
     
-    public init(category: StaticString, verbosity: Severity, dateTimeFormatString: String = "%Y-%m-%d %H:%M:%S") {
+    
+    public init(category: StaticString, verbosity: Severity, dateTimeFormatter:(tval:timeval) -> String = Logger.defaultDateTimeFormatter) {
         _category = category
         self.LogLevel = verbosity
-        self.DateTimeFormatString = dateTimeFormatString
+        self.dateFormat = dateTimeFormatter
+    }
+    
+    convenience public init(_ category: StaticString) {
+        self.init(category: category, verbosity: Severity.Info, dateTimeFormatter: Logger.defaultDateTimeFormatter)
     }
     
     
+    
+    private static func defaultDateTimeFormatter(tval:timeval) -> String {
+        let t = DateTime.localTime(tval)
+        let s:String = String(format: "%hu-%.2hhu-%.2hhu %.2hhu:%.2hhu:%06.3f", t.year, t.month, t.day, t.hour, t.min, t.sec)
+        return s
+    }
+    
     private func writeln<T>(event: Event<T>) {
-        let timeString = dateTimeString(event._timeStamp, "%Y-%m-%d %H:%M:%S")
-        println("\(timeString) [\(event._threadId)] \(event._function): \(event._message)");
+        let gcd_queue = event._gcd_queue == nil ? "" : event._gcd_queue!
+        println("\(dateFormat(timeval: event._timeStamp)) [\(event._threadId)][\(gcd_queue)] \(event._function): \(event._message)");
     }
     
     public func writeln<T>(object: T) {
@@ -121,9 +167,9 @@ public class Logger {
         }
     }
 
-    public func Message<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
+    public func Trace<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
         if (self.LogLevel.rawValue > Severity.Debug.rawValue) {
-            writeln(Event(category: self._category, severity: Severity.Message, message: object, function: function, file: file, line: line))
+            writeln(Event(category: self._category, severity: Severity.Trace, message: object, function: function, file: file, line: line))
         }
     }
     

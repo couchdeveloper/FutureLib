@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A10D9ED81AD01EF7001FF909 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */; };
+		A10D9ED91AD01EF7001FF909 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */; };
+		A10D9EDB1AD01F72001FF909 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9EDA1AD01F72001FF909 /* Synchronize.swift */; };
+		A10D9EDC1AD01F72001FF909 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9EDA1AD01F72001FF909 /* Synchronize.swift */; };
 		A14E4F281A7B67FC000B0A35 /* Future.h in Headers */ = {isa = PBXBuildFile; fileRef = A14E4F271A7B67FC000B0A35 /* Future.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A14E4F561A7B6A82000B0A35 /* Future.h in Headers */ = {isa = PBXBuildFile; fileRef = A14E4F551A7B6A82000B0A35 /* Future.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A14E4F801A7B6B9F000B0A35 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7C1A7B6B9F000B0A35 /* Future.swift */; };
@@ -22,6 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionContext.swift; sourceTree = "<group>"; };
+		A10D9EDA1AD01F72001FF909 /* Synchronize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronize.swift; sourceTree = "<group>"; };
 		A14E4F221A7B67FC000B0A35 /* Future.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Future.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A14E4F261A7B67FC000B0A35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A14E4F271A7B67FC000B0A35 /* Future.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Future.h; sourceTree = "<group>"; };
@@ -114,6 +120,8 @@
 				A14E4F7C1A7B6B9F000B0A35 /* Future.swift */,
 				A14E4F7E1A7B6B9F000B0A35 /* Promise.swift */,
 				A1EFD6711AC9C5ED0052C13E /* CancellationRequest.swift */,
+				A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */,
+				A10D9EDA1AD01F72001FF909 /* Synchronize.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -232,10 +240,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10D9EDB1AD01F72001FF909 /* Synchronize.swift in Sources */,
 				A14E4F801A7B6B9F000B0A35 /* Future.swift in Sources */,
 				A14E4F821A7B6B9F000B0A35 /* Logger.swift in Sources */,
 				A14E4F861A7B6B9F000B0A35 /* Result.swift in Sources */,
 				A14E4F841A7B6B9F000B0A35 /* Promise.swift in Sources */,
+				A10D9ED81AD01EF7001FF909 /* ExecutionContext.swift in Sources */,
 				A1EFD6721AC9C5ED0052C13E /* CancellationRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,10 +254,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10D9EDC1AD01F72001FF909 /* Synchronize.swift in Sources */,
 				A14E4F811A7B6B9F000B0A35 /* Future.swift in Sources */,
 				A14E4F831A7B6B9F000B0A35 /* Logger.swift in Sources */,
 				A14E4F871A7B6B9F000B0A35 /* Result.swift in Sources */,
 				A14E4F851A7B6B9F000B0A35 /* Promise.swift in Sources */,
+				A10D9ED91AD01EF7001FF909 /* ExecutionContext.swift in Sources */,
 				A1EFD6731AC9C5ED0052C13E /* CancellationRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

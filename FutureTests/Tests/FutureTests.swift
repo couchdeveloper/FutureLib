@@ -9,6 +9,7 @@
 import XCTest
 import Future
 
+
 class Foo<T> {
     typealias ArrayClosure = ([T])->()
 }
@@ -123,13 +124,13 @@ class FutureTests: XCTestCase {
     }
 
     func testExample1b() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
+        let expect = self.expectationWithDescription("future should be rejected")
         let test:()->() = {
             let promise = Promise<String>()
             let future = promise.future!
             promise.reject(NSError(domain: "Test", code: -2, userInfo: nil))
-            future.then { str -> () in
-                println ("result: \(str)")
+            future.catch { error -> () in
+                println ("result: \(error)")
                 expect.fulfill()
             }
         }
@@ -192,8 +193,8 @@ class FutureTests: XCTestCase {
     
     func testFutureShouldNotDeallocateIfThereIsOneObserver() {
         weak var weakRef: Future<Int>?
+        let promise = Promise<Int>()
         func t() {
-            let promise = Promise<Int>()
             let future = promise.future!
             future.then { result in
                 ()
@@ -202,11 +203,8 @@ class FutureTests: XCTestCase {
         }
         t()
         XCTAssertNotNil(weakRef)
-        if let future = weakRef {
-            if let cancelableFuture = future.cancelable {
-                cancelableFuture.cancel()
-            }
-        }
+        promise.fulfill(0)
+        XCTAssertNil(weakRef)
     }
     
     func testPromiseShouldNotDeallocatePrematurely() {

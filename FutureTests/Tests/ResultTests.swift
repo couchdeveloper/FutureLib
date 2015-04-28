@@ -9,6 +9,7 @@
 import XCTest
 import Future
 
+
 class ResultTests: XCTestCase {
 
     override func setUp() {

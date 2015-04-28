@@ -9,6 +9,7 @@
 import XCTest
 import Future
 
+
 class LoggerTests: XCTestCase {
 
     override func setUp() {
@@ -24,8 +25,11 @@ class LoggerTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         var s = "Happy logging"
-        let log = Logger(category: "Test", verbosity: Logger.Severity.Message);
-        log.Message("\(s)!")
+        let log = Logger(category: "Test", verbosity: Logger.Severity.Trace);
+        log.Trace("***\(s)!***")
+        dispatch_sync(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+            log.Trace("***\(s)!***")
+        }
         XCTAssert(true, "Pass")
     }
 

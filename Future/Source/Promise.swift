@@ -10,6 +10,18 @@ import Foundation
 
 
 
+
+
+extension Promise : Resolver {
+
+    func unregister<T:Resolvable>(resolvable: T) -> () {
+    
+    
+    }
+
+
+}
+
 // MARK: Promise
 
 /// The class Promise complements the class Future in that it provides the API to
@@ -26,29 +38,27 @@ import Foundation
 /// canceling a future will remove its continuations and provided there are no other
 /// strong references to the future, it may be destroyed before the resolver finishes
 /// its task.
-public class Promise<T> : Resolver
+public class Promise<T>
 {
     public typealias ValueType = T
     
-    private var _resolver : Resolver?
     private var _future: Future<T>?
     private weak var _weakFuture: Future<T>?
     
     /// Initializes the promise whose future is pending.
     ///
     /// :param: resolver The resolver object which will eventually resove the future.
-    public init(_ resolver : Resolver? = nil) {
-        _resolver = resolver
+    public init() {
         _future = Future<T>(resolver: self)
+        _weakFuture = _future
     }
     
     /// Initializes the promise whose future is fulfilled with value.
     ///
     /// :param: value The value which fulfills the future.
-    /// :param: resolver The resolver object which will eventually resove the future.
-    public init(_ value:ValueType, _ resolver : Resolver) {
-        _resolver = resolver
+    public init(_ value:ValueType) {
         _future = Future<T>(value, resolver: self)
+        _weakFuture = _future
     }
     
     /// Initializes the promise whose future is rejected with error.
@@ -56,9 +66,10 @@ public class Promise<T> : Resolver
     /// :param: error The error which rejects the future.
     public init(error:NSError) {
         _future = Future<T>(error, resolver: self)
+        _weakFuture = _future
     }
     
-    /// Retrieves the future.
+    /// Returns the future.
     ///
     /// The first call will "weakyfy" the reference to the future. If there is no
     /// strong reference elsewhere, subsequent calls will return nil.
@@ -67,27 +78,11 @@ public class Promise<T> : Resolver
     ///
     /// TODO: must be thread-safe
     public var future : Future<T>? {
-        if let future = _future {
-            _weakFuture = future
+        if let future = _weakFuture {
             _future = nil;
             return future
         }
-        else if let strongFuture = _weakFuture {
-            return strongFuture
-        }
         return nil
-    }
-    
-    /// Implements the Resolver Protocol
-    ///
-    /// :returns: nil since a Promise is by itself not cancelable.
-    public var cancelable : Cancelable? {
-        return nil;
-    }
-    
-    /// Returns the dependent resolver if any, otherwise returns nil.
-    public var resolver : Resolver? {
-        return nil // TODO implement
     }
     
     
@@ -96,7 +91,7 @@ public class Promise<T> : Resolver
     /// :param: vaule The value which resolves the future.
     public func fulfill(value:T) {
         if let future = _weakFuture {
-            future.resolve(value)
+            future.resolve(Result(value))
         }
         else {
             Log.Warning("Cannot resolve the future: the future has been destroyed prematurely.")
@@ -108,12 +103,37 @@ public class Promise<T> : Resolver
     /// :param: error The error which rejects the future.
     public func reject(error:NSError) {
         if let future = _weakFuture {
-            future.resolve(error)
+            future.resolve(Result(error))
         }
         else {
             Log.Warning("Cannot reject the future: the future has been destroyed prematurely.")
         }
     }
+    
+    
+    // Cancellation
+    
+    /// Registers the continuation `f` with a parameter `error` which will be executed on the
+    /// given execution context when `self`'s future has been cancelled. Self's future will
+    /// transition to the `Cancelled` state only when it is still pending and when it has an
+    /// associated cancellation token which has been cancelled and when it has no continuations 
+    /// or all continuations have been cancelled.
+    /// The continuation will be called with a copy of the error of `self`'s future.
+    /// Retains `self` until it is completed.
+    ///
+    /// :param: f A closure taking an error as parameter.
+    internal final func onCancel(executor: ExecutionContext, _ f: NSError -> ())-> () {
+        if let future = _weakFuture {
+            future.onCancel(on: executor, f)
+        }
+    }
+    
+    /// Executes closure f on the global dispatch queue when it is cancelled.
+    /// Does not retain self.
+    internal final func onCancel(f: NSError -> ())-> () {
+        onCancel(dispatch_get_global_queue(0, 0), f)
+    }
+
     
 }
 

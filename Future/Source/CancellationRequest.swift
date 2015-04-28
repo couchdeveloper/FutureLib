@@ -15,7 +15,12 @@ public class CancellationError : NSError {
     public init(underlyingError: NSError) {
         super.init(domain: "Cancellation", code: -1,
             userInfo: [NSLocalizedFailureReasonErrorKey:"Operation Cancelled",
-                       NSUnderlyingErrorKey: underlyingError])
+                NSUnderlyingErrorKey: underlyingError])
+    }
+    
+    public init() {
+        super.init(domain: "Cancellation", code: -1,
+            userInfo: [NSLocalizedFailureReasonErrorKey:"Operation Cancelled"])
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -47,46 +52,66 @@ public protocol Cancelable : class {
 }
 
 
-private var s_queue_ID_key = 0;
-private var s_queue_ID_value = 0;
 
 
-/// Returns true if the current execution context is the sync_queue
-private func on_sync_queue() -> Bool {
-    return &s_queue_ID_value == dispatch_get_specific(&s_queue_ID_key)
+
+public protocol CancellationTokenProtocol {
+    
+    
+    /// Returns true if `self`'s associated CancellationRequest has requested 
+    /// a cancellation. Otherwise, it returns false.
+    var isCancellationRequested : Bool { get }
+    
+    
+    /// Registers the continuation `f` which takes a parameter `cancelable` which
+    /// will be executed on the given execution context when its associated
+    /// CancellationRequest requested a cancellation. Registering a closure shall
+    /// not retain self.
+    /// The cancelable shall not be retained for the duration the handler is registered.
+    /// The closure shall only be called when the cancelable still exists at this time.
+    /// When closure f is called, its parameter is the specified cancelable.
+    ///
+    /// :param: cancelable The `cancelable` which is usually an underlying task that can be cancelled.
+    /// :param: executor An execution context which executes the continuation.
+    /// :param: f The continuation.
+    func onCancel(cancelable: Cancelable, on executor: ExecutionContext, _ f: (Cancelable)->())
+    
+    
+    /// Registers the continuation `f` which will be executed on the given execution 
+    /// context when its associated CancellationRequest requested a cancellation.
+    /// Registering a closure shall not retain self.
+    ///
+    /// :param: executor An execution context which executes the continuation.
+    /// :param: f The continuation.
+    func onCancel(on executor: ExecutionContext, _ f: ()->())
+    
+    
+    
+    /// Registers the continuation `f` which takes a parameter `cancelable` which
+    /// will be executed on a private execution context when its associated
+    /// CancellationRequest requested a cancellation. Registering a closure shall
+    /// not retain self.
+    /// The cancelable shall not be retained for the duration the handler is registered.
+    /// The closure shall only be called when the cancelable still exists at this time.
+    /// When closure f is called, its parameter is the specified cancelable.
+    ///
+    /// :param: cancelable The `cancelable` which is usually an underlying task that can be cancelled.
+    /// :param: f The continuation.
+    func onCancel(cancelable: Cancelable, _ f: (Cancelable)->())
+    
+    
+    /// Registers the continuation `f` which will be executed on a private execution
+    /// context when its associated CancellationRequest requested a cancellation.
+    /// Registering a closure shall not retain self.
+    ///
+    /// :param: f The continuation.
+    func onCancel(f: ()->())
 }
 
-private let sync_queue : dispatch_queue_t = {
-    let q = dispatch_queue_create("net.couchdeveloper.CancellationRequest.sync_queue", DISPATCH_QUEUE_CONCURRENT)!
-    dispatch_queue_set_specific(q, &s_queue_ID_key, &s_queue_ID_value, nil)
-    return q
-    }()
-
-
-private func read_sync_safe(f: ()->()) -> () {
-    if on_sync_queue() {
-        f()
-    }
-    else {
-        dispatch_sync(sync_queue, f)
-    }
-}
-
-private func read_sync(f: ()->()) -> () {
-    dispatch_sync(sync_queue, f)
-}
-
-private func write_async(f: ()->()) -> () {
-    dispatch_barrier_async(sync_queue, f)
-}
-
-private func write_sync(f: ()->()) -> () {
-    dispatch_barrier_sync(sync_queue, f)
-}
 
 
 
-
+private let sync = Synchronize()
 
 public class CancellationRequest : DebugPrintable {
     
@@ -103,7 +128,7 @@ public class CancellationRequest : DebugPrintable {
     }
 
     deinit {
-        read_sync_safe  { [unowned self] in
+        sync.read_sync_safe  { [unowned self] in
             if (self._handler_queue != nil) {
                 // If we reach here, the last strong refernce to self has been destroyed, 
                 // and self has registered handlers but has not been cancelled.
@@ -123,19 +148,19 @@ public class CancellationRequest : DebugPrintable {
     
     
     private func createHandlerQueue() -> dispatch_queue_t {
-        assert(on_sync_queue())
+        assert(sync.on_sync_queue())
         assert(self._handler_queue == nil)
         assert(self._result == 0)
         // Caution: the handler queue MUST be a serial queue!
         let queue = dispatch_queue_create("handler_queue", DISPATCH_QUEUE_SERIAL)!
-        dispatch_set_target_queue(queue, sync_queue)
+        dispatch_set_target_queue(queue, sync.sync_queue)
         dispatch_suspend(queue)
         return queue
     }
 
     public var debugDescription: String {
         var s:String = ""
-        read_sync_safe {  [unowned self] in
+        sync.read_sync_safe {  [unowned self] in
             let stateString: String = OSAtomicCompareAndSwapInt(1, 1, &self._result) ?  "cancellation requested" : "no cancellation requested"
             let s = "CancelllationRequest id: \(self.id) state: \(stateString)"
         }
@@ -150,7 +175,7 @@ public class CancellationRequest : DebugPrintable {
     
     /// Request cancellation.
     public final func cancel() {
-        write_async {
+        sync.write_async {
             if self._result == 0 {
                 self._result = 1
                 if self._handler_queue != nil {
@@ -174,7 +199,7 @@ public class CancellationRequest : DebugPrintable {
     /// Enqueues the closure f on the given handler queue.
     /// Here we MUST execute on the sync queue with a write barrier!
     private final func _register(f: ()->()) {
-        assert(on_sync_queue())
+        assert(sync.on_sync_queue())
         if self._handler_queue == nil {
             self._handler_queue = self.createHandlerQueue()
         }
@@ -190,15 +215,15 @@ public class CancellationRequest : DebugPrintable {
     /// not retained. When the cancelable does not exist anymore when self has been 
     /// cancelled, the closure is not called.
     /// Does not retain self. Does not retain the cancelable.
-    private final func onCancel(cancelable: Cancelable, _ executor: ExecutionContext, _ f: (Cancelable)->()) {
-        read_sync { [unowned self] in
+    private final func onCancel(cancelable: Cancelable, on executor: ExecutionContext, _ f: (Cancelable)->()) {
+        sync.read_sync { [unowned self] in
             if self._result == 1 { // self already cancelled
                 executor.execute() {
                     f(cancelable)
                 }
             }
             else { // self still pending
-                write_async {
+                sync.write_async {
                     if self._result == 1 { // self has been cancelled in the meantime
                         executor.execute() {
                             f(cancelable)
@@ -209,7 +234,7 @@ public class CancellationRequest : DebugPrintable {
                         // Caution: in order to work correctly, `self` MUST be retained elsewhere
                         // when it has been cancelled until after the handler (all handlers)
                         // have been executed!
-                        assert(on_sync_queue())
+                        assert(sync.on_sync_queue())
                         if self?._result == 1 {
                             if let theCancelable = cancelable {
                                 executor.execute() {
@@ -238,19 +263,19 @@ public class CancellationRequest : DebugPrintable {
     /// behind the cancelable can be destroyed when it is finished - and does not
     /// hang around until after the CancellationRequest holding a reference to the
     /// cancelable has been destroyed, too.
-    private final func onCancel(executor: ExecutionContext, _ f: ()->()) {
-        read_sync {
+    private final func onCancel(on executor: ExecutionContext, _ f: ()->()) {
+        sync.read_sync {
             if self._result == 1 { // self already cancelled
                 executor.execute(f)
             }
             else { // self still pending
-                write_async {
+                sync.write_async {
                     if self._result == 1 { // self has been cancelled in the meantime
                         executor.execute(f)
                         return
                     }
                     self._register() { [weak self] in
-                        assert(on_sync_queue())
+                        assert(sync.on_sync_queue())
                         if self?._result == 1 {
                             executor.execute(f)
                         }
@@ -267,14 +292,14 @@ public class CancellationRequest : DebugPrintable {
     /// not exist anymore when self has been cancelled, the closure is not called.
     /// Does not retain self. Does not retain the cancelable.
     private final func onCancel(cancelable: Cancelable, _ f: (Cancelable)->()) {
-        onCancel(cancelable, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), f)
+        onCancel(cancelable, on: dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), f)
     }
     
     /// Executes closure f on a private execution context when it is cancelled
     /// and when self still exists.
     /// Does not retain self.
     private final func onCancel(f: ()->()) {
-        onCancel(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), f)
+        onCancel(on: dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), f)
     }
     
     
@@ -283,7 +308,7 @@ public class CancellationRequest : DebugPrintable {
 
 
 
-public class CancellationToken {
+public class CancellationToken : CancellationTokenProtocol {
     private let _cancellationRequest : CancellationRequest
     
     private init(cancellationRequest : CancellationRequest) {
@@ -311,8 +336,8 @@ public class CancellationToken {
     /// gets destroyed without being cancelled. A CancellationRequest should be
     /// destroyed when all registered cancelables have been resolved (which implies 
     /// that a cancellation would have no effect).
-    public final func onCancel(cancelable: Cancelable, _ executor: ExecutionContext, _ f: (Cancelable)->()) {
-        _cancellationRequest.onCancel(cancelable, executor, f)
+    public final func onCancel(cancelable: Cancelable, on executor: ExecutionContext, _ f: (Cancelable)->()) {
+        _cancellationRequest.onCancel(cancelable, on: executor, f)
     }
     
     /// Executes closure f on a private execution context when its associated
@@ -328,8 +353,8 @@ public class CancellationToken {
     /// won't get unregistered when self gets destroyed. Registered handlers
     /// only get silently unregistred when the associated CancellationRequest
     /// gets destroyed without being cancelled.
-    public final func onCancel(executor: ExecutionContext, _ f: ()->()) {
-        _cancellationRequest.onCancel(executor, f)
+    public final func onCancel(on executor: ExecutionContext, _ f: ()->()) {
+        _cancellationRequest.onCancel(on: executor, f)
     }
     
     
