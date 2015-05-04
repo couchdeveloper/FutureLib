@@ -11,6 +11,8 @@ import Darwin
 
 
 
+private let sync = Synchronize()
+
 
 internal func dateTimeString(t:time_t, usec: suseconds_t, format: String) -> String {
     let maxSize: Int = 64
@@ -126,13 +128,15 @@ public class Logger {
     
     private static func defaultDateTimeFormatter(tval:timeval) -> String {
         let t = DateTime.localTime(tval)
-        let s:String = String(format: "%hu-%.2hhu-%.2hhu %.2hhu:%.2hhu:%06.3f", t.year, t.month, t.day, t.hour, t.min, t.sec)
+        let s:String = String(format: "%hu-%.2hhu-%.2hhu %.2hhu:%.2hhu:%07.4f", t.year, t.month, t.day, t.hour, t.min, t.sec)
         return s
     }
     
     private func writeln<T>(event: Event<T>) {
         let gcd_queue = event._gcd_queue == nil ? "" : event._gcd_queue!
-        println("\(dateFormat(timeval: event._timeStamp)) [\(event._threadId)][\(gcd_queue)] \(event._function): \(event._message)");
+        sync.write_async {
+            println("\(self.dateFormat(timeval: event._timeStamp)) [\(event._threadId)][\(gcd_queue)] \(event._function): \(event._message)")
+        }
     }
     
     public func writeln<T>(object: T) {

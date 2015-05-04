@@ -15,6 +15,7 @@ struct Synchronously {}
 
 /// An ExecutionContext is a thing that can execute closures.
 public protocol ExecutionContext {
+    
     /// Asynchronuosly executes the given closure f on its execution context.
     ///
     /// :param: f The closure takeing no parameters and returning ().

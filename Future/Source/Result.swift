@@ -23,7 +23,7 @@ public enum Result<T> {
         self = Failure(error)
     }
     
-    public func map<U>(f: T -> U) -> Result<U> {
+    public func map<U>(@noescape f: T -> U) -> Result<U> {
         switch self {
         case .Success(let s):
             return Result<U>(f(s[0]))
@@ -32,7 +32,7 @@ public enum Result<T> {
         }
     }
     
-    public func flatMap<U>(f:T -> Result<U>) -> Result<U> {
+    public func flatMap<U>(@noescape f:T -> Result<U>) -> Result<U> {
         switch self {
         case .Success(let value):
             return f(value[0])
@@ -54,3 +54,51 @@ extension Result : Printable, DebugPrintable {
     }
 }
 
+
+
+//public enum Result2<T> {
+//    
+//    typealias ValueType = T
+//    
+//    case Success(T)
+//    case Failure(NSError)
+//    
+//    
+//    public init(_ v: T) {
+//        self = Success(v)
+//    }
+//    public init(_ error: NSError) {
+//        self = Failure(error)
+//    }
+//    
+//    public func map<U>(f: T -> U) -> Result<U> {
+//        switch self {
+//        case .Success(let s):
+//            return Result<U>(f(s))
+//        case .Failure(let error):
+//            return Result<U>(error)
+//        }
+//    }
+//    
+//    public func flatMap<U>(f:T -> Result<U>) -> Result<U> {
+//        switch self {
+//        case .Success(let value):
+//            return f(value)
+//        case .Failure(let error):
+//            return Result<U>(error)
+//        }
+//    }
+//}
+//
+//extension Result2 : Printable, DebugPrintable {
+//    public var description: String {
+//        switch self {
+//        case .Success(let value): return "Success with \(value)"
+//        case .Failure(let error): return "Failure with \(error)"
+//        }
+//    }
+//    public var debugDescription: String {
+//        return self.description
+//    }
+//}
+//

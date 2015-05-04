@@ -21,6 +21,20 @@ class ResultTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
+    
+    
+    func testOther() {
+        let a1 = ["OK"];
+        let c1 = a1.capacity
+        
+        var a2 = Array<String>()
+        let c2 = a2.capacity
+        a2.append("OK")
+        let c22 = a2.capacity
+        
+        let a3 = Array(count: 1, repeatedValue: "OK")
+        let c3 = a3.capacity
+    }
 
     func testExample1() {
 

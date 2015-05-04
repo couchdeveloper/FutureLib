@@ -131,7 +131,7 @@ public class Promise<T>
     /// Executes closure f on the global dispatch queue when it is cancelled.
     /// Does not retain self.
     internal final func onCancel(f: NSError -> ())-> () {
-        onCancel(dispatch_get_global_queue(0, 0), f)
+        onCancel(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), f)
     }
 
     

@@ -10,6 +10,10 @@ import XCTest
 import Future
 
 
+/// Initialize and configure the Logger
+let Log = Logger("Test")
+
+
 class Foo<T> {
     typealias ArrayClosure = ([T])->()
 }
@@ -30,13 +34,17 @@ class FutureTests: XCTestCase {
     }
     
     
-    func testOnCompleteShouldBeExecutedAfterFulfill() {
+    func testOnCompleteShouldBeExecutedWhenFulfilled() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let test:()->() = {
             let promise = Promise<String>()
             let future = promise.future!
             future.onComplete { r -> () in
-                println ("result: \(r)")
+                Log.Info("result: \(r)")
+                switch (r) {
+                case .Success(let value): XCTAssert(value[0]=="OK")
+                case .Failure(let error): XCTFail("unexpected error")
+                }
                 expect.fulfill()
             }
             promise.fulfill("OK")
@@ -45,13 +53,17 @@ class FutureTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
-    func testOnCompleteShouldBeExecutedAfterReject() {
+    func testOnCompleteShouldBeExecutedWhenRejected() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let test:()->() = {
             let promise = Promise<String>()
             let future = promise.future!
             future.onComplete { r -> () in
-                println ("result: \(r)")
+                Log.Info("result: \(r)")
+                switch (r) {
+                case .Success(let value): XCTFail("unexpected success")
+                case .Failure(let error): XCTAssert(error.code == -2)
+                }
                 expect.fulfill()
             }
             promise.reject(NSError(domain: "Test", code: -2, userInfo: [NSLocalizedFailureReasonErrorKey: "Test"]))
@@ -67,7 +79,7 @@ class FutureTests: XCTestCase {
             promise.fulfill("OK")
             let future = promise.future!
             future.onComplete { r -> () in
-                println ("result: \(r)")
+                Log.Info("result: \(r)")
                 expect.fulfill()
             }
         }
@@ -82,7 +94,7 @@ class FutureTests: XCTestCase {
             promise.reject(NSError(domain: "Test", code: -2, userInfo: [NSLocalizedFailureReasonErrorKey: "Test"]))
             let future = promise.future!
             future.onComplete { r -> () in
-                println ("result: \(r)")
+                Log.Info("result: \(r)")
                 expect.fulfill()
             }
         }
@@ -115,7 +127,7 @@ class FutureTests: XCTestCase {
             let future = promise.future!
             promise.fulfill("OK")
             future.then { str -> () in
-                println ("result: \(str)")
+                Log.Info ("result: \(str)")
                 expect.fulfill()
             }
         }
@@ -130,7 +142,7 @@ class FutureTests: XCTestCase {
             let future = promise.future!
             promise.reject(NSError(domain: "Test", code: -2, userInfo: nil))
             future.catch { error -> () in
-                println ("result: \(error)")
+                Log.Info ("result: \(error)")
                 expect.fulfill()
             }
         }
@@ -143,7 +155,7 @@ class FutureTests: XCTestCase {
         let promise = Promise<String>()
         let future = promise.future!
         future.then(on:dispatch_get_main_queue()) { str -> () in
-            println ("result: \(str)")
+            Log.Info ("result: \(str)")
             expect.fulfill()
         }
         promise.fulfill("OK")
@@ -155,26 +167,26 @@ class FutureTests: XCTestCase {
         let promise = Promise<String>()
         let future = promise.future!
         future.then { str -> Int in
-            println ("result 0: \(str)")
+            Log.Info ("result 0: \(str)")
             return 1
         }
         .then { x -> Int in
-            println("result 1: \(x)")
+            Log.Info("result 1: \(x)")
             return 2
         }
         .catch { err -> Int in
-            println ("Error: \(err)")
+            Log.Info ("Error: \(err)")
             return -1
         }
         .then { x -> String in
-            println("result 2: \(x)")
+            Log.Info("result 2: \(x)")
             return "unused"
         }
         .finally { () -> () in
-            println ("**done**")
+            Log.Info ("**done**")
             expect.fulfill()
         }
-        
+        Log.Info("fulfill future")
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
@@ -194,17 +206,22 @@ class FutureTests: XCTestCase {
     func testFutureShouldNotDeallocateIfThereIsOneObserver() {
         weak var weakRef: Future<Int>?
         let promise = Promise<Int>()
+        let sem = dispatch_semaphore_create(0)
         func t() {
             let future = promise.future!
-            future.then { result in
-                ()
+            future.then { result -> () in
+                Log.Info("continuation")
+                dispatch_semaphore_signal(sem)
+                return
             }
             weakRef = future
         }
         t()
         XCTAssertNotNil(weakRef)
         promise.fulfill(0)
-        XCTAssertNil(weakRef)
+        dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
+        let future = weakRef
+        XCTAssertNil(future)
     }
     
     func testPromiseShouldNotDeallocatePrematurely() {
@@ -296,7 +313,7 @@ class FutureTests: XCTestCase {
             return 0
         }
         .catch { err -> Int in
-            println ("Error: \(err)")
+            Log.Info ("Error: \(err)")
             return -1
         }
         
@@ -334,7 +351,7 @@ class FutureTests: XCTestCase {
 //            
 //            promise.fulfill("OK")
 //            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
-//            //println("|")
+//            //Log.Info("|")
 //        }
 //    }
     
@@ -355,7 +372,7 @@ class FutureTests: XCTestCase {
 //            
 //            promise.fulfill("OK")
 //            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
-//            //println("|")
+//            //Log.Info("|")
 //        }
 //    }
 //

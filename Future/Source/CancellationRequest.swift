@@ -292,14 +292,14 @@ public class CancellationRequest : DebugPrintable {
     /// not exist anymore when self has been cancelled, the closure is not called.
     /// Does not retain self. Does not retain the cancelable.
     private final func onCancel(cancelable: Cancelable, _ f: (Cancelable)->()) {
-        onCancel(cancelable, on: dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), f)
+        onCancel(cancelable, on: dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), f)
     }
     
     /// Executes closure f on a private execution context when it is cancelled
     /// and when self still exists.
     /// Does not retain self.
     private final func onCancel(f: ()->()) {
-        onCancel(on: dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), f)
+        onCancel(on: dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), f)
     }
     
     
