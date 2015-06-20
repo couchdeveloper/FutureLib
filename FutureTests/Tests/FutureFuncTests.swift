@@ -22,7 +22,7 @@ class FutureFuncTests: XCTestCase {
         super.tearDown()
     }
 
-    func testExample() {
+    func testExample1() {
         // This is an example of a functional test case.
         
         let r = future {

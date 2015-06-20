@@ -7,11 +7,13 @@
 //
 
 import XCTest
-import Future
+import FutureLib
 
 
 /// Initialize and configure the Logger
-let Log = Logger("Test")
+let Log = Logger(category: "Test",
+        verbosity: Logger.Severity.Trace,
+        executionContext: SyncExecutionContext(queue: dispatch_queue_create("logger_sync_queue", nil)!))
 
 
 class Foo<T> {
@@ -42,8 +44,8 @@ class FutureTests: XCTestCase {
             future.onComplete { r -> () in
                 Log.Info("result: \(r)")
                 switch (r) {
-                case .Success(let value): XCTAssert(value[0]=="OK")
-                case .Failure(let error): XCTFail("unexpected error")
+                case .Success(let value): XCTAssert(value=="OK")
+                case .Failure(let error): XCTFail("unexpected error: \(error)")
                 }
                 expect.fulfill()
             }
@@ -61,7 +63,7 @@ class FutureTests: XCTestCase {
             future.onComplete { r -> () in
                 Log.Info("result: \(r)")
                 switch (r) {
-                case .Success(let value): XCTFail("unexpected success")
+                case .Success: XCTFail("unexpected success")
                 case .Failure(let error): XCTAssert(error.code == -2)
                 }
                 expect.fulfill()
@@ -141,7 +143,7 @@ class FutureTests: XCTestCase {
             let promise = Promise<String>()
             let future = promise.future!
             promise.reject(NSError(domain: "Test", code: -2, userInfo: nil))
-            future.catch { error -> () in
+            future.`catch` { error -> () in
                 Log.Info ("result: \(error)")
                 expect.fulfill()
             }
@@ -174,7 +176,7 @@ class FutureTests: XCTestCase {
             Log.Info("result 1: \(x)")
             return 2
         }
-        .catch { err -> Int in
+        .`catch` { err -> Int in
             Log.Info ("Error: \(err)")
             return -1
         }
@@ -225,7 +227,6 @@ class FutureTests: XCTestCase {
     }
     
     func testPromiseShouldNotDeallocatePrematurely() {
-        let sem = dispatch_semaphore_create(0)
         let expect = self.expectationWithDescription("future should be fulfilled")
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
             let promise = Promise<String>()
@@ -242,7 +243,6 @@ class FutureTests: XCTestCase {
     }
 
     func testPromiseChainShouldNotDeallocatePrematurely() {
-        let sem = dispatch_semaphore_create(0)
         let expect = self.expectationWithDescription("future should be fulfilled")
         let delay = dispatch_time(DISPATCH_TIME_NOW, Int64(0.2 * Double(NSEC_PER_SEC)))
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
@@ -282,7 +282,7 @@ class FutureTests: XCTestCase {
         let promise = Promise<String>()
         let future = promise.future!
         let expect = self.expectationWithDescription("future should be fulfilled")
-        future.catch { str -> String in
+        future.`catch` { str -> String in
             XCTFail("Not expected")
             expect.fulfill()
             return "Fail"
@@ -312,7 +312,7 @@ class FutureTests: XCTestCase {
             expect.fulfill()
             return 0
         }
-        .catch { err -> Int in
+        .`catch` { err -> Int in
             Log.Info ("Error: \(err)")
             return -1
         }
@@ -320,6 +320,54 @@ class FutureTests: XCTestCase {
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
+    
+    
+    
+    func testCancellation1() {
+        let promise = Promise<String>()
+        let future = promise.future!
+        
+        let cancellationRequest1 = CancellationRequest()
+        let cancellationRequest2 = CancellationRequest()
+        let expect = self.expectationWithDescription("future should be fulfilled")
+        future.onComplete { result -> () in
+            expect.fulfill()
+        }
+        future.onComplete(cancellationRequest1.token) { result -> () in
+            expect.fulfill()
+        }
+        future.onComplete(cancellationRequest2.token) { result -> () in
+            expect.fulfill()
+        }
+        
+        
+        promise.fulfill("OK")        
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    
+    func testCancellation2() {
+        let promise = Promise<String>()
+        let future = promise.future!
+        
+        let cancellationRequest1 = CancellationRequest()
+        let cancellationRequest2 = CancellationRequest()
+        let expect = self.expectationWithDescription("future should be fulfilled")
+        future.onComplete { result -> () in
+            expect.fulfill()
+        }
+        future.onComplete(cancellationRequest1.token) { result -> () in
+            XCTFail("unexpected")
+        }
+        future.onComplete(cancellationRequest2.token) { result -> () in
+            expect.fulfill()
+        }
+        
+        cancellationRequest1.cancel()
+        promise.fulfill("OK")
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
     
 
 //    func testPerformanceOneContinuation() {

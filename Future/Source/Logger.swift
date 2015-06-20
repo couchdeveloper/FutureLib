@@ -11,7 +11,6 @@ import Darwin
 
 
 
-private let sync = Synchronize()
 
 
 internal func dateTimeString(t:time_t, usec: suseconds_t, format: String) -> String {
@@ -76,7 +75,7 @@ public struct DateTime {
     private init(tval:timeval, localtime:Bool = true) {
         var t_tmp = tval;
         var t: tm = tm()
-        let tm_ptr = localtime_r(&t_tmp.tv_sec, &t)
+        localtime_r(&t_tmp.tv_sec, &t)
         
         year = UInt16(t.tm_year + 1900)
         month = UInt8(t.tm_mon + 1)
@@ -103,20 +102,23 @@ public class Logger {
     public class Format {
     }
     
-    
-    var dateFormat: (timeval:timeval)-> String
+    private let _category :StaticString
+    private let _executionContext:ExecutionContext
 
     
-    private let _category :StaticString;
+    public var dateFormat: (timeval:timeval)-> String
 
-    var LogLevel = Severity.Error
+    public var logLevel = Severity.Error
     
+
     
-    
-    
-    public init(category: StaticString, verbosity: Severity, dateTimeFormatter:(tval:timeval) -> String = Logger.defaultDateTimeFormatter) {
+    public init(category: StaticString, verbosity: Severity,
+        executionContext: ExecutionContext = AsyncExecutionContext(queue: dispatch_queue_create("logger_sync_queue", nil)!),
+        dateTimeFormatter:(tval:timeval) -> String = Logger.defaultDateTimeFormatter)
+    {
         _category = category
-        self.LogLevel = verbosity
+        self.logLevel = verbosity
+        self._executionContext = executionContext
         self.dateFormat = dateTimeFormatter
     }
     
@@ -134,8 +136,8 @@ public class Logger {
     
     private func writeln<T>(event: Event<T>) {
         let gcd_queue = event._gcd_queue == nil ? "" : event._gcd_queue!
-        sync.write_async {
-            println("\(self.dateFormat(timeval: event._timeStamp)) [\(event._threadId)][\(gcd_queue)] \(event._function): \(event._message)")
+        _executionContext.execute {
+            print("\(self.dateFormat(timeval: event._timeStamp)) [\(event._threadId)][\(gcd_queue)] \(event._function): \(event._message)")
         }
     }
     
@@ -148,31 +150,31 @@ public class Logger {
     
     
     public func Error<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
-        if (self.LogLevel.rawValue > Severity.None.rawValue) {
+        if (self.logLevel.rawValue > Severity.None.rawValue) {
             writeln(Event(category: self._category, severity: Severity.Error, message: object, function: function, file: file, line: line))
         }
     }
 
     public func Warning<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
-        if (self.LogLevel.rawValue > Severity.Error.rawValue) {
+        if (self.logLevel.rawValue > Severity.Error.rawValue) {
             writeln(Event(category: self._category, severity: Severity.Warning, message: object, function: function, file: file, line: line))
         }
     }
 
     public func Info<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
-        if (self.LogLevel.rawValue > Severity.Warning.rawValue) {
+        if (self.logLevel.rawValue > Severity.Warning.rawValue) {
             writeln(Event(category: self._category, severity: Severity.Info, message: object, function: function, file: file, line: line))
         }
     }
  
     public func Debug<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
-        if (self.LogLevel.rawValue > Severity.Info.rawValue) {
+        if (self.logLevel.rawValue > Severity.Info.rawValue) {
             writeln(Event(category: self._category, severity: Severity.Debug, message: object, function: function, file: file, line: line))
         }
     }
 
     public func Trace<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
-        if (self.LogLevel.rawValue > Severity.Debug.rawValue) {
+        if (self.logLevel.rawValue > Severity.Debug.rawValue) {
             writeln(Event(category: self._category, severity: Severity.Trace, message: object, function: function, file: file, line: line))
         }
     }

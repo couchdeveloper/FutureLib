@@ -17,8 +17,12 @@ private var queue_ID_key = 0
 
 public struct Synchronize {
     
+    public let sync_queue: dispatch_queue_t
     
-    init() {
+    init(name: String) {
+        sync_queue = dispatch_queue_create(name, DISPATCH_QUEUE_CONCURRENT)!
+        let ptr = UnsafeMutablePointer<Void>(Unmanaged<dispatch_queue_t>.passUnretained(sync_queue).toOpaque())
+        dispatch_queue_set_specific(sync_queue, &queue_ID_key, ptr, nil)
     }
 
     /// Returns true if the current execution context is the sync_queue
@@ -27,14 +31,6 @@ public struct Synchronize {
         return dispatch_get_specific(&queue_ID_key) == ptr
     }
 
-    
-    public let sync_queue : dispatch_queue_t = {
-        let q = dispatch_queue_create("promise.sync_queue", DISPATCH_QUEUE_CONCURRENT)!
-        let ptr = UnsafeMutablePointer<Void>(Unmanaged<dispatch_queue_t>.passUnretained(q).toOpaque())
-        dispatch_queue_set_specific(q, &queue_ID_key, ptr, nil)
-        return q
-        }()
-    
 
 
     

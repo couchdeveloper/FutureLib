@@ -47,7 +47,7 @@ public class Promise<T>
     
     /// Initializes the promise whose future is pending.
     ///
-    /// :param: resolver The resolver object which will eventually resove the future.
+    /// - parameter resolver: The resolver object which will eventually resove the future.
     public init() {
         _future = Future<T>(resolver: self)
         _weakFuture = _future
@@ -55,7 +55,7 @@ public class Promise<T>
     
     /// Initializes the promise whose future is fulfilled with value.
     ///
-    /// :param: value The value which fulfills the future.
+    /// - parameter value: The value which fulfills the future.
     public init(_ value:ValueType) {
         _future = Future<T>(value, resolver: self)
         _weakFuture = _future
@@ -63,7 +63,7 @@ public class Promise<T>
     
     /// Initializes the promise whose future is rejected with error.
     ///
-    /// :param: error The error which rejects the future.
+    /// - parameter error: The error which rejects the future.
     public init(error:NSError) {
         _future = Future<T>(error, resolver: self)
         _weakFuture = _future
@@ -74,7 +74,7 @@ public class Promise<T>
     /// The first call will "weakyfy" the reference to the future. If there is no
     /// strong reference elsewhere, subsequent calls will return nil.
     ///
-    /// :returns: If this is the first call, returns the future. Otherwise it may return nil.
+    /// - returns: If this is the first call, returns the future. Otherwise it may return nil.
     ///
     /// TODO: must be thread-safe
     public var future : Future<T>? {
@@ -88,7 +88,7 @@ public class Promise<T>
     
     /// Fulfilles the promise's future with value.
     ///
-    /// :param: vaule The value which resolves the future.
+    /// - parameter vaule: The value which resolves the future.
     public func fulfill(value:T) {
         if let future = _weakFuture {
             future.resolve(Result(value))
@@ -100,7 +100,7 @@ public class Promise<T>
     
     /// Rejects the promise's future with error.
     ///
-    /// :param: error The error which rejects the future.
+    /// - parameter error: The error which rejects the future.
     public func reject(error:NSError) {
         if let future = _weakFuture {
             future.resolve(Result(error))
@@ -121,7 +121,7 @@ public class Promise<T>
     /// The continuation will be called with a copy of the error of `self`'s future.
     /// Retains `self` until it is completed.
     ///
-    /// :param: f A closure taking an error as parameter.
+    /// - parameter f: A closure taking an error as parameter.
     internal final func onCancel(executor: ExecutionContext, _ f: NSError -> ())-> () {
         if let future = _weakFuture {
             future.onCancel(on: executor, f)

@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import Future
+import FutureLib
 
 
 class LoggerTests: XCTestCase {
@@ -24,7 +24,7 @@ class LoggerTests: XCTestCase {
 
     func testExample() {
         // This is an example of a functional test case.
-        var s = "Happy logging"
+        let s = "Happy logging"
         let log = Logger(category: "Test", verbosity: Logger.Severity.Trace);
         log.Trace("***\(s)!***")
         dispatch_sync(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {

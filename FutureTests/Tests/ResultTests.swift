@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import Future
+import FutureLib
 
 
 class ResultTests: XCTestCase {
@@ -23,30 +23,17 @@ class ResultTests: XCTestCase {
     }
     
     
-    func testOther() {
-        let a1 = ["OK"];
-        let c1 = a1.capacity
-        
-        var a2 = Array<String>()
-        let c2 = a2.capacity
-        a2.append("OK")
-        let c22 = a2.capacity
-        
-        let a3 = Array(count: 1, repeatedValue: "OK")
-        let c3 = a3.capacity
-    }
-
     func testExample1() {
 
         let r = Result<Int>(3)
         r.map {
             XCTAssert($0 == 3, "Failed")
         }
-        r.map(println)
+        r.map(print)
     }
-
+    
     func testExample2() {
-        let s = "123.0e123456789"
+        let s = "123.0e1"
         
         func stringToDouble(s:String) -> Result<Double> {
             let buffer = s.cStringUsingEncoding(NSUTF8StringEncoding);
@@ -68,11 +55,72 @@ class ResultTests: XCTestCase {
             }
         }
         
-        stringToDouble(s).map {
-            XCTAssert($0 == 123, "Failed")
-            $0
-        }.map(println)
+//        let r :Result<Double> = stringToDouble(s).map {
+//            //XCTAssert($0 == 123, "Failed")
+//            $0
+//        }
+        
+        Result<Double>(1.23).map { $0 }.map(print)
     }
     
+    
+    
+    func testThrowingInitFunction() {
+        
+        enum TestError : ErrorType {
+            case Test
+        }
+        
+        func funcThrows() throws -> Double {
+            throw TestError.Test
+        }
+        
+        let r = Result<Double>(){try funcThrows()}
+        print(r)
+        
+        let e = TestError.Test
+        print(e)
+        
+        r.map { $0 }.map(print)
+        
+    }
+    
+    
+    func testResultWithErrorThrows() {
+        
+        let r = Result<Int>(NSError(domain: "Test", code: -1, userInfo: nil))
+        
+        do {
+            let value = try r.value()
+            XCTFail("expected exception")
+        }
+        catch let ex {
+            let error = ex as NSError
+            XCTAssert(error.code == -1)
+            print("Error: \(error).")
+        }
+        
+    }
+    
+    func testEqualityOperator() {
+//        
+//        let x1: Int = 1
+//        let x2: Int = 2
+//        if (x1 == x2) {}
+//        
+//        let a1 = [1,2]
+//        let a2 = [1,2]
+//        
+//        if (a1 == a2) {
+//        }
+//        
+//        let r1 = Result<Int>(3)
+//        let r2 = Result<Int>(3)
+//
+//        _ = r1 == r2
+//        XCTAssertTrue(r1 == r2)
+    }
+    
+
 
 }

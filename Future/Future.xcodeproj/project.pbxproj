@@ -7,28 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10D9ED81AD01EF7001FF909 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */; };
-		A10D9ED91AD01EF7001FF909 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */; };
-		A10D9EDB1AD01F72001FF909 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9EDA1AD01F72001FF909 /* Synchronize.swift */; };
-		A10D9EDC1AD01F72001FF909 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9EDA1AD01F72001FF909 /* Synchronize.swift */; };
+		A1151B551B305C9D0029E3EF /* FutureFreeFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1151B541B305C9D0029E3EF /* FutureFreeFunc.swift */; };
+		A14815211B29FBEE0010B24C /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7C1A7B6B9F000B0A35 /* Future.swift */; };
+		A14815221B29FC290010B24C /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EFD6711AC9C5ED0052C13E /* CancellationRequest.swift */; };
+		A14815231B29FCBE0010B24C /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7C1A7B6B9F000B0A35 /* Future.swift */; };
+		A14815241B29FCC30010B24C /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7E1A7B6B9F000B0A35 /* Promise.swift */; };
+		A14815251B29FCC40010B24C /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7E1A7B6B9F000B0A35 /* Promise.swift */; };
+		A14815261B29FCC70010B24C /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EFD6711AC9C5ED0052C13E /* CancellationRequest.swift */; };
 		A14E4F281A7B67FC000B0A35 /* Future.h in Headers */ = {isa = PBXBuildFile; fileRef = A14E4F271A7B67FC000B0A35 /* Future.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A14E4F561A7B6A82000B0A35 /* Future.h in Headers */ = {isa = PBXBuildFile; fileRef = A14E4F551A7B6A82000B0A35 /* Future.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A14E4F801A7B6B9F000B0A35 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7C1A7B6B9F000B0A35 /* Future.swift */; };
-		A14E4F811A7B6B9F000B0A35 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7C1A7B6B9F000B0A35 /* Future.swift */; };
-		A14E4F821A7B6B9F000B0A35 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7D1A7B6B9F000B0A35 /* Logger.swift */; };
-		A14E4F831A7B6B9F000B0A35 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7D1A7B6B9F000B0A35 /* Logger.swift */; };
-		A14E4F841A7B6B9F000B0A35 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7E1A7B6B9F000B0A35 /* Promise.swift */; };
-		A14E4F851A7B6B9F000B0A35 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7E1A7B6B9F000B0A35 /* Promise.swift */; };
-		A14E4F861A7B6B9F000B0A35 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7F1A7B6B9F000B0A35 /* Result.swift */; };
-		A14E4F871A7B6B9F000B0A35 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7F1A7B6B9F000B0A35 /* Result.swift */; };
-		A1EFD6721AC9C5ED0052C13E /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EFD6711AC9C5ED0052C13E /* CancellationRequest.swift */; };
-		A1EFD6731AC9C5ED0052C13E /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EFD6711AC9C5ED0052C13E /* CancellationRequest.swift */; };
+		A192A88E1B0146E100AF1EE9 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7D1A7B6B9F000B0A35 /* Logger.swift */; };
+		A192A8921B0146E100AF1EE9 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */; };
+		A192A8931B0146E100AF1EE9 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9EDA1AD01F72001FF909 /* Synchronize.swift */; };
+		A192A8941B0146E200AF1EE9 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7D1A7B6B9F000B0A35 /* Logger.swift */; };
+		A192A8981B0146E200AF1EE9 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */; };
+		A192A8991B0146E200AF1EE9 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9EDA1AD01F72001FF909 /* Synchronize.swift */; };
+		A1959C961B014A0400D3EC53 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1959C951B014A0400D3EC53 /* Result.swift */; };
+		A1959C971B014A0400D3EC53 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1959C951B014A0400D3EC53 /* Result.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionContext.swift; sourceTree = "<group>"; };
 		A10D9EDA1AD01F72001FF909 /* Synchronize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronize.swift; sourceTree = "<group>"; };
-		A14E4F221A7B67FC000B0A35 /* Future.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Future.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1151B541B305C9D0029E3EF /* FutureFreeFunc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureFreeFunc.swift; sourceTree = "<group>"; };
+		A14E4F221A7B67FC000B0A35 /* FutureLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FutureLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A14E4F261A7B67FC000B0A35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A14E4F271A7B67FC000B0A35 /* Future.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Future.h; sourceTree = "<group>"; };
 		A14E4F511A7B6A82000B0A35 /* Future.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Future.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -37,7 +39,8 @@
 		A14E4F7C1A7B6B9F000B0A35 /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
 		A14E4F7D1A7B6B9F000B0A35 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		A14E4F7E1A7B6B9F000B0A35 /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
-		A14E4F7F1A7B6B9F000B0A35 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		A1959C951B014A0400D3EC53 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		A1959CA01B0284E900D3EC53 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		A1EFD6711AC9C5ED0052C13E /* CancellationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -62,6 +65,7 @@
 		A14E4F0F1A78C06A000B0A35 = {
 			isa = PBXGroup;
 			children = (
+				A1959CA01B0284E900D3EC53 /* MyPlayground.playground */,
 				A14E4F7B1A7B6B9F000B0A35 /* Source */,
 				A14E4F241A7B67FC000B0A35 /* Future-OSX */,
 				A14E4F521A7B6A82000B0A35 /* Future-iOS */,
@@ -72,7 +76,7 @@
 		A14E4F231A7B67FC000B0A35 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A14E4F221A7B67FC000B0A35 /* Future.framework */,
+				A14E4F221A7B67FC000B0A35 /* FutureLib.framework */,
 				A14E4F511A7B6A82000B0A35 /* Future.framework */,
 			);
 			name = Products;
@@ -115,9 +119,10 @@
 		A14E4F7B1A7B6B9F000B0A35 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				A14E4F7F1A7B6B9F000B0A35 /* Result.swift */,
+				A1959C951B014A0400D3EC53 /* Result.swift */,
 				A14E4F7D1A7B6B9F000B0A35 /* Logger.swift */,
 				A14E4F7C1A7B6B9F000B0A35 /* Future.swift */,
+				A1151B541B305C9D0029E3EF /* FutureFreeFunc.swift */,
 				A14E4F7E1A7B6B9F000B0A35 /* Promise.swift */,
 				A1EFD6711AC9C5ED0052C13E /* CancellationRequest.swift */,
 				A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */,
@@ -163,7 +168,7 @@
 			);
 			name = "Future-OSX";
 			productName = "Future-OSX";
-			productReference = A14E4F221A7B67FC000B0A35 /* Future.framework */;
+			productReference = A14E4F221A7B67FC000B0A35 /* FutureLib.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		A14E4F501A7B6A82000B0A35 /* Future-iOS */ = {
@@ -190,7 +195,8 @@
 		A14E4F101A78C06A000B0A35 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0620;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				TargetAttributes = {
 					A14E4F211A7B67FC000B0A35 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -240,13 +246,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10D9EDB1AD01F72001FF909 /* Synchronize.swift in Sources */,
-				A14E4F801A7B6B9F000B0A35 /* Future.swift in Sources */,
-				A14E4F821A7B6B9F000B0A35 /* Logger.swift in Sources */,
-				A14E4F861A7B6B9F000B0A35 /* Result.swift in Sources */,
-				A14E4F841A7B6B9F000B0A35 /* Promise.swift in Sources */,
-				A10D9ED81AD01EF7001FF909 /* ExecutionContext.swift in Sources */,
-				A1EFD6721AC9C5ED0052C13E /* CancellationRequest.swift in Sources */,
+				A192A8931B0146E100AF1EE9 /* Synchronize.swift in Sources */,
+				A192A88E1B0146E100AF1EE9 /* Logger.swift in Sources */,
+				A14815241B29FCC30010B24C /* Promise.swift in Sources */,
+				A1959C961B014A0400D3EC53 /* Result.swift in Sources */,
+				A14815211B29FBEE0010B24C /* Future.swift in Sources */,
+				A14815221B29FC290010B24C /* CancellationRequest.swift in Sources */,
+				A192A8921B0146E100AF1EE9 /* ExecutionContext.swift in Sources */,
+				A1151B551B305C9D0029E3EF /* FutureFreeFunc.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,13 +261,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10D9EDC1AD01F72001FF909 /* Synchronize.swift in Sources */,
-				A14E4F811A7B6B9F000B0A35 /* Future.swift in Sources */,
-				A14E4F831A7B6B9F000B0A35 /* Logger.swift in Sources */,
-				A14E4F871A7B6B9F000B0A35 /* Result.swift in Sources */,
-				A14E4F851A7B6B9F000B0A35 /* Promise.swift in Sources */,
-				A10D9ED91AD01EF7001FF909 /* ExecutionContext.swift in Sources */,
-				A1EFD6731AC9C5ED0052C13E /* CancellationRequest.swift in Sources */,
+				A14815261B29FCC70010B24C /* CancellationRequest.swift in Sources */,
+				A192A8991B0146E200AF1EE9 /* Synchronize.swift in Sources */,
+				A192A8941B0146E200AF1EE9 /* Logger.swift in Sources */,
+				A1959C971B014A0400D3EC53 /* Result.swift in Sources */,
+				A14815231B29FCBE0010B24C /* Future.swift in Sources */,
+				A192A8981B0146E200AF1EE9 /* ExecutionContext.swift in Sources */,
+				A14815251B29FCC40010B24C /* Promise.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,6 +277,7 @@
 		A14E4F141A78C06A000B0A35 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "-DDEBUG";
 			};
@@ -328,7 +336,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = Future;
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = FutureLib;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -377,7 +386,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = Future;
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = FutureLib;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -430,6 +440,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Future;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -478,6 +489,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Future;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
