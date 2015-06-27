@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Andreas Grosam. All rights reserved.
 //
 
-import Foundation
+import Dispatch
 import Darwin
 
 

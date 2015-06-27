@@ -6,16 +6,14 @@
 //
 //
 
-import Foundation
-
-
+import Dispatch
 
 
 private var queue_ID_key = 0
 
 
 /**
-    A Synchronization object which uses a concurrent dispatch_queue to enforce 
+    A Synchronization object which uses a serial dispatch_queue to enforce 
     "Synchronize-With" and "Happens-Before" relationship.
 */
 public struct Synchronize {
@@ -28,7 +26,8 @@ public struct Synchronize {
         - parameter name: A name which should be unique.
     */
     init(name: String) {
-        sync_queue = dispatch_queue_create(name, DISPATCH_QUEUE_CONCURRENT)!
+        // Using a *serial* queue seems to safe CPU cycles.
+        sync_queue = dispatch_queue_create(name, dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))
         // Use the pointer value to sync_queue as the context in order to have
         // a unique context:
         let context = UnsafeMutablePointer<Void>(Unmanaged<dispatch_queue_t>.passUnretained(sync_queue).toOpaque())

@@ -6,8 +6,7 @@
 //
 //
 
-import Foundation
-
+import Dispatch
 
 /**
     Asynchronously executes the closure f, which is usually a CPU-bound function
@@ -52,7 +51,7 @@ public func future<R>(f:() throws -> R) -> Future<R> {
             returnedFuture.resolve(Result(value))
         }
         catch let error {
-            returnedFuture.resolve(Result(error as NSError))
+            returnedFuture.resolve(Result(error))
         }
     })
     return returnedFuture
@@ -109,7 +108,7 @@ public func future<R>(on executor: ExecutionContext, f:() throws ->R) -> Future<
             returnedFuture.resolve(Result(value))
         }
         catch let error {
-            returnedFuture.resolve(Result(error as NSError))
+            returnedFuture.resolve(Result(error))
         }
     }
     return returnedFuture

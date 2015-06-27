@@ -10,6 +10,26 @@ import XCTest
 import FutureLib
 
 
+
+// Error type
+
+enum TestError : ErrorType {
+    case Failed
+    
+    internal func isEqual(other: TestError) -> Bool {
+        return true
+    }
+    internal func isEqual(other: ErrorType) -> Bool {
+        if let _ = other as? TestError {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+}
+
+
 /// Initialize and configure the Logger
 let Log = Logger(category: "Test",
         verbosity: Logger.Severity.Error,
@@ -63,12 +83,13 @@ class FutureTests: XCTestCase {
             future.onComplete { r -> () in
                 Log.Info("result: \(r)")
                 switch (r) {
-                case .Success: XCTFail("unexpected success")
-                case .Failure(let error): XCTAssert(error.code == -2)
+                    case .Success: XCTFail("unexpected success")
+                    case .Failure(let error):
+                        XCTAssertTrue(TestError.Failed.isEqual(error))
                 }
                 expect.fulfill()
             }
-            promise.reject(NSError(domain: "Test", code: -2, userInfo: [NSLocalizedFailureReasonErrorKey: "Test"]))
+            promise.reject(TestError.Failed)
         }
         test()
         self.waitForExpectationsWithTimeout(1, handler: nil)
@@ -93,7 +114,7 @@ class FutureTests: XCTestCase {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let test:()->() = {
             let promise = Promise<String>()
-            promise.reject(NSError(domain: "Test", code: -2, userInfo: [NSLocalizedFailureReasonErrorKey: "Test"]))
+            promise.reject(TestError.Failed)
             let future = promise.future!
             future.onComplete { r -> () in
                 Log.Info("result: \(r)")
@@ -142,7 +163,7 @@ class FutureTests: XCTestCase {
         let test:()->() = {
             let promise = Promise<String>()
             let future = promise.future!
-            promise.reject(NSError(domain: "Test", code: -2, userInfo: nil))
+            promise.reject(TestError.Failed)
             future.`catch` { error -> () in
                 Log.Info ("result: \(error)")
                 expect.fulfill()
@@ -364,7 +385,7 @@ class FutureTests: XCTestCase {
                 return Result<String>("OK")
             }
             else {
-                return Result<String>(NSError(domain: "Failure", code: -1, userInfo: nil))
+                return Result<String>(TestError.Failed)
             }
         }
         .then { str -> Int in

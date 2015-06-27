@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Andreas Grosam. All rights reserved.
 //
 
-import Foundation
+import Dispatch
 
 
 
@@ -65,7 +65,7 @@ public class Promise<T>
     
         - parameter value: The value which fulfills the future.
     */
-    public init(_ value:ValueType) {
+    public init(_ value : ValueType) {
         _future = Future<T>(value, resolver: self)
         _weakFuture = _future
     }
@@ -75,7 +75,7 @@ public class Promise<T>
     
         - parameter error: The error which rejects the future.
     */
-    public init(error:NSError) {
+    public init(error : ErrorType) {
         _future = Future<T>(error, resolver: self)
         _weakFuture = _future
     }
@@ -119,7 +119,7 @@ public class Promise<T>
     
         - parameter error: The error which rejects the future.
     */
-    public func reject(error:NSError) {
+    public func reject(error : ErrorType) {
         if let future = _weakFuture {
             future.resolve(Result(error))
         }
@@ -142,10 +142,10 @@ public class Promise<T>
 
         - parameter f: A closure taking an error as parameter.
     */
-    internal final func onCancel(executor: ExecutionContext, _ f: NSError -> ())-> () {
-        if let future = _weakFuture {
-            future.onCancel(on: executor, f)
-        }
+    internal final func onCancel(executor: ExecutionContext, _ f: ErrorType -> ())-> () {
+//        if let future = _weakFuture {
+//            future.onCancel(on: executor, f)
+//        }
     }
     
     
@@ -153,7 +153,7 @@ public class Promise<T>
         Executes closure f on the global dispatch queue when it is cancelled.
         Does not retain self.
     */
-    internal final func onCancel(f: NSError -> ())-> () {
+    internal final func onCancel(f: ErrorType -> ())-> () {
         onCancel(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), f)
     }
 

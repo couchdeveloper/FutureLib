@@ -6,16 +6,15 @@
 //  Copyright (c) 2014 Andreas Grosam. All rights reserved.
 //
 
-import Foundation
 
 
-/**
-    Enum ResultError defines errors which will be thrown by a Result if an 
-    exceptional error occurs.
-*/
-public enum ResultError : Int, ErrorType {
-    case Faulted = -1
-}
+///**
+//    Enum ResultError defines errors which will be thrown by a Result if an 
+//    exceptional error occurs.
+//*/
+//public enum ResultError : Int, ErrorType {
+//    case Faulted = -1
+//}
 
 
 /**
@@ -25,10 +24,9 @@ public enum ResultError : Int, ErrorType {
 public enum Result<T>{
     
     typealias ValueType = T
-    typealias `ErrorType` = NSError
     
     case Success(ValueType)
-    case Failure(NSError)
+    case Failure(ErrorType)
     
     /**
         Creates and initializes a Result with the given value `v`.
@@ -44,7 +42,7 @@ public enum Result<T>{
     
         - parameter error: The error with which Result will be initialzed.
     */
-    public init(_ error: NSError) {
+    public init(_ error: ErrorType) {
         self = Failure(error)
     }
     
@@ -58,7 +56,7 @@ public enum Result<T>{
             self = Success(try f())
         }
         catch let ex  {
-            self = Failure(ex as NSError)
+            self = Failure(ex)
         }
     }
     
@@ -132,24 +130,24 @@ extension Result : CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 
-/**
-    Implements operator== for Result<T> whose ValueType conforms to Equatable.
-*/
-public func ==<T:Equatable>(lhs: Result<T>, rhs: Result<T>) -> Bool {
-    switch lhs {
-    case .Success(let v_left):
-        switch rhs {
-        case .Success(let v_right): return v_left == v_right
-        case .Failure: return false
-        }
-    case .Failure(let e_left):
-        switch rhs {
-        case .Success: return false
-        case .Failure(let e_right): return e_left.isEqual(e_right)
-        }
-    }
-}
-
+///**
+//    Implements operator== for Result<T> whose ValueType conforms to Equatable.
+//*/
+//public func ==<T:Equatable>(lhs: Result<T>, rhs: Result<T>) -> Bool {
+//    switch lhs {
+//    case .Success(let v_left):
+//        switch rhs {
+//        case .Success(let v_right): return v_left == v_right
+//        case .Failure: return false
+//        }
+//    case .Failure(let e_left):
+//        switch rhs {
+//        case .Success: return false
+//        case .Failure(let e_right): return (e_left as NSError).isEqual(e_right as NSError) // TODO: this looks like a hack!
+//        }
+//    }
+//}
+//
 
 
 

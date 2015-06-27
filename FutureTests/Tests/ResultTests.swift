@@ -102,11 +102,11 @@ class ResultTests: XCTestCase {
         
     }
     
-    func testEqualityOperator() {
-        let r1 = Result<Int>(3)
-        let r2 = Result<Int>(3)
-        XCTAssertTrue(r1 == r2)
-    }
+//    func testEqualityOperator() {
+//        let r1 = Result<Int>(3)
+//        let r2 = Result<Int>(3)
+//        XCTAssertTrue(r1 == r2)
+//    }
     
 
 

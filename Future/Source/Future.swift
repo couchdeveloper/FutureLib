@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Andreas Grosam. All rights reserved.
 //
 
-import Foundation
+import Dispatch
 
 /// Initialize and configure a Logger - mainly for debugging and testing
 #if DEBUG
@@ -17,15 +17,15 @@ import Foundation
 
 
 
-/** 
-    FutureError encapsulates a few kinds of errors which will be
-    thrown by a Future if an exceptional error occurs.
-*/
-public enum FutureError : ErrorType {
-    case NotCompleted
-    case AlreadyCompleted
-    case Rejected(error: NSError)
-}
+///** 
+//    FutureError encapsulates a few kinds of errors which will be
+//    thrown by a Future if an exceptional error occurs.
+//*/
+//public enum FutureError : ErrorType {
+//    case NotCompleted
+//    case AlreadyCompleted
+//    case Rejected(error: ErrorType)
+//}
 
 
 
@@ -89,8 +89,8 @@ internal protocol Resolvable {
 extension Future : Resolvable {
     
     /// Completes self with the given result.
-    final func resolve(result : Result<Future.ValueType>) {
-        sync.write_sync { [unowned self] in
+    final internal func resolve(result : Result<Future.ValueType>) {
+        sync.write_async {
             self._resolve(result)
         }
     }
@@ -104,7 +104,7 @@ extension Future : Resolvable {
 extension Future : Resolver {
     
     /// Undo registering the given resolvable.
-    final func unregister<T:Resolvable>(resolvable: T) -> () {
+    final internal func unregister<T:Resolvable>(resolvable: T) -> () {
         sync.read_sync_safe() {
             self.unregister(DummyRegisterable())
         }
@@ -172,7 +172,7 @@ public class Future<T>  {
         //Log.Debug("Fulfilled future created with id: \(self.id) with value \(value).")
     }
     
-    internal init(_ error:NSError, resolver: Resolver? = nil) {
+    internal init(_ error:ErrorType, resolver: Resolver? = nil) {
         _resolver = resolver
         _result = Result<T>(error)
         //Log.Debug("Rejected future created with id: \(self.id) with error \(error).")
@@ -329,7 +329,7 @@ public class Future<T>  {
     }
     
 //    // Completes self with a cancelation error
-//    private final func _cancel(error: NSError?) {
+//    private final func _cancel(error: ErrorType?) {
 //        assert(sync.is_synchronized())
 //        if self._result == nil {
 //            let err = (error != nil) ? CancellationError(underlyingError: error!) : CancellationError()
@@ -362,16 +362,6 @@ public class Future<T>  {
     // completes).
     //
     // Retains the cancellation token until after the future has been completed.
-    //
-    // If there is a cancellation token given and if there is a cancellation request 
-    // for this token and if there are no other continuations registered `self` 
-    // will be completed with a `CancellationError` and closure `f` will be directly 
-    // called.
-    // Otherwise, the closure `f` will be registered which increments `_register_count` and if there 
-    // is a (pending) cancellation token, the cancellation token will register a closure which effectively 
-    // calls `self._unregister()` for the weakly captured `self`.
-    // _register must execute on the sync queue with write access.
-    // `self` must not be completed.
     private final func register(cancellationToken: CancellationTokenProtocol? = nil, f: ()->()) {
         if let ct = cancellationToken {
             let registerToken = register({
@@ -408,7 +398,10 @@ public class Future<T>  {
         assert(self._result == nil)
         if (_handler_queue == nil) {
             Log.Trace("creating handler queue")
-            _handler_queue = dispatch_queue_create("Future.handler_queue", DISPATCH_QUEUE_SERIAL)!
+            // The handler queue's target queue will become the sync-queue. This 
+            // ensures that code executing on the handler queue is synchronized 
+            // with code executing on the sync-queue.
+            _handler_queue = dispatch_queue_create("Future.handler_queue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))!
             dispatch_set_target_queue(_handler_queue, sync.sync_queue)
             dispatch_suspend(_handler_queue!)
         }
@@ -462,23 +455,18 @@ public class Future<T>  {
                 return
             }
         }
-        sync.write_sync {
-            if let r = self._result  { // self already resolved
-                executor.execute() {
+        let wrapperFunc : ()->() = {
+            if let r = self._result  {
+                executor.execute { [r] in
                     f(r)
                 }
-            } else { // self still pending
-                self.register(cancellationToken) {
-                    assert(sync.is_synchronized())
-                    if let r = self._result {
-                        executor.execute() {
-                            f(r)
-                        }
-                    }
-                    else {
-                        Log.Warning("result is nil")
-                    }
-                }
+            }
+        }
+        sync.write_sync {
+            if self._result == nil  { // self still pending
+                self.register(cancellationToken, f: wrapperFunc)
+            } else { // self already resolved
+                wrapperFunc()
             }
         }
     }
@@ -511,7 +499,7 @@ public class Future<T>  {
         onComplete(on: SynchronousCurrent(), cancellationToken:cancellationToken) { result in
             switch result {
             case .Success(let value):
-                executor.execute() {
+                executor.execute() { [value] in
                     f(value)
                 }
             default:break
@@ -534,15 +522,15 @@ public class Future<T>  {
     
     
     /**
-        Registers the continuation `f` which takes a parameter `error` of type `NSError` which will be executed
+        Registers the continuation `f` which takes a parameter `error` of type `ErrorType` which will be executed
         on the given execution context when `self` has been rejected.
         The continuation will be called with a copy of `self`'s error.
         Retains `self` until it is completed.
 
         - parameter executor: The execution context where the closure f will be executed.
-        - parameter f: A closure taking a paramter `error` of type `NSError` as parameter.
+        - parameter f: A closure taking a paramter `error` of type `ErrorType` as parameter.
     */
-    public final func onFailure(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> ())-> () {
+    public final func onFailure(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> ())-> () {
         onComplete(on: SynchronousCurrent(), cancellationToken:cancellationToken) { result in
             switch result {
             case .Failure(let error):
@@ -555,64 +543,64 @@ public class Future<T>  {
     }
     
     /**
-        Registers the continuation `f` which takes a parameter `error` of type `NSError` which will be executed
+        Registers the continuation `f` which takes a parameter `error` of type `ErrorType` which will be executed
         on a private execution context when `self` has been rejected.
         The continuation will be called with a copy of `self`'s error.
         Retains `self` until it is completed.
 
-        - parameter f: A closure taking a paramter `error` of type `NSError` as parameter.
+        - parameter f: A closure taking a paramter `error` of type `ErrorType` as parameter.
     */
-    public final func onFailure(cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> ())-> () {
+    public final func onFailure(cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> ())-> () {
         onFailure(on: dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), cancellationToken:cancellationToken, f)
     }
     
     
-    // Cancellation
-    
-    /**
-        Registers the continuation `f` with a parameter `error` which will be executed on the
-        given execution context when `self` has been cancelled.
+//    // Cancellation
+//    
+//    /**
+//        Registers the continuation `f` with a parameter `error` which will be executed on the
+//        given execution context when `self` has been cancelled.
+//
+//        Self will transition to the `Cancelled` state only
+//        1. if it has an associated cancellation token which has been cancelled
+//        2. if it is still pending and
+//        3. if it has no continuations or all continuations have been cancelled.
+//        The continuation will be called with a copy of `self`'s error.
+//        Retains `self` until it is completed.
+//
+//        - parameter executor: The execution context where the closure f will be executed.
+//        - parameter f: A closure taking an error as parameter.
+//    */
+//    internal final func onCancel(on executor: ExecutionContext, _ f: ErrorType -> ())-> () {
+//        onComplete(on: SynchronousCurrent()) { result in
+//            switch result {
+//            case .Failure(let error) where error is CancellationError:
+//                if (error is CancellationError) {
+//                    executor.execute() {
+//                        f(error)
+//                    }
+//                }
+//            default:break
+//            }
+//        }
+//    }
 
-        Self will transition to the `Cancelled` state only
-        1. if it has an associated cancellation token which has been cancelled
-        2. if it is still pending and
-        3. if it has no continuations or all continuations have been cancelled.
-        The continuation will be called with a copy of `self`'s error.
-        Retains `self` until it is completed.
-
-        - parameter executor: The execution context where the closure f will be executed.
-        - parameter f: A closure taking an error as parameter.
-    */
-    internal final func onCancel(on executor: ExecutionContext, _ f: NSError -> ())-> () {
-        onComplete(on: SynchronousCurrent()) { result in
-            switch result {
-            case .Failure(let error) where error is CancellationError:
-                if (error is CancellationError) {
-                    executor.execute() {
-                        f(error)
-                    }
-                }
-            default:break
-            }
-        }
-    }
-
-    /**
-        Registers the continuation `f` with a parameter `error` which will be executed on a
-        private execution context when `self` has been cancelled. 
-
-        Self will transition to the `Cancelled` state only
-        1. if it has an associated cancellation token which has been cancelled
-        1. if it is still pending and
-        1. if it has no continuations or all continuations have been cancelled.
-        The continuation will be called with a copy of `self`'s error.
-        Retains `self` until it is completed.
-
-        - parameter f: A closure taking an error as parameter.
-    */
-    internal final func onCancel(f: NSError -> ())-> () {
-        onCancel(on: dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), f)
-    }
+//    /**
+//        Registers the continuation `f` with a parameter `error` which will be executed on a
+//        private execution context when `self` has been cancelled. 
+//
+//        Self will transition to the `Cancelled` state only
+//        1. if it has an associated cancellation token which has been cancelled
+//        1. if it is still pending and
+//        1. if it has no continuations or all continuations have been cancelled.
+//        The continuation will be called with a copy of `self`'s error.
+//        Retains `self` until it is completed.
+//
+//        - parameter f: A closure taking an error as parameter.
+//    */
+//    internal final func onCancel(f: ErrorType -> ())-> () {
+//        onCancel(on: dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), f)
+//    }
 
     
     
@@ -661,7 +649,7 @@ public class Future<T>  {
             if let strongReturnedFuture = returnedFuture {
                 switch result {
                 case .Success(let value):
-                    executor.execute() {
+                    executor.execute() { [value] in
                         strongReturnedFuture.resolve(f(value))
                     }
                 case .Failure(let error):
@@ -694,7 +682,7 @@ public class Future<T>  {
             if let strongReturnedFuture = returnedFuture {
                 switch result {
                 case .Success(let value):
-                    executor.execute() {
+                    executor.execute() { [value] in
                         strongReturnedFuture.resolve(f(value))
                     }
                 case .Failure(let error):
@@ -710,7 +698,7 @@ public class Future<T>  {
     
     /**
         Registers a continuation with a success handler `onSuccess` which takes a value
-        of type `T` and an error handler `onError` which takes an error of type `NSError`
+        of type `T` and an error handler `onError` which takes an error of type `ErrorType`
         Both handlers return a result of type `Result<R>`.
 
         If `self` has been fulfilled with a value the success handler `onSuccess` will be executed
@@ -727,7 +715,7 @@ public class Future<T>  {
     */
     public final func then<R>(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil,
             onSuccess: T -> Result<R>,
-            onError: NSError -> Result<R>)
+            onError: ErrorType -> Result<R>)
     -> Future<R>
     {
         let returnedFuture = Future<R>(resolver: self)
@@ -785,7 +773,7 @@ public class Future<T>  {
             if let strongReturnedFuture = returnedFuture {
                 switch result {
                 case .Success(let value):
-                    executor.execute() {
+                    executor.execute() { [value] in
                         strongReturnedFuture.resolve(Result(f(value)))
                     }
                 case .Failure(let error):
@@ -798,7 +786,7 @@ public class Future<T>  {
 
     /**
         Registers the continuation `f` which takes a value of type `T` and returns
-        an error of type `NSError`.
+        an error of type `ErrorType`.
 
         If `self` has been fulfilled with a value the continuation `f` will be executed
         on the given execution context with a copy of the value. The returned future (if it
@@ -811,13 +799,13 @@ public class Future<T>  {
         - parameter f: A closure defining the continuation.
         - returns: A future.
     */
-    public final func then(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: T -> NSError) -> Future<T> {
+    public final func then(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: T -> ErrorType) -> Future<T> {
         let returnedFuture = Future<T>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
                 case .Success(let value):
-                    executor.execute() {
+                    executor.execute() { [value] in
                         strongReturnedFuture.resolve(Result(f(value)))
                     }
                 case .Failure(let error):
@@ -903,7 +891,7 @@ public class Future<T>  {
 
     /**
         Registers the continuation `f` which takes a value of type `T` and returns
-        an error of type `NSError`.
+        an error of type `ErrorType`.
 
         If `self` has been fulfilled with a value the continuation `f` will be executed
         on a private execution context with a copy of the value. The returned future (if it
@@ -916,7 +904,7 @@ public class Future<T>  {
         - parameter f: A closure defining the continuation.
         - returns: A future.
     */
-    public final func then(cancellationToken: CancellationTokenProtocol? = nil, _ f: T -> NSError) -> Future<T> {
+    public final func then(cancellationToken: CancellationTokenProtocol? = nil, _ f: T -> ErrorType) -> Future<T> {
         return then(on:dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), cancellationToken: cancellationToken, f)
     }
 
@@ -965,7 +953,7 @@ public class Future<T>  {
     
     
     /**
-        Registers the continuation `f` which takes an error of type `NSError`.
+        Registers the continuation `f` which takes an error of type `ErrorType`.
 
         If `self` has been rejected with an error the continuation `f` will be executed
         on the given execution context with this error.
@@ -974,15 +962,15 @@ public class Future<T>  {
         - parameter on: An asynchronous execution context.
         - parameter f: A closure defining the continuation.
     */
-    public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> ()) -> () {
+    public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> ()) -> () {
         onFailure(on: executor, cancellationToken: cancellationToken) {
             f($0)
         }
     }
 
 //   /**
-//      Registers the continuation `f` which takes an error of type `NSError` and returns
-//      a value of type `U` (either a value of type T, a Result<T>, a Future<T> or an NSError).
+//      Registers the continuation `f` which takes an error of type `ErrorType` and returns
+//      a value of type `U` (either a value of type T, a Result<T>, a Future<T> or an ErrorType).
 //
 //      If `self` has been rejected with an error the continuation `f` will be executed
 //      on the given execution context with this error. The returned future (if it still
@@ -995,7 +983,7 @@ public class Future<T>  {
 //      :param: f A closure defining the continuation.
 //      :returns: A future.
 //    */
-//    public final func catch<U>(on executor: ExecutionContext, _ f: NSError -> U) -> Future<T> {
+//    public final func catch<U>(on executor: ExecutionContext, _ f: ErrorType -> U) -> Future<T> {
 //        let returnedFuture = Future<T>()
 //        onComplete(executor) { [weak returnedFuture] future -> () in
 //            switch future._result! {
@@ -1010,7 +998,7 @@ public class Future<T>  {
     
     
     /**
-        Registers the continuation `f` which takes an error of type `NSError` and returns
+        Registers the continuation `f` which takes an error of type `ErrorType` and returns
         a value of type `T`.
 
         If `self` has been rejected with an error the continuation `f` will be executed
@@ -1024,7 +1012,7 @@ public class Future<T>  {
         - parameter f: A closure defining the continuation.
         - returns: A future.
     */
-    public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> T) -> Future<T> {
+    public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> T) -> Future<T> {
         let returnedFuture = Future<T>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result -> () in
             if let strongReturnedFuture = returnedFuture {
@@ -1042,7 +1030,7 @@ public class Future<T>  {
     }
     
     /**
-        Registers the continuation `f` which takes an error of type `NSError` and returns
+        Registers the continuation `f` which takes an error of type `ErrorType` and returns
         a result of type `Result<T>`.
 
         If `self` has been rejected with an error the continuation `f` will be executed
@@ -1056,7 +1044,7 @@ public class Future<T>  {
         - parameter f: A closure defining the continuation.
         - returns: A future.
     */
-    public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> Result<T>) -> Future<T> {
+    public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> Result<T>) -> Future<T> {
         let returnedFuture = Future<T>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
@@ -1074,8 +1062,8 @@ public class Future<T>  {
     }
     
     /**
-        Registers the continuation `f` which takes an error of type `NSError` and returns
-        an error type `NSError`.
+        Registers the continuation `f` which takes an error of type `ErrorType` and returns
+        an error type `ErrorType`.
 
         If `self` has been rejected with an error the continuation `f` will be executed
         on the given execution context with this error. The returned future (if it still
@@ -1088,7 +1076,7 @@ public class Future<T>  {
         - parameter f: A closure defining the continuation.
         - returns: A future.
     */
-    public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> NSError) -> Future<T> {
+    public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> ErrorType) -> Future<T> {
         let returnedFuture = Future<T>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
@@ -1106,7 +1094,7 @@ public class Future<T>  {
     }
     
     /**
-        Registers the continuation `f` which takes an error of type `NSError` and returns
+        Registers the continuation `f` which takes an error of type `ErrorType` and returns
         a defered value by means of a future of type `future<T>`.
 
         If `self` has been rejected with an error the continuation `f` will be executed
@@ -1120,7 +1108,7 @@ public class Future<T>  {
         - parameter f: A closure defining the continuation.
         - returns: A future.
     */
-    public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> Future<T>) -> Future<T> {
+    public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> Future<T>) -> Future<T> {
         let returnedFuture = Future<T>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
@@ -1138,7 +1126,7 @@ public class Future<T>  {
     }
     
     /**
-        Registers the continuation `f` which takes an error of type `NSError`.
+        Registers the continuation `f` which takes an error of type `ErrorType`.
 
         If `self` has been rejected with an error the continuation `f` will be executed
         on a private execution context with this error.
@@ -1147,13 +1135,13 @@ public class Future<T>  {
         - parameter on: An asynchronous execution context.
         - parameter f: A closure defining the continuation.
     */
-    public final func `catch`(cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> ()) -> () {
+    public final func `catch`(cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> ()) -> () {
         `catch`(on: dispatch_get_global_queue(QOS_CLASS_DEFAULT,0), cancellationToken:cancellationToken, f)
     }
 
     
     /**
-        Registers the continuation `f` which takes an error of type `NSError` and returns
+        Registers the continuation `f` which takes an error of type `ErrorType` and returns
         a value of type `T`.
 
         If `self` has been rejected with an error the continuation `f` will be executed
@@ -1167,13 +1155,13 @@ public class Future<T>  {
         - parameter f: A closure defining the continuation.
         - returns: A future.
     */
-    public final func `catch`(cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> T) -> Future {
+    public final func `catch`(cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> T) -> Future {
         return `catch`(on: dispatch_get_global_queue(QOS_CLASS_DEFAULT,0), cancellationToken: cancellationToken, f)
     }
 
     
     /**
-        Registers the continuation `f` which takes an error of type `NSError` and returns
+        Registers the continuation `f` which takes an error of type `ErrorType` and returns
         a value of type `T`.
 
         If `self` has been rejected with an error the continuation `f` will be executed
@@ -1187,13 +1175,13 @@ public class Future<T>  {
         - parameter f: A closure defining the continuation.
         - returns: A future.
     */
-    public final func `catch`(cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> Result<T>) -> Future {
+    public final func `catch`(cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> Result<T>) -> Future {
         return `catch`(on: dispatch_get_global_queue(QOS_CLASS_DEFAULT,0), cancellationToken:cancellationToken, f)
     }
     
     
     /**
-        Registers the continuation `f` which takes an error of type `NSError` and returns
+        Registers the continuation `f` which takes an error of type `ErrorType` and returns
         a value of type `T`.
 
         If `self` has been rejected with an error the continuation `f` will be executed
@@ -1207,12 +1195,12 @@ public class Future<T>  {
         - parameter f: A closure defining the continuation.
         - returns: A future.
     */
-    public final func `catch`(cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> NSError) -> Future<T> {
+    public final func `catch`(cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> ErrorType) -> Future<T> {
         return `catch`(on: dispatch_get_global_queue(QOS_CLASS_DEFAULT,0), cancellationToken: cancellationToken, f)
     }
 
     /**
-        Registers the continuation `f` which takes an error of type `NSError` and returns
+        Registers the continuation `f` which takes an error of type `ErrorType` and returns
         a value of type `T`.
 
         If `self` has been rejected with an error the continuation `f` will be executed
@@ -1226,7 +1214,7 @@ public class Future<T>  {
         - parameter f: A closure defining the continuation.
         - returns: A future.
     */
-    public final func `catch`(cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> Future<T>) -> Future<T> {
+    public final func `catch`(cancellationToken: CancellationTokenProtocol? = nil, _ f: ErrorType -> Future<T>) -> Future<T> {
         return `catch`(on: dispatch_get_global_queue(QOS_CLASS_DEFAULT,0), cancellationToken:cancellationToken, f)
     }
     
@@ -1254,7 +1242,7 @@ public class Future<T>  {
         }
         return returnedFuture
     }
-    public final func finally(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: () -> NSError) -> Future<T> {
+    public final func finally(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: () -> ErrorType) -> Future<T> {
         let returnedFuture = Future<T>(resolver: self)
         onComplete(on: executor, cancellationToken: cancellationToken) { [weak returnedFuture] _  in
             let r = f()
@@ -1280,7 +1268,7 @@ public class Future<T>  {
     public final func finally<R>(cancellationToken: CancellationTokenProtocol? = nil, _ f: () -> Result<R>) -> Future<R> {
         return finally(on:dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), cancellationToken: cancellationToken, f)
     }
-    public final func finally(cancellationToken: CancellationTokenProtocol? = nil, _ f: () -> NSError) -> Future {
+    public final func finally(cancellationToken: CancellationTokenProtocol? = nil, _ f: () -> ErrorType) -> Future {
         return finally(on:dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), cancellationToken: cancellationToken, f)
     }
     public final func finally<R>(cancellationToken: CancellationTokenProtocol? = nil, _ f: () -> Future<R>) -> Future<R> {
@@ -1405,7 +1393,7 @@ extension Future : CustomDebugStringConvertible {
     
     public var debugDescription: String {
         var s:String = ""
-        sync.read_sync_safe {
+        sync.read_sync_safe { /*[unowned(unsafe) self] in */
             var stateString: String
             if let res = self._result {
                 switch res {
