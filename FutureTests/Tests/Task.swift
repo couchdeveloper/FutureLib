@@ -34,7 +34,7 @@ private struct Sync {
     private static var queue_ID_value = "value"
     
     /// Returns true if the current execution context is the sync_queue
-    static func on_sync_queue() -> Bool {
+    static func is_synchronized() -> Bool {
         //return global_on_sync_queue()
         return dispatch_get_specific(&Sync.queue_ID_key) == &Sync.queue_ID_value
     }
@@ -46,7 +46,7 @@ private struct Sync {
         }()
     
     func read_sync_safe(closure: ()->()) -> () {
-        if Sync.on_sync_queue() {
+        if Sync.is_synchronized() {
             closure()
         }
         else {

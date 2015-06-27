@@ -19,12 +19,13 @@ public enum ResultError : Int, ErrorType {
 
 
 /**
-    The generic type `Result` represents the result of some computation which
+    The generic type `Result` represents the result of a computation which
     either yields a value of type `T` or an error of type `NSError`.
 */
 public enum Result<T>{
     
     typealias ValueType = T
+    typealias `ErrorType` = NSError
     
     case Success(ValueType)
     case Failure(NSError)
@@ -101,6 +102,10 @@ public enum Result<T>{
     }
     
     
+    /**
+        Returns the Success value of self if it succeeded. Otherwise throws
+        the Failure value.
+    */
     public func value() throws -> T {
         switch self {
             case .Success(let value): return value
@@ -110,7 +115,11 @@ public enum Result<T>{
     }
 }
 
- extension Result : CustomStringConvertible, CustomDebugStringConvertible {
+
+/**
+    Implements the CustomStringConvertible and CustomDebugStringConvertible protocol.
+*/
+extension Result : CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         switch self {
             case .Success(let s): return "Success with \(s)"
@@ -123,21 +132,23 @@ public enum Result<T>{
 }
 
 
-
-//public func ==<T:Equatable>(lhs: Result<T>, rhs: Result<T>) -> Bool {
-//    switch lhs {
-//    case .Success(let v_left):
-//        switch rhs {
-//        case .Success(let v_right): return v_left[0] == v_right[0]
-//        case .Failure: return false
-//        }
-//    case .Failure(let e_left):
-//        switch rhs {
-//        case .Success: return false
-//        case .Failure(let e_right): return e_left.isEqual(e_right)
-//        }
-//    }
-//}
+/**
+    Implements operator== for Result<T> whose ValueType conforms to Equatable.
+*/
+public func ==<T:Equatable>(lhs: Result<T>, rhs: Result<T>) -> Bool {
+    switch lhs {
+    case .Success(let v_left):
+        switch rhs {
+        case .Success(let v_right): return v_left == v_right
+        case .Failure: return false
+        }
+    case .Failure(let e_left):
+        switch rhs {
+        case .Success: return false
+        case .Failure(let e_right): return e_left.isEqual(e_right)
+        }
+    }
+}
 
 
 

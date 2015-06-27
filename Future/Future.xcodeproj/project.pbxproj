@@ -8,12 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		A1151B551B305C9D0029E3EF /* FutureFreeFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1151B541B305C9D0029E3EF /* FutureFreeFunc.swift */; };
+		A12422471B3D72E9003366E3 /* Cancelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422411B3D72E9003366E3 /* Cancelable.swift */; };
+		A12422481B3D72E9003366E3 /* Cancelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422411B3D72E9003366E3 /* Cancelable.swift */; };
+		A12422491B3D72E9003366E3 /* CancellationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422421B3D72E9003366E3 /* CancellationError.swift */; };
+		A124224A1B3D72E9003366E3 /* CancellationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422421B3D72E9003366E3 /* CancellationError.swift */; };
+		A124224B1B3D72E9003366E3 /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422431B3D72E9003366E3 /* CancellationRequest.swift */; };
+		A124224C1B3D72E9003366E3 /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422431B3D72E9003366E3 /* CancellationRequest.swift */; };
+		A124224D1B3D72E9003366E3 /* CancellationRequestProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422441B3D72E9003366E3 /* CancellationRequestProtocol.swift */; };
+		A124224E1B3D72E9003366E3 /* CancellationRequestProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422441B3D72E9003366E3 /* CancellationRequestProtocol.swift */; };
+		A124224F1B3D72E9003366E3 /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422451B3D72E9003366E3 /* CancellationToken.swift */; };
+		A12422501B3D72E9003366E3 /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422451B3D72E9003366E3 /* CancellationToken.swift */; };
+		A12422511B3D72E9003366E3 /* CancellationTokenProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422461B3D72E9003366E3 /* CancellationTokenProtocol.swift */; };
+		A12422521B3D72E9003366E3 /* CancellationTokenProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12422461B3D72E9003366E3 /* CancellationTokenProtocol.swift */; };
 		A14815211B29FBEE0010B24C /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7C1A7B6B9F000B0A35 /* Future.swift */; };
-		A14815221B29FC290010B24C /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EFD6711AC9C5ED0052C13E /* CancellationRequest.swift */; };
 		A14815231B29FCBE0010B24C /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7C1A7B6B9F000B0A35 /* Future.swift */; };
 		A14815241B29FCC30010B24C /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7E1A7B6B9F000B0A35 /* Promise.swift */; };
 		A14815251B29FCC40010B24C /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7E1A7B6B9F000B0A35 /* Promise.swift */; };
-		A14815261B29FCC70010B24C /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EFD6711AC9C5ED0052C13E /* CancellationRequest.swift */; };
 		A14E4F281A7B67FC000B0A35 /* Future.h in Headers */ = {isa = PBXBuildFile; fileRef = A14E4F271A7B67FC000B0A35 /* Future.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A14E4F561A7B6A82000B0A35 /* Future.h in Headers */ = {isa = PBXBuildFile; fileRef = A14E4F551A7B6A82000B0A35 /* Future.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A192A88E1B0146E100AF1EE9 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E4F7D1A7B6B9F000B0A35 /* Logger.swift */; };
@@ -24,16 +34,23 @@
 		A192A8991B0146E200AF1EE9 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10D9EDA1AD01F72001FF909 /* Synchronize.swift */; };
 		A1959C961B014A0400D3EC53 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1959C951B014A0400D3EC53 /* Result.swift */; };
 		A1959C971B014A0400D3EC53 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1959C951B014A0400D3EC53 /* Result.swift */; };
+		A1C66D841B3D92500026467A /* FutureFreeFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1151B541B305C9D0029E3EF /* FutureFreeFunc.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionContext.swift; sourceTree = "<group>"; };
 		A10D9EDA1AD01F72001FF909 /* Synchronize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronize.swift; sourceTree = "<group>"; };
 		A1151B541B305C9D0029E3EF /* FutureFreeFunc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureFreeFunc.swift; sourceTree = "<group>"; };
+		A12422411B3D72E9003366E3 /* Cancelable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cancelable.swift; sourceTree = "<group>"; };
+		A12422421B3D72E9003366E3 /* CancellationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationError.swift; sourceTree = "<group>"; };
+		A12422431B3D72E9003366E3 /* CancellationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationRequest.swift; sourceTree = "<group>"; };
+		A12422441B3D72E9003366E3 /* CancellationRequestProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationRequestProtocol.swift; sourceTree = "<group>"; };
+		A12422451B3D72E9003366E3 /* CancellationToken.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationToken.swift; sourceTree = "<group>"; };
+		A12422461B3D72E9003366E3 /* CancellationTokenProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationTokenProtocol.swift; sourceTree = "<group>"; };
 		A14E4F221A7B67FC000B0A35 /* FutureLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FutureLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A14E4F261A7B67FC000B0A35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A14E4F271A7B67FC000B0A35 /* Future.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Future.h; sourceTree = "<group>"; };
-		A14E4F511A7B6A82000B0A35 /* Future.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Future.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A14E4F511A7B6A82000B0A35 /* FutureLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FutureLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A14E4F541A7B6A82000B0A35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A14E4F551A7B6A82000B0A35 /* Future.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Future.h; sourceTree = "<group>"; };
 		A14E4F7C1A7B6B9F000B0A35 /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
@@ -41,7 +58,6 @@
 		A14E4F7E1A7B6B9F000B0A35 /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		A1959C951B014A0400D3EC53 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		A1959CA01B0284E900D3EC53 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
-		A1EFD6711AC9C5ED0052C13E /* CancellationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +78,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A12422401B3D72E9003366E3 /* Cancellation */ = {
+			isa = PBXGroup;
+			children = (
+				A12422411B3D72E9003366E3 /* Cancelable.swift */,
+				A12422421B3D72E9003366E3 /* CancellationError.swift */,
+				A12422441B3D72E9003366E3 /* CancellationRequestProtocol.swift */,
+				A12422461B3D72E9003366E3 /* CancellationTokenProtocol.swift */,
+				A12422431B3D72E9003366E3 /* CancellationRequest.swift */,
+				A12422451B3D72E9003366E3 /* CancellationToken.swift */,
+			);
+			path = Cancellation;
+			sourceTree = "<group>";
+		};
 		A14E4F0F1A78C06A000B0A35 = {
 			isa = PBXGroup;
 			children = (
@@ -77,7 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				A14E4F221A7B67FC000B0A35 /* FutureLib.framework */,
-				A14E4F511A7B6A82000B0A35 /* Future.framework */,
+				A14E4F511A7B6A82000B0A35 /* FutureLib.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -119,14 +148,14 @@
 		A14E4F7B1A7B6B9F000B0A35 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				A12422401B3D72E9003366E3 /* Cancellation */,
+				A14E4F7C1A7B6B9F000B0A35 /* Future.swift */,
+				A10D9EDA1AD01F72001FF909 /* Synchronize.swift */,
 				A1959C951B014A0400D3EC53 /* Result.swift */,
 				A14E4F7D1A7B6B9F000B0A35 /* Logger.swift */,
-				A14E4F7C1A7B6B9F000B0A35 /* Future.swift */,
 				A1151B541B305C9D0029E3EF /* FutureFreeFunc.swift */,
 				A14E4F7E1A7B6B9F000B0A35 /* Promise.swift */,
-				A1EFD6711AC9C5ED0052C13E /* CancellationRequest.swift */,
 				A10D9ED71AD01EF7001FF909 /* ExecutionContext.swift */,
-				A10D9EDA1AD01F72001FF909 /* Synchronize.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -186,7 +215,7 @@
 			);
 			name = "Future-iOS";
 			productName = "Future-iOS";
-			productReference = A14E4F511A7B6A82000B0A35 /* Future.framework */;
+			productReference = A14E4F511A7B6A82000B0A35 /* FutureLib.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -248,12 +277,17 @@
 			files = (
 				A192A8931B0146E100AF1EE9 /* Synchronize.swift in Sources */,
 				A192A88E1B0146E100AF1EE9 /* Logger.swift in Sources */,
+				A124224D1B3D72E9003366E3 /* CancellationRequestProtocol.swift in Sources */,
 				A14815241B29FCC30010B24C /* Promise.swift in Sources */,
 				A1959C961B014A0400D3EC53 /* Result.swift in Sources */,
 				A14815211B29FBEE0010B24C /* Future.swift in Sources */,
-				A14815221B29FC290010B24C /* CancellationRequest.swift in Sources */,
+				A124224B1B3D72E9003366E3 /* CancellationRequest.swift in Sources */,
 				A192A8921B0146E100AF1EE9 /* ExecutionContext.swift in Sources */,
 				A1151B551B305C9D0029E3EF /* FutureFreeFunc.swift in Sources */,
+				A124224F1B3D72E9003366E3 /* CancellationToken.swift in Sources */,
+				A12422471B3D72E9003366E3 /* Cancelable.swift in Sources */,
+				A12422511B3D72E9003366E3 /* CancellationTokenProtocol.swift in Sources */,
+				A12422491B3D72E9003366E3 /* CancellationError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,10 +295,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A14815261B29FCC70010B24C /* CancellationRequest.swift in Sources */,
+				A12422501B3D72E9003366E3 /* CancellationToken.swift in Sources */,
+				A124224C1B3D72E9003366E3 /* CancellationRequest.swift in Sources */,
+				A1C66D841B3D92500026467A /* FutureFreeFunc.swift in Sources */,
+				A124224A1B3D72E9003366E3 /* CancellationError.swift in Sources */,
+				A12422481B3D72E9003366E3 /* Cancelable.swift in Sources */,
 				A192A8991B0146E200AF1EE9 /* Synchronize.swift in Sources */,
+				A12422521B3D72E9003366E3 /* CancellationTokenProtocol.swift in Sources */,
 				A192A8941B0146E200AF1EE9 /* Logger.swift in Sources */,
 				A1959C971B014A0400D3EC53 /* Result.swift in Sources */,
+				A124224E1B3D72E9003366E3 /* CancellationRequestProtocol.swift in Sources */,
 				A14815231B29FCBE0010B24C /* Future.swift in Sources */,
 				A192A8981B0146E200AF1EE9 /* ExecutionContext.swift in Sources */,
 				A14815251B29FCC40010B24C /* Promise.swift in Sources */,
@@ -280,6 +320,7 @@
 				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "-DDEBUG";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Debug;
 		};
@@ -287,6 +328,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				OTHER_SWIFT_FLAGS = "-DNDEBUG";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
@@ -441,7 +483,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = Future;
+				PRODUCT_NAME = FutureLib;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -490,7 +532,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = Future;
+				PRODUCT_NAME = FutureLib;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";

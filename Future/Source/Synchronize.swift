@@ -14,21 +14,34 @@ import Foundation
 private var queue_ID_key = 0
 
 
-
+/**
+    A Synchronization object which uses a concurrent dispatch_queue to enforce 
+    "Synchronize-With" and "Happens-Before" relationship.
+*/
 public struct Synchronize {
     
     public let sync_queue: dispatch_queue_t
     
+    /**
+        Initialize a Synchronize struct with a given name.
+    
+        - parameter name: A name which should be unique.
+    */
     init(name: String) {
         sync_queue = dispatch_queue_create(name, DISPATCH_QUEUE_CONCURRENT)!
-        let ptr = UnsafeMutablePointer<Void>(Unmanaged<dispatch_queue_t>.passUnretained(sync_queue).toOpaque())
-        dispatch_queue_set_specific(sync_queue, &queue_ID_key, ptr, nil)
+        // Use the pointer value to sync_queue as the context in order to have
+        // a unique context:
+        let context = UnsafeMutablePointer<Void>(Unmanaged<dispatch_queue_t>.passUnretained(sync_queue).toOpaque())
+        dispatch_queue_set_specific(sync_queue, &queue_ID_key, context, nil)
     }
-
-    /// Returns true if the current execution context is the sync_queue
-    public func on_sync_queue() -> Bool {
-        let ptr = UnsafeMutablePointer<Void>(Unmanaged<dispatch_queue_t>.passUnretained(sync_queue).toOpaque())
-        return dispatch_get_specific(&queue_ID_key) == ptr
+    
+    
+    /**
+        Returns true if the current thread is synchronized with the sync_queue.
+    */
+    public func is_synchronized() -> Bool {
+        let context = UnsafeMutablePointer<Void>(Unmanaged<dispatch_queue_t>.passUnretained(sync_queue).toOpaque())
+        return dispatch_get_specific(&queue_ID_key) == context
     }
 
 
@@ -48,7 +61,7 @@ public struct Synchronize {
     /// function directly calls the closure. Otherwise it dispatches it on the synchronization
     /// context.
     public func read_sync_safe(f: ()->()) -> () {
-        if on_sync_queue() {
+        if is_synchronized() {
             f()
         }
         else {

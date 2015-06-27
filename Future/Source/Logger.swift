@@ -26,7 +26,14 @@ internal func dateTimeString(t:time_t, usec: suseconds_t, format: String) -> Str
 
 
 
-private class Event<T> {
+private protocol EventType {
+    typealias ValueType
+}
+
+
+private class Event<T> : EventType {
+    
+    typealias ValueType = T
     
     init(category: StaticString, severity: Logger.Severity, message: T, function: StaticString = "", file: StaticString = "" , line: UWord = 0) {
         gettimeofday(&_timeStamp, nil)
@@ -134,48 +141,48 @@ public class Logger {
         return s
     }
     
-    private func writeln<T>(event: Event<T>) {
+    private func writeEvent<T>(event: Event<T>) {
         let gcd_queue = event._gcd_queue == nil ? "" : event._gcd_queue!
         _executionContext.execute {
             print("\(self.dateFormat(timeval: event._timeStamp)) [\(event._threadId)][\(gcd_queue)] \(event._function): \(event._message)")
         }
     }
     
-    public func writeln<T>(object: T) {
-        writeln(Event(category: _category, severity: Severity.None, message: object))
+    public func writeln<T>(@autoclosure object: ()-> T) {
+        writeEvent(Event(category: _category, severity: Severity.None, message: object()))
     }
     
 
     
     
     
-    public func Error<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
+    public func Error<T>(@autoclosure object: ()-> T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
         if (self.logLevel.rawValue > Severity.None.rawValue) {
-            writeln(Event(category: self._category, severity: Severity.Error, message: object, function: function, file: file, line: line))
+            writeEvent(Event(category: self._category, severity: Severity.Error, message: object(), function: function, file: file, line: line))
         }
     }
 
-    public func Warning<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
+    public func Warning<T>(@autoclosure object: ()-> T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
         if (self.logLevel.rawValue > Severity.Error.rawValue) {
-            writeln(Event(category: self._category, severity: Severity.Warning, message: object, function: function, file: file, line: line))
+            writeEvent(Event(category: self._category, severity: Severity.Warning, message: object(), function: function, file: file, line: line))
         }
     }
 
-    public func Info<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
+    public func Info<T>(@autoclosure object: ()-> T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
         if (self.logLevel.rawValue > Severity.Warning.rawValue) {
-            writeln(Event(category: self._category, severity: Severity.Info, message: object, function: function, file: file, line: line))
+            writeEvent(Event(category: self._category, severity: Severity.Info, message: object(), function: function, file: file, line: line))
         }
     }
  
-    public func Debug<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
+    public func Debug<T>(@autoclosure object: ()-> T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
         if (self.logLevel.rawValue > Severity.Info.rawValue) {
-            writeln(Event(category: self._category, severity: Severity.Debug, message: object, function: function, file: file, line: line))
+            writeEvent(Event(category: self._category, severity: Severity.Debug, message: object(), function: function, file: file, line: line))
         }
     }
 
-    public func Trace<T>(object: T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
+    public func Trace<T>(@autoclosure object: ()-> T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UWord = __LINE__) {
         if (self.logLevel.rawValue > Severity.Debug.rawValue) {
-            writeln(Event(category: self._category, severity: Severity.Trace, message: object, function: function, file: file, line: line))
+            writeEvent(Event(category: self._category, severity: Severity.Trace, message: object(), function: function, file: file, line: line))
         }
     }
     

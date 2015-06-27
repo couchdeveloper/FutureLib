@@ -12,7 +12,7 @@ import FutureLib
 
 /// Initialize and configure the Logger
 let Log = Logger(category: "Test",
-        verbosity: Logger.Severity.Trace,
+        verbosity: Logger.Severity.Error,
         executionContext: SyncExecutionContext(queue: dispatch_queue_create("logger_sync_queue", nil)!))
 
 
@@ -205,6 +205,66 @@ class FutureTests: XCTestCase {
         XCTAssertNil(weakRef)
     }
     
+    func testFutureShouldDeallocateIfThereAreNoObservers2() {
+        weak var weakRef: Future<Int>?
+        func t() {
+            let cancellationRequest = CancellationRequest()
+            let future = Promise<Int>().future!
+            future.then(cancellationRequest.token) { i -> () in
+                return
+            }
+            weakRef = future
+            cancellationRequest.cancel()
+            usleep(1000) // let the async cancellation take effect
+        }
+        t()
+        XCTAssertNil(weakRef)
+    }
+    
+    func testFutureShouldDeallocateIfThereAreNoObservers3() {
+        weak var weakRef: Future<Int>?
+        func t() {
+            let cancellationRequest = CancellationRequest()
+            let future = Promise<Int>().future!
+            future.then(cancellationRequest.token) { i -> () in
+                return
+            }
+            future.then(cancellationRequest.token) { i -> () in
+                return
+            }
+            weakRef = future
+            cancellationRequest.cancel()
+            usleep(1000) // let the async cancellation take effect
+        }
+        t()
+        XCTAssertNil(weakRef)
+    }
+
+    func testFutureShouldDeallocateIfThereAreNoObservers4() {
+        weak var weakRef: Future<Int>?
+        func t() {
+            let cancellationRequest = CancellationRequest()
+            let future = Promise<Int>().future!
+            weakRef = future
+            future.then(cancellationRequest.token) { i -> () in
+                return
+            }
+            future.then(cancellationRequest.token) { i -> () in
+                return
+            }
+            cancellationRequest.cancel()
+            future.then(cancellationRequest.token) { i -> () in
+                return
+            }
+            
+            usleep(1000) // let the async cancellation take effect
+        }
+        t()
+        XCTAssertNil(weakRef)
+    }
+    
+
+    
     func testFutureShouldNotDeallocateIfThereIsOneObserver() {
         weak var weakRef: Future<Int>?
         let promise = Promise<Int>()
@@ -323,108 +383,10 @@ class FutureTests: XCTestCase {
     
     
     
-    func testCancellation1() {
-        let promise = Promise<String>()
-        let future = promise.future!
-        
-        let cancellationRequest1 = CancellationRequest()
-        let cancellationRequest2 = CancellationRequest()
-        let expect = self.expectationWithDescription("future should be fulfilled")
-        future.onComplete { result -> () in
-            expect.fulfill()
-        }
-        future.onComplete(cancellationRequest1.token) { result -> () in
-            expect.fulfill()
-        }
-        future.onComplete(cancellationRequest2.token) { result -> () in
-            expect.fulfill()
-        }
-        
-        
-        promise.fulfill("OK")        
-        waitForExpectationsWithTimeout(1, handler: nil)
-    }
     
     
-    func testCancellation2() {
-        let promise = Promise<String>()
-        let future = promise.future!
-        
-        let cancellationRequest1 = CancellationRequest()
-        let cancellationRequest2 = CancellationRequest()
-        let expect = self.expectationWithDescription("future should be fulfilled")
-        future.onComplete { result -> () in
-            expect.fulfill()
-        }
-        future.onComplete(cancellationRequest1.token) { result -> () in
-            XCTFail("unexpected")
-        }
-        future.onComplete(cancellationRequest2.token) { result -> () in
-            expect.fulfill()
-        }
-        
-        cancellationRequest1.cancel()
-        promise.fulfill("OK")
-        waitForExpectationsWithTimeout(1, handler: nil)
-    }
     
     
-
-//    func testPerformanceOneContinuation() {
-//        self.measureBlock() {
-//            let sem = dispatch_semaphore_create(0)
-//            let promise = Promise<String>()
-//            let future = promise.future!
-//            future.then {
-//                str -> () in
-//                dispatch_semaphore_signal(sem)
-//                ()
-//            }
-//            promise.fulfill("OK")
-//            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
-//        }
-//    }
-    
-//    func testPerformanceTwoContinuations() {
-//        self.measureBlock() {
-//            let sem = dispatch_semaphore_create(0)
-//            let promise = Promise<String>()
-//            let future = promise.future!
-//            future.then { str -> Int in
-//                return 1
-//            }
-//            .then { str -> () in
-//                dispatch_semaphore_signal(sem); ()
-//            }
-//            
-//            promise.fulfill("OK")
-//            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
-//            //Log.Info("|")
-//        }
-//    }
-    
-//    func testPerformanceThreeContinuations() {
-//        self.measureBlock() {
-//            let sem = dispatch_semaphore_create(0)
-//            let promise = Promise<String>()
-//            let future = promise.future!
-//            future.then { str -> Int in
-//                return 1
-//            }
-//            .then { str -> Int in
-//                return 2
-//            }
-//            .then { str -> () in
-//                dispatch_semaphore_signal(sem); ()
-//            }
-//            
-//            promise.fulfill("OK")
-//            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
-//            //Log.Info("|")
-//        }
-//    }
-//
-
     // MARK: - Initial Invariants
 //    func testPromiseShouldInitiallyBeInPendingState()
 //    {

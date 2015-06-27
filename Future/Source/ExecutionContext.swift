@@ -10,8 +10,9 @@ import Foundation
 
 
 
-public protocol Asynchron {}
-public protocol Synchron {}
+public protocol AsynchronousTrait {}
+public protocol SynchronousTrait {}
+public protocol BarrierTrait {}
 
 /**
     An ExecutionContext is a thing that can execute closures either synchronous-
@@ -56,7 +57,7 @@ public protocol ExecutionContext {
 // MARK: - ExecutionContext Extension
 
 
-extension dispatch_queue_t : ExecutionContext, Asynchron {
+extension dispatch_queue_t : ExecutionContext, AsynchronousTrait {
     public func execute(f:()->()) -> () {
         dispatch_async(self, f)
     }
@@ -65,7 +66,7 @@ extension dispatch_queue_t : ExecutionContext, Asynchron {
 
 
 
-public struct AsyncExecutionContext : ExecutionContext, Asynchron {
+public struct AsyncExecutionContext : ExecutionContext, AsynchronousTrait {
     
     let _queue : dispatch_queue_t
 
@@ -79,7 +80,21 @@ public struct AsyncExecutionContext : ExecutionContext, Asynchron {
   
 }
 
-public struct SyncExecutionContext : ExecutionContext, Synchron {
+public struct BarrierAsyncExecutionContext : ExecutionContext, AsynchronousTrait, BarrierTrait {
+    
+    let _queue : dispatch_queue_t
+    
+    public init(queue: dispatch_queue_t) {
+        _queue = queue
+    }
+    
+    public func execute(f:()->()) -> () {
+        dispatch_barrier_async(_queue, f)
+    }
+    
+}
+
+public struct SyncExecutionContext : ExecutionContext, SynchronousTrait {
     
     let _queue : dispatch_queue_t
     
@@ -89,6 +104,20 @@ public struct SyncExecutionContext : ExecutionContext, Synchron {
     
     public func execute(f:()->()) -> () {
         dispatch_sync(_queue, f)
+    }
+    
+}
+
+public struct BarrierSyncExecutionContext : ExecutionContext, SynchronousTrait, BarrierTrait {
+    
+    let _queue : dispatch_queue_t
+    
+    public init(queue: dispatch_queue_t) {
+        _queue = queue
+    }
+    
+    public func execute(f:()->()) -> () {
+        dispatch_barrier_sync(_queue, f)
     }
     
 }

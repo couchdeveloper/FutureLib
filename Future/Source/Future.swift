@@ -9,7 +9,11 @@
 import Foundation
 
 /// Initialize and configure a Logger - mainly for debugging and testing
-public let Log = Logger(category: "Future", verbosity: Logger.Severity.Debug)
+#if DEBUG
+    private let Log = Logger(category: "Future", verbosity: Logger.Severity.Debug)
+#else
+    private let Log = Logger(category: "Future", verbosity: Logger.Severity.Error)
+#endif
 
 
 
@@ -30,7 +34,7 @@ public enum FutureError : ErrorType {
     _synchronously_ executes a given closures on the _current_ execution context.
     This class is used internally by FutureLib.
 */
-private struct SynchronousCurrent : ExecutionContext, Synchron {
+private struct SynchronousCurrent : ExecutionContext, SynchronousTrait {
     
     /**
         Synchronuosly executes the given closure `f` on its execution context.
@@ -102,10 +106,38 @@ extension Future : Resolver {
     /// Undo registering the given resolvable.
     final func unregister<T:Resolvable>(resolvable: T) -> () {
         sync.read_sync_safe() {
-            self._unregister()
+            self.unregister(DummyRegisterable())
         }
     }
 }
+
+
+
+private protocol Registerable { }
+
+private struct DummyRegisterable : Registerable {}
+
+private protocol CallbackHandler {
+    
+    mutating func resume()
+    
+    mutating func register(f: ()->()) -> Registerable
+    
+    mutating func unregister(registerable: Registerable)
+}
+
+
+
+private struct Callback : Registerable {
+    let _f : ()->()
+    init(_ f:()->()) {
+        _f = f
+    }
+    func execute() {
+        _f()
+    }
+}
+
 
 
 
@@ -117,7 +149,7 @@ private let sync = Synchronize(name: "Future.sync_queue")
 /**
     A generic class `Future` which represents an eventual result.
 */
-public class Future<T> {
+public class Future<T>  {
     
     public typealias ValueType = T
     
@@ -131,24 +163,24 @@ public class Future<T> {
     
     internal init(resolver: Resolver? = nil) {
         _resolver = resolver
-        Log.Debug("Future created with id: \(self.id).")
+        //Log.Debug("Future created with id: \(self.id).")
     }
     
     internal init(_ value:T, resolver: Resolver? = nil) {
         _resolver = resolver
         _result = Result<T>(value)
-        Log.Debug("Fulfilled future created with id: \(self.id) with value \(value).")
+        //Log.Debug("Fulfilled future created with id: \(self.id) with value \(value).")
     }
     
     internal init(_ error:NSError, resolver: Resolver? = nil) {
         _resolver = resolver
         _result = Result<T>(error)
-        Log.Debug("Rejected future created with id: \(self.id) with error \(error).")
+        //Log.Debug("Rejected future created with id: \(self.id) with error \(error).")
     }
     
     
     deinit {
-        Log.Debug("destroying \(self.debugDescription).")
+        //Log.Debug("destroying \(self.debugDescription).")
         if (self._result == nil && self._handler_queue != nil) {
             Log.Warning("unregistering continuatuations...")
             dispatch_resume(self._handler_queue!)
@@ -199,10 +231,10 @@ public class Future<T> {
 //            throw FutureError.NotCompleted
 //        }
 //    }
-
+    
     
     /**
-        If the future has been completed, returns its Result, ortherwise it 
+        If the future has been completed, returns its Result, ortherwise it
         returns `nil`.
     
         returns: An optional Result
@@ -232,7 +264,7 @@ public class Future<T> {
             if let _ = self._result  { // self already resolved
                 dispatch_semaphore_signal(sem)
             } else { // self still pending
-                self._register(nil) {
+                self.register(nil) {
                     dispatch_semaphore_signal(sem)
                 }
             }
@@ -253,13 +285,10 @@ public class Future<T> {
     
     // Completes `self` with the given result.
     private final func _resolve(result : Result<T>) {
-        assert(sync.on_sync_queue())
+        assert(sync.is_synchronized())
         if self._result == nil {
             self._result = result
-            if self._handler_queue != nil {
-                dispatch_resume(self._handler_queue!)
-                self._handler_queue = nil
-            }
+            resume()
         }
         else {
             // TODO: throw FutureError.AlreadyCompleted or fatalError ??
@@ -286,7 +315,7 @@ public class Future<T> {
     // Retains `other` until `self` remains pending.
     // Alias for bind (aka resolveWith)
     private final func _resolve(other: Future) {
-        assert(sync.on_sync_queue())
+        assert(sync.is_synchronized())
         self._resolver = other;
         // Note: unless Future is a protocol, we know that onComplete executes its
         // continuations on the Future class's sync_queue. So, we can use SynchronousCurrent()
@@ -299,24 +328,32 @@ public class Future<T> {
         }
     }
     
-    // Completes self with a cancelation error
-    private final func _cancel(error: NSError?) {
-        assert(sync.on_sync_queue())
-        if self._result == nil {
-            let err = (error != nil) ? CancellationError(underlyingError: error!) : CancellationError()
-            self._result = Result(err)
-            if self._handler_queue != nil {
-                dispatch_resume(self._handler_queue!)
-                self._handler_queue = nil
-            }
-        }
-        if let resolver = self._resolver {
-            resolver.unregister(self)
-            self._resolver = nil;
+//    // Completes self with a cancelation error
+//    private final func _cancel(error: NSError?) {
+//        assert(sync.is_synchronized())
+//        if self._result == nil {
+//            let err = (error != nil) ? CancellationError(underlyingError: error!) : CancellationError()
+//            self._result = Result(err)
+//            resume()
+//        }
+//        if let resolver = self._resolver {
+//            resolver.unregister(self)
+//            self._resolver = nil;
+//        }
+//    }
+    
+    
+    
+    // MARK: Continuable 
+    
+    private final func resume() {
+        assert(sync.is_synchronized())
+        if let handlerQueue = self._handler_queue {
+            dispatch_resume(handlerQueue)
+            self._handler_queue = nil
         }
     }
     
-
     // Registers the closure `f` which will be executed when the future becomes
     // completed. If the cancellation token's property `isCancellationRequested`
     // returns true the execution of the closure will be skipped. Release of any 
@@ -335,47 +372,67 @@ public class Future<T> {
     // calls `self._unregister()` for the weakly captured `self`.
     // _register must execute on the sync queue with write access.
     // `self` must not be completed.
-    private final func _register(cancellationToken: CancellationTokenProtocol? = nil, f: ()->()) {
-        assert(sync.on_sync_queue())
-        assert(self._result == nil)
-        if (_handler_queue == nil) {
-            Log.Trace("creating handler queue")
-            _handler_queue = dispatch_queue_create("Future.handler_queue", nil)!
-            dispatch_set_target_queue(_handler_queue, sync.sync_queue)
-            dispatch_suspend(_handler_queue!)
-        }
-        ++_register_count
+    private final func register(cancellationToken: CancellationTokenProtocol? = nil, f: ()->()) {
         if let ct = cancellationToken {
-            dispatch_async(_handler_queue!) {
+            let registerToken = register({
                 if !ct.isCancellationRequested {
                     f()
                 }
-            }
-            // Note: We cannot use SynchronousCurrent() as the execution context
-            // for the CancellationToken's continuation which executes _unregister, 
+            })
+            // Note: private function `self.unregister()` requires to be called 
+            // on self's sync_queue with exclusive write access.
+            // Thus, we cannot use SynchronousCurrent() as the execution context
+            // for the CancellationToken's continuation which executes unregister,
             // since we do not know which execution context onCancel executes 
             // its continuations.
-            ct.onCancel(on: SyncExecutionContext(queue: sync.sync_queue)) { [weak self] in
+            // We cannot use SyncExecutionContext(queue: sync.sync_queue) as the
+            // execution context because this may cause a dead-lock.
+            // We cannot use AsyncExecutionContext(queue: sync.sync_queue) as the
+            // execution context because `unregister`requires exclusive write access.
+            // We need to use `BarrierAsyncExecutionContext` with the sync_queue.
+            ct.onCancel(on: BarrierAsyncExecutionContext(queue: sync.sync_queue)) { [weak self] in
                 if let this = self {
-                    this._unregister()
+                    this.unregister(registerToken)
                 }
             }
         }
         else {
-            dispatch_async(_handler_queue!, f)
+            register(f)
         }
     }
     
     
-    // Decrements `_register_count` and if it becomes zero `self` will be completed with a
-    // `CancellationError`.
-    // _unregister must execute on the sync queue with write access.
-    // `self` must not be completed.
-    private final func _unregister() {
-        assert(sync.on_sync_queue())
+    
+    private final func register(f: ()->()) -> Registerable {
+        assert(sync.is_synchronized())
         assert(self._result == nil)
+        if (_handler_queue == nil) {
+            Log.Trace("creating handler queue")
+            _handler_queue = dispatch_queue_create("Future.handler_queue", DISPATCH_QUEUE_SERIAL)!
+            dispatch_set_target_queue(_handler_queue, sync.sync_queue)
+            dispatch_suspend(_handler_queue!)
+        }
+        ++_register_count
+        dispatch_async(_handler_queue!, f)
+        return DummyRegisterable()
+    }
+    
+
+    
+    // Decrements `_register_count` and if it becomes zero self clears its
+    // handler queue, which releases any imported references including `self`, 
+    // and thus *may* release the last strong reference to itself.
+    // `unregister` must execute on the sync queue with exclusive write access.
+    // `self` must not be completed.
+    private final func unregister(registerable: Registerable) {
+        assert(sync.is_synchronized())
         if (--_register_count == 0) {
-            _cancel(nil)
+            // When all continuaitons are cancelled, we can clear the handler queue:
+            if let handlerQueue = self._handler_queue {
+                Log.Trace("clearing handler queue")
+                dispatch_resume(handlerQueue)
+                self._handler_queue = nil
+            }
         }
     }
     
@@ -400,8 +457,10 @@ public class Future<T> {
         - parameter f: A closure taking the result of the future as its argument.
     */
     public final func onComplete(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, f: Result<T> -> ())-> () {
-        if let _ = cancellationToken?.isCancellationRequested {
-            return
+        if let ct = cancellationToken {
+            if ct.isCancellationRequested {
+                return
+            }
         }
         sync.write_sync {
             if let r = self._result  { // self already resolved
@@ -409,8 +468,8 @@ public class Future<T> {
                     f(r)
                 }
             } else { // self still pending
-                self._register(cancellationToken) {
-                    assert(sync.on_sync_queue())
+                self.register(cancellationToken) {
+                    assert(sync.is_synchronized())
                     if let r = self._result {
                         executor.execute() {
                             f(r)
@@ -599,13 +658,15 @@ public class Future<T> {
     public final func map<R>(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: T -> Result<R>) -> Future<R> {
         let returnedFuture = Future<R>(resolver:self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
-            switch result {
-            case .Success(let value):
-                executor.execute() {
-                    returnedFuture?.resolve(f(value))
+            if let strongReturnedFuture = returnedFuture {
+                switch result {
+                case .Success(let value):
+                    executor.execute() {
+                        strongReturnedFuture.resolve(f(value))
+                    }
+                case .Failure(let error):
+                    strongReturnedFuture._resolve(Result(error))
                 }
-            case .Failure(let error):
-                returnedFuture?._resolve(Result(error))
             }
         }
         return returnedFuture;
@@ -630,13 +691,15 @@ public class Future<T> {
     public final func flatMap<R>(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: T -> Future<R>) -> Future<R> {
         let returnedFuture = Future<R>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
-            switch result {
-            case .Success(let value):
-                executor.execute() {
-                    returnedFuture?.resolve(f(value))
+            if let strongReturnedFuture = returnedFuture {
+                switch result {
+                case .Success(let value):
+                    executor.execute() {
+                        strongReturnedFuture.resolve(f(value))
+                    }
+                case .Failure(let error):
+                    strongReturnedFuture._resolve(Result(error))
                 }
-            case .Failure(let error):
-                returnedFuture?._resolve(Result(error))
             }
         }
         return returnedFuture
@@ -663,20 +726,22 @@ public class Future<T> {
         - returns: A future.
     */
     public final func then<R>(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil,
-            _ onSuccess: T -> Result<R>,
-            _ onError: NSError -> Result<R>)
+            onSuccess: T -> Result<R>,
+            onError: NSError -> Result<R>)
     -> Future<R>
     {
         let returnedFuture = Future<R>(resolver: self)
         onComplete(on: executor, cancellationToken: cancellationToken) { [weak returnedFuture] result in
-            let r: Result<R>
-            switch result {
-            case .Success(let value):
-                r = onSuccess(value)
-            case .Failure(let error):
-                r = onError(error)
+            if let strongReturnedFuture = returnedFuture {
+                let r: Result<R>
+                switch result {
+                case .Success(let value):
+                    r = onSuccess(value)
+                case .Failure(let error):
+                    r = onError(error)
+                }
+                strongReturnedFuture.resolve(r)
             }
-            returnedFuture?.resolve(r)
         }
         return returnedFuture
     }
@@ -717,13 +782,15 @@ public class Future<T> {
     public final func then<R>(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: T -> R) -> Future<R> {
         let returnedFuture = Future<R>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
-            switch result {
-            case .Success(let value):
-                executor.execute() {
-                    returnedFuture?.resolve(Result(f(value)))
+            if let strongReturnedFuture = returnedFuture {
+                switch result {
+                case .Success(let value):
+                    executor.execute() {
+                        strongReturnedFuture.resolve(Result(f(value)))
+                    }
+                case .Failure(let error):
+                    strongReturnedFuture._resolve(Result(error))
                 }
-            case .Failure(let error):
-                returnedFuture?._resolve(Result(error))
             }
         }
         return returnedFuture
@@ -747,13 +814,15 @@ public class Future<T> {
     public final func then(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: T -> NSError) -> Future<T> {
         let returnedFuture = Future<T>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
-            switch result {
-            case .Success(let value):
-                executor.execute() {
-                    returnedFuture?.resolve(Result(f(value)))
+            if let strongReturnedFuture = returnedFuture {
+                switch result {
+                case .Success(let value):
+                    executor.execute() {
+                        strongReturnedFuture.resolve(Result(f(value)))
+                    }
+                case .Failure(let error):
+                    strongReturnedFuture._resolve(Result(error))
                 }
-            case .Failure(let error):
-                returnedFuture?._resolve(Result(error))
             }
         }
         return returnedFuture
@@ -958,12 +1027,14 @@ public class Future<T> {
     public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> T) -> Future<T> {
         let returnedFuture = Future<T>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result -> () in
-            switch result {
-            case .Success(let value):
-                returnedFuture?._resolve(Result(value))
-            case .Failure(let error):
-                executor.execute() {
-                    returnedFuture?.resolve(Result(f(error)))
+            if let strongReturnedFuture = returnedFuture {
+                switch result {
+                case .Success(let value):
+                    strongReturnedFuture._resolve(Result(value))
+                case .Failure(let error):
+                    executor.execute() {
+                        strongReturnedFuture.resolve(Result(f(error)))
+                    }
                 }
             }
         }
@@ -988,12 +1059,14 @@ public class Future<T> {
     public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> Result<T>) -> Future<T> {
         let returnedFuture = Future<T>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
-            switch result {
-            case .Success(let value):
-                returnedFuture?._resolve(Result(value))
-            case .Failure(let error):
-                executor.execute() {
-                    returnedFuture?.resolve(f(error))
+            if let strongReturnedFuture = returnedFuture {
+                switch result {
+                case .Success(let value):
+                    strongReturnedFuture._resolve(Result(value))
+                case .Failure(let error):
+                    executor.execute() {
+                        strongReturnedFuture.resolve(f(error))
+                    }
                 }
             }
         }
@@ -1018,12 +1091,14 @@ public class Future<T> {
     public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> NSError) -> Future<T> {
         let returnedFuture = Future<T>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
-            switch result {
-            case .Success(let value):
-                returnedFuture?._resolve(Result(value))
-            case .Failure(let error):
-                executor.execute() {
-                    returnedFuture?.resolve(Result(f(error)))
+            if let strongReturnedFuture = returnedFuture {
+                switch result {
+                case .Success(let value):
+                    strongReturnedFuture._resolve(Result(value))
+                case .Failure(let error):
+                    executor.execute() {
+                        strongReturnedFuture.resolve(Result(f(error)))
+                    }
                 }
             }
         }
@@ -1048,12 +1123,14 @@ public class Future<T> {
     public final func `catch`(on executor: ExecutionContext, cancellationToken: CancellationTokenProtocol? = nil, _ f: NSError -> Future<T>) -> Future<T> {
         let returnedFuture = Future<T>(resolver: self)
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
-            switch result {
-            case .Success(let value):
-                returnedFuture?._resolve(Result(value))
-            case .Failure(let error):
-                executor.execute() {
-                    returnedFuture?.resolve(f(error))
+            if let strongReturnedFuture = returnedFuture {
+                switch result {
+                case .Success(let value):
+                    strongReturnedFuture._resolve(Result(value))
+                case .Failure(let error):
+                    executor.execute() {
+                        strongReturnedFuture.resolve(f(error))
+                    }
                 }
             }
         }
@@ -1246,7 +1323,7 @@ extension Future {
 //            }
 //            else { // self still pending
 //                self._register(cancellationToken) {
-//                    assert(sync.on_sync_queue())
+//                    assert(sync.is_synchronized())
 //                    executor.execute() {
 //                        f(self)
 //                    }
