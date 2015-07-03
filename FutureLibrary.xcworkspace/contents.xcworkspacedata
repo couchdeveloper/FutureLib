@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Future/Future.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:FutureTests/FutureTests.xcodeproj">
+      location = "group:FutureLib/FutureLib.xcodeproj">
    </FileRef>
 </Workspace>
