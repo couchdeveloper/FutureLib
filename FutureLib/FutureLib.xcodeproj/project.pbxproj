@@ -96,6 +96,8 @@
 		A18FE03B1B46B0820094CD2A /* Synchronize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronize.swift; sourceTree = "<group>"; };
 		A18FE0691B46B3BF0094CD2A /* FutureLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FutureLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A18FE0721B46B3C00094CD2A /* FutureLib-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FutureLib-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1CD28131B46C02900B408E4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		A1CD28141B46C04B00B408E4 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +137,8 @@
 		A18FDFF51B46AF8C0094CD2A = {
 			isa = PBXGroup;
 			children = (
+				A1CD28141B46C04B00B408E4 /* LICENSE.md */,
+				A1CD28131B46C02900B408E4 /* README.md */,
 				A18FE0011B46AF8C0094CD2A /* FutureLib */,
 				A18FE00D1B46AF8C0094CD2A /* FutureLibTests */,
 				A18FE0001B46AF8C0094CD2A /* Products */,
@@ -503,6 +507,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-DDEBUG";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -542,6 +547,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_SWIFT_FLAGS = "-DNDEBUG";
 				SDKROOT = macosx;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";

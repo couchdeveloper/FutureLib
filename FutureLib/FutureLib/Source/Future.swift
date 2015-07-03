@@ -113,34 +113,6 @@ extension Future : Resolver {
 
 
 
-private protocol Registerable { }
-
-private struct DummyRegisterable : Registerable {}
-
-private protocol CallbackHandler {
-    
-    mutating func resume()
-    
-    mutating func register(f: ()->()) -> Registerable
-    
-    mutating func unregister(registerable: Registerable)
-}
-
-
-
-private struct Callback : Registerable {
-    let _f : ()->()
-    init(_ f:()->()) {
-        _f = f
-    }
-    func execute() {
-        _f()
-    }
-}
-
-
-
-
 
 // MARK: - Class Future
 
@@ -149,7 +121,7 @@ private let sync = Synchronize(name: "Future.sync_queue")
 /**
     A generic class `Future` which represents an eventual result.
 */
-public class Future<T>  {
+public class Future<T> {
     
     public typealias ValueType = T
     
@@ -180,10 +152,11 @@ public class Future<T>  {
     
     
     deinit {
-        //Log.Debug("destroying \(self.debugDescription).")
-        if (self._result == nil && self._handler_queue != nil) {
-            Log.Warning("unregistering continuatuations...")
-            dispatch_resume(self._handler_queue!)
+        if let handlerQueue = self._handler_queue {
+            if (self._result == nil) {
+                Log.Warning("Future not yet completed while resuming continuations: unregistering continuatuations...")
+            }
+            dispatch_resume(handlerQueue)
         }
     }
 
@@ -325,107 +298,6 @@ public class Future<T>  {
         other.onComplete(on:SynchronousCurrent()) { [weak self] otherResult -> () in
             self?._resolve(otherResult);
             return
-        }
-    }
-    
-//    // Completes self with a cancelation error
-//    private final func _cancel(error: ErrorType?) {
-//        assert(sync.is_synchronized())
-//        if self._result == nil {
-//            let err = (error != nil) ? CancellationError(underlyingError: error!) : CancellationError()
-//            self._result = Result(err)
-//            resume()
-//        }
-//        if let resolver = self._resolver {
-//            resolver.unregister(self)
-//            self._resolver = nil;
-//        }
-//    }
-    
-    
-    
-    // MARK: Continuable 
-    
-    private final func resume() {
-        assert(sync.is_synchronized())
-        if let handlerQueue = self._handler_queue {
-            dispatch_resume(handlerQueue)
-            self._handler_queue = nil
-        }
-    }
-    
-    // Registers the closure `f` which will be executed when the future becomes
-    // completed. If the cancellation token's property `isCancellationRequested`
-    // returns true the execution of the closure will be skipped. Release of any 
-    // resources associated with the closure will be delayed until execution
-    // of the closure is next attempted (or any execution already in progress 
-    // completes).
-    //
-    // Retains the cancellation token until after the future has been completed.
-    private final func register(cancellationToken: CancellationTokenProtocol? = nil, f: ()->()) {
-        if let ct = cancellationToken {
-            let registerToken = register({
-                if !ct.isCancellationRequested {
-                    f()
-                }
-            })
-            // Note: private function `self.unregister()` requires to be called 
-            // on self's sync_queue with exclusive write access.
-            // Thus, we cannot use SynchronousCurrent() as the execution context
-            // for the CancellationToken's continuation which executes unregister,
-            // since we do not know which execution context onCancel executes 
-            // its continuations.
-            // We cannot use SyncExecutionContext(queue: sync.sync_queue) as the
-            // execution context because this may cause a dead-lock.
-            // We cannot use AsyncExecutionContext(queue: sync.sync_queue) as the
-            // execution context because `unregister`requires exclusive write access.
-            // We need to use `BarrierAsyncExecutionContext` with the sync_queue.
-            ct.onCancel(on: BarrierAsyncExecutionContext(queue: sync.sync_queue)) { [weak self] in
-                if let this = self {
-                    this.unregister(registerToken)
-                }
-            }
-        }
-        else {
-            register(f)
-        }
-    }
-    
-    
-    
-    private final func register(f: ()->()) -> Registerable {
-        assert(sync.is_synchronized())
-        assert(self._result == nil)
-        if (_handler_queue == nil) {
-            Log.Trace("creating handler queue")
-            // The handler queue's target queue will become the sync-queue. This 
-            // ensures that code executing on the handler queue is synchronized 
-            // with code executing on the sync-queue.
-            _handler_queue = dispatch_queue_create("Future.handler_queue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))!
-            dispatch_set_target_queue(_handler_queue, sync.sync_queue)
-            dispatch_suspend(_handler_queue!)
-        }
-        ++_register_count
-        dispatch_async(_handler_queue!, f)
-        return DummyRegisterable()
-    }
-    
-
-    
-    // Decrements `_register_count` and if it becomes zero self clears its
-    // handler queue, which releases any imported references including `self`, 
-    // and thus *may* release the last strong reference to itself.
-    // `unregister` must execute on the sync queue with exclusive write access.
-    // `self` must not be completed.
-    private final func unregister(registerable: Registerable) {
-        assert(sync.is_synchronized())
-        if (--_register_count == 0) {
-            // When all continuaitons are cancelled, we can clear the handler queue:
-            if let handlerQueue = self._handler_queue {
-                Log.Trace("clearing handler queue")
-                dispatch_resume(handlerQueue)
-                self._handler_queue = nil
-            }
         }
     }
     
@@ -1298,6 +1170,133 @@ public class Future<T>  {
         return finally(on: dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), cancellationToken: cancellationToken, f)
     }
     
+}
+
+
+// MARK: CallbackHandlerType
+
+internal protocol Registerable { }
+
+private struct DummyRegisterable : Registerable {}
+
+
+private protocol CallbackHandlerType {
+    
+    mutating func resume()
+    
+    mutating func register(f: ()->()) -> Registerable
+    
+    mutating func unregister(registerable: Registerable)
+}
+
+
+
+private struct Callback : Registerable {
+    let _f : ()->()
+    init(_ f:()->()) {
+        _f = f
+    }
+    func execute() {
+        _f()
+    }
+}
+
+
+
+
+/**
+    Implements the continuation handler mechanism.
+
+    This extension accesses the member variable _handler_queue.
+*/
+extension Future : CallbackHandlerType {
+
+    // Execute the registered continuations - if any.
+    private final func resume() {
+        assert(sync.is_synchronized())
+        if let handlerQueue = self._handler_queue {
+            if (self._result == nil) {
+                Log.Warning("Future not yet completed while resuming continuations: unregistering continuatuations...")
+            }
+            dispatch_resume(handlerQueue)
+            self._handler_queue = nil
+        }
+    }
+    
+    
+    // Registers the closure `f` which will be executed when the future becomes
+    // completed. If the cancellation token's property `isCancellationRequested`
+    // returns `true` the execution of the closure will be skipped. Release of any
+    // resources associated with the closure will be delayed until execution
+    // of the closure is next attempted (or any execution already in progress
+    // completes).
+    //
+    // Retains the cancellation token until after the future has been completed.
+    private final func register(cancellationToken: CancellationTokenProtocol? = nil, f: ()->()) {
+        if let ct = cancellationToken {
+            let registerToken = register({
+                if !ct.isCancellationRequested {
+                    f()
+                }
+            })
+            // Note: private function `self.unregister()` requires to be called
+            // on self's sync_queue with exclusive write access.
+            // Thus, we cannot use SynchronousCurrent() as the execution context
+            // for the CancellationToken's continuation which executes unregister,
+            // since we do not know which execution context onCancel executes
+            // its continuations.
+            // We cannot use SyncExecutionContext(queue: sync.sync_queue) as the
+            // execution context because this may cause a dead-lock.
+            // We cannot use AsyncExecutionContext(queue: sync.sync_queue) as the
+            // execution context because `unregister`requires exclusive write access.
+            // We need to use `BarrierAsyncExecutionContext` with the sync_queue.
+            ct.onCancel(on: BarrierAsyncExecutionContext(queue: sync.sync_queue)) { [weak self] in
+                if let this = self {
+                    this.unregister(registerToken)
+                }
+            }
+        }
+        else {
+            register(f)
+        }
+    }
+    
+    
+    private final func register(f: ()->()) -> Registerable {
+        assert(sync.is_synchronized())
+        assert(self._result == nil)
+        if (_handler_queue == nil) {
+            Log.Trace("creating handler queue")
+            // The handler queue's target queue will become the sync-queue. This
+            // ensures that code executing on the handler queue is synchronized
+            // with code executing on the sync-queue.
+            _handler_queue = dispatch_queue_create("Future.handler_queue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))!
+            dispatch_set_target_queue(_handler_queue, sync.sync_queue)
+            dispatch_suspend(_handler_queue!)
+        }
+        ++_register_count
+        dispatch_async(_handler_queue!, f)
+        return DummyRegisterable()
+    }
+    
+    
+    // Decrements `_register_count` and if it becomes zero self clears its
+    // handler queue, which releases any imported references including `self`,
+    // and thus *may* release the last strong reference to itself.
+    // `unregister` must execute on the sync queue with exclusive write access.
+    // `self` must not be completed.
+    private final func unregister(registerable: Registerable) {
+        assert(sync.is_synchronized())
+        if (--_register_count == 0) {
+            // When all continuaitons are cancelled, we can clear the handler queue:
+            if let handlerQueue = self._handler_queue {
+                Log.Trace("clearing handler queue")
+                dispatch_resume(handlerQueue)
+                self._handler_queue = nil
+            }
+        }
+    }
+
 }
 
 
