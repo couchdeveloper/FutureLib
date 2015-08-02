@@ -8,7 +8,7 @@
 
 
 /**
-    A `CancellationRequestProtocol` declares methods and defines the behavior for a concrete
+    A `CancellationRequestType` declares methods and defines the behavior for a concrete
     `CancellationRequest` implementation. The `CancellationRequest` is a means to let clients
     signal a task which they created, that they are no more interested in the result. The
     task will be notified about the cancellation request through observing the cancellation
@@ -19,7 +19,10 @@
     cancellation token will be notified by this cancellation request and can handle this
     event appropriately.
 */
-public protocol CancellationRequestProtocol  {
+public protocol CancellationRequestType  {
+    
+    
+    typealias CancellationTokenT : CancellationTokenType
     
     /**
         Returns true if a cancellation has been requested.
@@ -40,7 +43,7 @@ public protocol CancellationRequestProtocol  {
     /**
         Returns the cancellation token.
     */
-    var token : CancellationTokenProtocol { get }
+    var token : CancellationTokenT { get }
     
 }
 

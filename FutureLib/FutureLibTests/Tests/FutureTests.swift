@@ -29,11 +29,23 @@ enum TestError : ErrorType {
     }
 }
 
+class Dummy {
+    let _expect : XCTestExpectation
+    init(_ expect : XCTestExpectation) {
+        _expect = expect
+    }
+    deinit {
+        _expect.fulfill()
+    }
+}
+
+
+
 
 /// Initialize and configure the Logger
 let Log = Logger(category: "Test",
-        verbosity: Logger.Severity.Error,
-        executionContext: SyncExecutionContext(queue: dispatch_queue_create("logger_sync_queue", nil)!))
+        verbosity: Logger.Severity.Info,
+        executionContext: GCDSyncExecutionContext(dispatch_queue_create("logger_sync_queue", nil)!))
 
 
 class Foo<T> {
@@ -177,15 +189,50 @@ class FutureTests: XCTestCase {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let promise = Promise<String>()
         let future = promise.future!
-        future.then(on:dispatch_get_main_queue()) { str -> () in
+        future.then(on:GCDAsyncExecutionContext(dispatch_get_main_queue())) { str -> () in
             Log.Info ("result: \(str)")
             expect.fulfill()
         }
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-
+    
     func testExample3() {
+        let expect1 = self.expectationWithDescription("future1 should be fulfilled")
+        let expect2 = self.expectationWithDescription("future2 should be fulfilled")
+        let expect3 = self.expectationWithDescription("future3 should be fulfilled")
+        let expect4 = self.expectationWithDescription("future4 should be fulfilled")
+        let promise = Promise<String>()
+        let future = promise.future!
+        let result = future.then { str -> Int in
+            Log.Info ("result 0: \(str)")
+            expect1.fulfill()
+            return 1
+            }
+        .then { x -> Int in
+            Log.Info("result 1: \(x)")
+            expect2.fulfill()
+            return 2
+        }
+        .then { x -> Int in
+            Log.Info("result 2: \(x)")
+            expect3.fulfill()
+            return 3
+        }
+        .then { x -> String in
+            Log.Info("result 3: \(x)")
+            expect4.fulfill()
+            return "done"
+        }
+        
+        Log.Info("resulting future: \(result)")
+        promise.fulfill("OK")
+        waitForExpectationsWithTimeout(1, handler: nil)
+        //Log.Info("resulting future: \(result)")
+    }
+    
+
+    func testExample4() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let promise = Promise<String>()
         let future = promise.future!
@@ -211,7 +258,7 @@ class FutureTests: XCTestCase {
         }
         Log.Info("fulfill future")
         promise.fulfill("OK")
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectationsWithTimeout(100000, handler: nil)
     }
 
 //    // Livetime
@@ -227,61 +274,93 @@ class FutureTests: XCTestCase {
     }
     
     func testFutureShouldDeallocateIfThereAreNoObservers2() {
-        weak var weakRef: Future<Int>?
-        func t() {
-            let cancellationRequest = CancellationRequest()
-            let future = Promise<Int>().future!
-            future.then(cancellationRequest.token) { i -> () in
+        let cr = CancellationRequest()
+        let ct = cr.token
+        let promise = Promise<Int>()
+        let expect1 = self.expectationWithDescription("cancellation handler should be unregistered")
+
+        dispatch_async(dispatch_get_global_queue(0, 0)) {
+            let future = promise.future!
+            let d1 = Dummy(expect1)
+            future.then(cancellationToken: ct) { i -> () in
+                XCTFail("unexpected")
+                print(d1)
                 return
             }
-            weakRef = future
-            cancellationRequest.cancel()
-            usleep(1000) // let the async cancellation take effect
         }
-        t()
-        XCTAssertNil(weakRef)
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(100 * NSEC_PER_MSEC)),dispatch_get_global_queue(0,0)) {
+            cr.cancel()
+        };
+        waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testFutureShouldDeallocateIfThereAreNoObservers3() {
-        weak var weakRef: Future<Int>?
-        func t() {
-            let cancellationRequest = CancellationRequest()
-            let future = Promise<Int>().future!
-            future.then(cancellationRequest.token) { i -> () in
+        let cr = CancellationRequest()
+        let ct = cr.token
+        let promise = Promise<Int>()
+        let expect1 = self.expectationWithDescription("cancellation handler should be unregistered")
+        let expect2 = self.expectationWithDescription("cancellation handler should be unregistered")
+        
+        dispatch_async(dispatch_get_global_queue(0,0)) {
+            let future = promise.future!
+            let d1 = Dummy(expect1)
+            let d2 = Dummy(expect2)
+            
+            future.then(cancellationToken: ct) { i -> () in
+                XCTFail("unexpected")
+                print(d1)
                 return
             }
-            future.then(cancellationRequest.token) { i -> () in
+            future.then(cancellationToken: ct) { i -> () in
+                XCTFail("unexpected")
+                print(d2)
                 return
             }
-            weakRef = future
-            cancellationRequest.cancel()
-            usleep(1000) // let the async cancellation take effect
         }
-        t()
-        XCTAssertNil(weakRef)
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(100 * NSEC_PER_MSEC)),dispatch_get_global_queue(0,0)) {
+            cr.cancel()
+        };
+        waitForExpectationsWithTimeout(1, handler: nil)
     }
 
     func testFutureShouldDeallocateIfThereAreNoObservers4() {
-        weak var weakRef: Future<Int>?
-        func t() {
-            let cancellationRequest = CancellationRequest()
-            let future = Promise<Int>().future!
-            weakRef = future
-            future.then(cancellationRequest.token) { i -> () in
-                return
-            }
-            future.then(cancellationRequest.token) { i -> () in
-                return
-            }
-            cancellationRequest.cancel()
-            future.then(cancellationRequest.token) { i -> () in
-                return
-            }
+        let cr = CancellationRequest()
+        let ct = cr.token
+        let promise = Promise<Int>()
+        let expect1 = self.expectationWithDescription("cancellation handler should be unregistered")
+        let expect2 = self.expectationWithDescription("cancellation handler should be unregistered")
+        let expect3 = self.expectationWithDescription("cancellation handler should be unregistered")
+        
+        dispatch_async(dispatch_get_global_queue(0,0)) {
+            let future = promise.future!
+            let d1 = Dummy(expect1)
+            let d2 = Dummy(expect2)
             
-            usleep(1000) // let the async cancellation take effect
+            future.then(cancellationToken: ct) { i -> () in
+                XCTFail("unexpected")
+                print(d1)
+                return
+            }
+            future.then(cancellationToken: ct) { i -> () in
+                XCTFail("unexpected")
+                print(d2)
+                return
+            }
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(100 * NSEC_PER_MSEC)),dispatch_get_global_queue(0,0)) {
+                cr.cancel()
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(100 * NSEC_PER_MSEC)),dispatch_get_global_queue(0,0)) {
+                    let d3 = Dummy(expect3)
+                    future.then(cancellationToken: cr.token) { i -> () in
+                        XCTFail("unexpected")
+                        print(d3)
+                        return
+                    }
+                }
+            };
         }
-        t()
-        XCTAssertNil(weakRef)
+        
+        waitForExpectationsWithTimeout(1, handler: nil)
     }
     
 
@@ -356,7 +435,7 @@ class FutureTests: XCTestCase {
             expect.fulfill()
         }
         promise.fulfill("OK")
-        waitForExpectationsWithTimeout(1000.0, handler: nil)
+        waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testPromiseFulfillingAPromiseShouldNotInvokeFailureHandler() {

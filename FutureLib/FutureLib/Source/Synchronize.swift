@@ -26,7 +26,12 @@ public struct Synchronize {
         - parameter name: A name which should be unique.
     */
     init(name: String) {
-        // Using a *serial* queue seems to safe CPU cycles.
+        // Using a *serial* queue seems to safe CPU cycles. However, since the queue
+        // is shared among all futures, using a serial queue might be prone to
+        // dead-locks. For example: on that queue the execution context's `execute()`
+        // method will be executed. If this `execute()` method schedules its closure 
+        // - given as an argument - synchronously, it may inadvertantly and unexpectedly 
+        // block or even dead-lock.
         sync_queue = dispatch_queue_create(name, dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))
         // Use the pointer value to sync_queue as the context in order to have
         // a unique context:

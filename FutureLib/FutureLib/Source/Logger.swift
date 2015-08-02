@@ -120,7 +120,7 @@ public class Logger {
 
     
     public init(category: StaticString, verbosity: Severity,
-        executionContext: ExecutionContext = AsyncExecutionContext(queue: dispatch_queue_create("logger_sync_queue", nil)!),
+        executionContext: ExecutionContext = GCDAsyncExecutionContext(dispatch_queue_create("logger_sync_queue", nil)!),
         dateTimeFormatter:(tval:timeval) -> String = Logger.defaultDateTimeFormatter)
     {
         _category = category

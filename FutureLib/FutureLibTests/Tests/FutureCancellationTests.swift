@@ -33,10 +33,10 @@ class FutureCancellationTests: XCTestCase {
         future.onComplete { result -> () in
             expect1.fulfill()
         }
-        future.onComplete(cancellationRequest1.token) { result -> () in
+        future.onComplete(cancellationToken: cancellationRequest1.token) { result -> () in
             expect2.fulfill()
         }
-        future.onComplete(cancellationRequest2.token) { result -> () in
+        future.onComplete(cancellationToken: cancellationRequest2.token) { result -> () in
             expect3.fulfill()
         }
         
@@ -54,20 +54,27 @@ class FutureCancellationTests: XCTestCase {
         let cancellationRequest2 = CancellationRequest()
         let expect1 = self.expectationWithDescription("continuation1 should be called")
         let expect2 = self.expectationWithDescription("continuation2 should be called")
+        let expect3 = self.expectationWithDescription("continuation3 should be called")
         future.onComplete { result -> () in
             expect1.fulfill()
         }
-        future.onComplete(cancellationRequest1.token) { result -> () in
-            XCTFail("unexpected")
-        }
-        future.onComplete(cancellationRequest2.token) { result -> () in
+        future.onComplete(cancellationToken: cancellationRequest1.token) { result -> () in
+            result.map { s -> () in
+                XCTFail("unexpected")
+                return ()
+            }
             expect2.fulfill()
+        }
+        future.onComplete(cancellationToken: cancellationRequest2.token) { result -> () in
+            expect3.fulfill()
         }
         
         cancellationRequest1.cancel()
+        // Note: cancellation may be slower than the subsequent fulfill. Thus, get 
+        // the cancellation handler some time to become effective:
+        usleep(1000)
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
-        usleep(1000) // give the unexpected handler a chance to be called (if any)
     }
     
     
@@ -76,29 +83,44 @@ class FutureCancellationTests: XCTestCase {
         let promise = Promise<String>()
         let future = promise.future!
         
-        let cancellationRequest1 = CancellationRequest()
-        let cancellationRequest2 = CancellationRequest()
-        let cancellationRequest3 = CancellationRequest()
-        future.onComplete(cancellationRequest1.token) { result -> () in
-            XCTFail("unexpected")
+        let cr1 = CancellationRequest()
+        let cr2 = CancellationRequest()
+        let cr3 = CancellationRequest()
+        
+        let expect1 = self.expectationWithDescription("continuation1 should be called")
+        let expect2 = self.expectationWithDescription("continuation2 should be called")
+        let expect3 = self.expectationWithDescription("continuation3 should be called")
+        
+        future.onComplete(cancellationToken: cr1.token) { result -> () in
+            result.map { s -> () in
+                XCTFail("unexpected")
+                return ()
+            }
+            expect1.fulfill()
         }
-        future.onComplete(cancellationRequest2.token) { result -> () in
-            XCTFail("unexpected")
+        future.onComplete(cancellationToken: cr2.token) { result -> () in
+            result.map { s -> () in
+                XCTFail("unexpected")
+                return ()
+            }
+            expect2.fulfill()
         }
-        future.onComplete(cancellationRequest3.token) { result -> () in
-            XCTFail("unexpected")
+        future.onComplete(cancellationToken: cr3.token) { result -> () in
+            result.map { s -> () in
+                XCTFail("unexpected")
+                return ()
+            }
+            expect3.fulfill()
         }
         
-        cancellationRequest1.cancel()
-        cancellationRequest2.cancel()
-        cancellationRequest3.cancel()
+        cr1.cancel()
+        cr2.cancel()
+        cr3.cancel()
         for _ in 1..<10 {
             usleep(1000) // give the cancellation handlers a chance to be called
         }
-        promise.fulfill("OK")
-        for _ in 1..<10 {
-            usleep(1000) // give the unexpected handlers a chance to be called (if any)
-        }
+        promise.fulfill("OK") // should have no effect
+        waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     
@@ -106,26 +128,40 @@ class FutureCancellationTests: XCTestCase {
         let promise = Promise<String>()
         let future = promise.future!
         
-        let cancellationRequest = CancellationRequest()
+        let cr = CancellationRequest()
+
+        let expect1 = self.expectationWithDescription("continuation1 should be called")
+        let expect2 = self.expectationWithDescription("continuation2 should be called")
+        let expect3 = self.expectationWithDescription("continuation3 should be called")
         
-        future.onComplete(cancellationRequest.token) { result -> () in
-            XCTFail("unexpected")
+        future.onComplete(cancellationToken: cr.token) { result -> () in
+            result.map { s -> () in
+                XCTFail("unexpected")
+                return ()
+            }
+            expect1.fulfill()
         }
-        future.onComplete(cancellationRequest.token) { result -> () in
-            XCTFail("unexpected")
+        future.onComplete(cancellationToken: cr.token) { result -> () in
+            result.map { s -> () in
+                XCTFail("unexpected")
+                return ()
+            }
+            expect2.fulfill()
         }
-        future.onComplete(cancellationRequest.token) { result -> () in
-            XCTFail("unexpected")
+        future.onComplete(cancellationToken: cr.token) { result -> () in
+            result.map { s -> () in
+                XCTFail("unexpected")
+                return ()
+            }
+            expect3.fulfill()
         }
         
-        cancellationRequest.cancel()
+        cr.cancel()
         for _ in 1..<10 {
             usleep(1000) // give the cancellation handlers a chance to be called
         }
         promise.fulfill("OK")
-        for _ in 1..<10 {
-            usleep(1000) // give the unexpected handlers a chance to be called (if any)
-        }
+        waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     
@@ -133,29 +169,47 @@ class FutureCancellationTests: XCTestCase {
         let promise = Promise<String>()
         let future = promise.future!
         
-        let cancellationRequest = CancellationRequest()
+        let cr = CancellationRequest()
+        let expect1 = self.expectationWithDescription("continuation1 should be called")
+        let expect2 = self.expectationWithDescription("continuation2 should be called")
+        let expect3 = self.expectationWithDescription("continuation3 should be called")
+        let expect4 = self.expectationWithDescription("continuation3 should be called")
         
-        future.onComplete(cancellationRequest.token) { result -> () in
-            XCTFail("unexpected")
+        future.onComplete(cancellationToken: cr.token) { result -> () in
+            result.map { s -> () in
+                XCTFail("unexpected")
+                return ()
+            }
+            expect1.fulfill()
         }
-        future.onComplete(cancellationRequest.token) { result -> () in
-            XCTFail("unexpected")
+        future.onComplete(cancellationToken: cr.token) { result -> () in
+            result.map { s -> () in
+                XCTFail("unexpected")
+                return ()
+            }
+            expect2.fulfill()
         }
-        future.onComplete(cancellationRequest.token) { result -> () in
-            XCTFail("unexpected")
+        future.onComplete(cancellationToken: cr.token) { result -> () in
+            result.map { s -> () in
+                XCTFail("unexpected")
+                return ()
+            }
+            expect3.fulfill()
         }
         
-        cancellationRequest.cancel()
+        cr.cancel()
         for _ in 1..<10 {
             usleep(1000) // give the cancellation handlers a chance to be called
         }
-        future.onComplete(cancellationRequest.token) { result -> () in
-            XCTFail("unexpected")
+        future.onComplete(cancellationToken: cr.token) { result -> () in
+            result.map { s -> () in
+                XCTFail("unexpected")
+                return ()
+            }
+            expect4.fulfill()
         }
         promise.fulfill("OK")
-        for _ in 1..<10 {
-            usleep(1000) // give the unexpected handlers a chance to be called (if any)
-        }
+        waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     

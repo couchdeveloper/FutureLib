@@ -18,7 +18,7 @@ import Dispatch
 #endif
 
 
-extension Promise : Resolver {
+extension Promise : ResolverType {
 
     func unregister<T:Resolvable>(resolvable: T) -> () {
     }
@@ -90,7 +90,7 @@ public class Promise<T>
     
         TODO: must be thread-safe
     */
-    public var future : Future<T>? {
+    public final var future : Future<T>? {
         if let future = _weakFuture {
             _future = nil;
             return future
@@ -104,7 +104,7 @@ public class Promise<T>
 
         - parameter vaule: The value which resolves the future.
     */
-    public func fulfill(value:T) {
+    public final func fulfill(value:T) {
         if let future = _weakFuture {
             future.resolve(Result(value))
         }
@@ -119,7 +119,7 @@ public class Promise<T>
     
         - parameter error: The error which rejects the future.
     */
-    public func reject(error : ErrorType) {
+    public final func reject(error : ErrorType) {
         if let future = _weakFuture {
             future.resolve(Result(error))
         }
@@ -142,21 +142,16 @@ public class Promise<T>
 
         - parameter f: A closure taking an error as parameter.
     */
-    internal final func onCancel(executor: ExecutionContext, _ f: ErrorType -> ())-> () {
+    internal final func onCancel(
+        on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
+        _ f: ErrorType -> ())
+    {
 //        if let future = _weakFuture {
 //            future.onCancel(on: executor, f)
 //        }
     }
     
     
-    /**
-        Executes closure f on the global dispatch queue when it is cancelled.
-        Does not retain self.
-    */
-    internal final func onCancel(f: ErrorType -> ())-> () {
-        onCancel(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), f)
-    }
-
     
 }
 

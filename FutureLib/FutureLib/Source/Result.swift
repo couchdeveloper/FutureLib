@@ -23,7 +23,7 @@
 */
 public enum Result<T>{
     
-    typealias ValueType = T
+    public typealias ValueType = T
     
     case Success(ValueType)
     case Failure(ErrorType)
@@ -81,7 +81,7 @@ public enum Result<T>{
     }
     
 
-    public func map<U>(@noescape f: T -> U) -> Result<U> {
+     public func map<U>(@noescape f: (T) -> U) -> Result<U> {
         switch self {
         case .Success(let s):
             return Result<U>(f(s))
