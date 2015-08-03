@@ -18,13 +18,50 @@ import Dispatch
 #endif
 
 
-extension Promise : ResolverType {
-
-    func unregister<T:Resolvable>(resolvable: T) -> () {
-    }
-
+public enum PromiseError : Int, ErrorType {
+    
+    case BrokenPromise = -1
+    
 }
 
+
+//extension Promise : ResolverType {
+//
+//    func unregister<T:Resolvable>(resolvable: T) -> () {
+//    }
+//
+//}
+
+
+
+private class RootFuture<T> : Future<T> {
+    
+    typealias nullary_func = () -> ()
+
+    private var onRevocation : nullary_func?
+    
+    
+    private override init() {
+        super.init()
+    }
+    
+    private override init(_ value:T) {
+        super.init(value)
+    }
+    
+    private override init(_ error:ErrorType) {
+        super.init(error)
+    }
+    
+    deinit {
+        if let f = onRevocation {
+            if (!isCompleted) {
+                dispatch_async(dispatch_get_global_queue(0, 0), f)
+            }
+        }
+    }
+    
+}
 
 
 /**
@@ -47,8 +84,8 @@ public class Promise<T>
 {
     public typealias ValueType = T
     
-    private var _future: Future<T>?
-    private weak var _weakFuture: Future<T>?
+    private var _future: RootFuture<T>?
+    private weak var _weakFuture: RootFuture<T>?
     
     /**
         Initializes the promise whose future is pending.
@@ -56,7 +93,7 @@ public class Promise<T>
         - parameter resolver: The resolver object which will eventually resove the future.
     */
     public init() {
-        _future = Future<T>(resolver: self)
+        _future = RootFuture<T>()
         _weakFuture = _future
     }
     
@@ -66,7 +103,7 @@ public class Promise<T>
         - parameter value: The value which fulfills the future.
     */
     public init(_ value : ValueType) {
-        _future = Future<T>(value, resolver: self)
+        _future = RootFuture<T>(value)
         _weakFuture = _future
     }
     
@@ -76,9 +113,42 @@ public class Promise<T>
         - parameter error: The error which rejects the future.
     */
     public init(error : ErrorType) {
-        _future = Future<T>(error, resolver: self)
+        _future = RootFuture<T>(error)
         _weakFuture = _future
     }
+    
+    deinit {
+        if let future = _weakFuture {
+            if !future.isCompleted {
+                future.resolve(Result(PromiseError.BrokenPromise))
+            }
+        }
+    }
+    
+    /**
+        Sets the closure `f` which will be called when the future will be
+        destroyed and is not yet completed. This will only happen when there are 
+        no continuations and no other strong references to the future - that is, 
+        no one will ever actually receive the eventual result of the promise.
+    
+        The closure `f` will be executed on a private execution context. 
+    
+        A service provider can register a handler in order to get notified when 
+        the future gets prematurely destroyed. If the result is still not yet 
+        computed, this means that the future has abandoned its interest in the 
+        result. The service provider may then choose to cancel its operation.
+
+        - parameter f: The closure
+    */
+    public final func onRevocation(f:()->()) {
+        if let future = _weakFuture {
+            future.onRevocation = f
+        }
+        else {
+            dispatch_async(dispatch_get_global_queue(0, 0), f)
+        }
+    }
+    
     
     /**
         Returns the future.
@@ -129,27 +199,6 @@ public class Promise<T>
     }
     
     
-    // Cancellation
-    
-    /**
-        Registers the continuation `f` with a parameter `error` which will be executed on the
-        given execution context when `self`'s future has been cancelled. Self's future will
-        transition to the `Cancelled` state only when it is still pending and when it has an
-        associated cancellation token which has been cancelled and when it has no continuations 
-        or all continuations have been cancelled.
-        The continuation will be called with a copy of the error of `self`'s future.
-        Retains `self` until it is completed.
-
-        - parameter f: A closure taking an error as parameter.
-    */
-    internal final func onCancel(
-        on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        _ f: ErrorType -> ())
-    {
-//        if let future = _weakFuture {
-//            future.onCancel(on: executor, f)
-//        }
-    }
     
     
     

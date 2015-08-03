@@ -20,66 +20,66 @@ import Dispatch
 
 // MARK: - Internal Protocol ResolverType
 
-/**
-    A Resolver is an object whose responsibility is to eventually resolve
-    its associated Resolvable with a result value.
-
-    This protocol is only used internally by the FutureLib.
-*/
-internal protocol ResolverType {
-
-    func unregister<T:Resolvable>(resolvable: T) -> ()
-
-}
+///**
+//    A Resolver is an object whose responsibility is to eventually resolve
+//    its associated Resolvable with a result value.
+//
+//    This protocol is only used internally by the FutureLib.
+//*/
+//internal protocol ResolverType {
+//
+//    func unregister<T:Resolvable>(resolvable: T) -> ()
+//
+//}
 
 
 // MARK: - Internal Protocol Resolvable
 
-/**
-    A `Resolvable` is an object which is initially created in a "pending" state 
-    and can transition to a "completed" state through "resolving" the resolvable 
-    with a result value (`Result<T>`). The resolvbale can be completed only once, 
-    and can not transition to another state afterward.
-    For a particular Resolvable, there is one and only one resolver at a time.
-
-    This protocol is only used internally by the FutureLib.
-*/
-internal protocol Resolvable {
-    
-    typealias ValueType
-    
-    func resolve(result : Result<ValueType>)
-    
-    var resolver: ResolverType? { get }
-
-}
-
-
-
-extension Future : Resolvable {
-    
-    /// Completes self with the given result.
-    internal final func resolve(result : Result<Future.ValueType>) {
-        sync.write_async {
-            self._resolve(result)
-        }
-    }
- 
-    /// Returns the resolver to which self depends on if any. It may return nil.
-    internal var resolver: ResolverType? { get { return _resolver } }
-    
-}
+///**
+//    A `Resolvable` is an object which is initially created in a "pending" state 
+//    and can transition to a "completed" state through "resolving" the resolvable 
+//    with a result value (`Result<T>`). The resolvbale can be completed only once, 
+//    and can not transition to another state afterward.
+//    For a particular Resolvable, there is one and only one resolver at a time.
+//
+//    This protocol is only used internally by the FutureLib.
+//*/
+//internal protocol Resolvable {
+//    
+//    typealias ValueType
+//    
+//    func resolve(result : Result<ValueType>)
+//    
+//    var resolver: ResolverType? { get }
+//
+//}
 
 
-extension Future : ResolverType {
-    
-    /// Undo registering the given resolvable.
-    internal final func unregister<T:Resolvable>(resolvable: T) -> () {
-//        sync.read_sync_safe {
-//            self.unregister(DummyContinuation<Void>())
+
+//extension Future : Resolvable {
+//    
+//    /// Completes self with the given result.
+//    internal final func resolve(result : Result<Future.ValueType>) {
+//        sync.write_async {
+//            self._resolve(result)
 //        }
-    }
-}
+//    }
+// 
+//    /// Returns the resolver to which self depends on if any. It may return nil.
+//    internal var resolver: ResolverType? { get { return _resolver } }
+//    
+//}
+
+
+//extension Future : ResolverType {
+//    
+//    /// Undo registering the given resolvable.
+//    internal final func unregister<T:Resolvable>(resolvable: T) -> () {
+////        sync.read_sync_safe {
+////            self.unregister(DummyContinuation<Void>())
+////        }
+//    }
+//}
 
 
 
@@ -98,24 +98,20 @@ public class Future<T> {
     
     private var _result: Result<T>?
     private var _cr : ContinuationRegistryType = ContinuationRegistryType.Empty
-    private var _resolver : ResolverType?
     
     
     // MARK: init/deinit
     
-    internal init(resolver: ResolverType? = nil) {
-        _resolver = resolver
+    internal init() {
         //Log.Debug("Future created with id: \(self.id).")
     }
     
-    internal init(_ value:T, resolver: ResolverType? = nil) {
-        _resolver = resolver
+    internal init(_ value:T) {
         _result = Result<T>(value)
         //Log.Debug("Fulfilled future created with id: \(self.id) with value \(value).")
     }
     
-    internal init(_ error:ErrorType, resolver: ResolverType? = nil) {
-        _resolver = resolver
+    internal init(_ error:ErrorType) {
         _result = Result<T>(error)
         //Log.Debug("Rejected future created with id: \(self.id) with error \(error).")
     }
@@ -141,7 +137,7 @@ public class Future<T> {
     */
     public final var isCompleted: Bool {
         var result = false
-        sync.read_sync() {
+        sync.read_sync_safe() {
             result = self._result != nil
         }
         return result
@@ -257,8 +253,8 @@ public class Future<T> {
         else {
             // TODO: throw FutureError.AlreadyCompleted or fatalError ??
         }
-        self._resolver = nil;
     }
+
     
     // Registers a completion function for the given future `other` which
     // completes `self` when other completes with the same result. That is, future 
@@ -280,7 +276,6 @@ public class Future<T> {
     // Alias for bind (aka resolveWith)
     internal final func _resolve(other: Future) {
         assert(sync.is_synchronized())
-        self._resolver = other;
         // Note: unless Future is a protocol, we know that onComplete executes its
         // continuations on the Future class's sync_queue. So, we can use SynchronousCurrent()
         // as its execution context which executes on the sync_queue as required
@@ -291,6 +286,15 @@ public class Future<T> {
             return
         }
     }
+    
+    /// Completes self with the given result.
+    internal final func resolve(result : Result<T>) {
+        sync.write_async {
+            self._resolve(result)
+        }
+    }
+    
+    
     
     
     // MARK: - Public
@@ -544,7 +548,7 @@ public class Future<T> {
         _ f: T -> Result<R>)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver:self)
+        let returnedFuture = Future<R>()
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -581,7 +585,7 @@ public class Future<T> {
         _ f: T -> Result<R>)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver:self)
+        let returnedFuture = Future<R>()
         onComplete(on: SynchronousCurrent()) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -621,7 +625,7 @@ public class Future<T> {
         _ f: T -> Future<R>)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver: self)
+        let returnedFuture = Future<R>()
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -659,7 +663,7 @@ public class Future<T> {
         _ f: T -> Future<R>)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver: self)
+        let returnedFuture = Future<R>()
         onComplete(on: SynchronousCurrent()) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -719,8 +723,7 @@ extension Future : CustomDebugStringConvertible {
                 }
             }
             else {
-                let resolverDesc = self._resolver.debugDescription
-                stateString = "pending with \(self._cr.count) continuations, whose resolver is \n\(resolverDesc)"
+                stateString = "pending with \(self._cr.count) continuations"
             }
             s = "future<\(T.self)> id: \(self.id) state: \(stateString)"
         }

@@ -105,7 +105,7 @@ extension Future {
         _ f: T -> R)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver: self)
+        let returnedFuture = Future<R>()
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -126,7 +126,7 @@ extension Future {
         _ f: T -> R)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver: self)
+        let returnedFuture = Future<R>()
         onComplete(on: SynchronousCurrent()) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -164,7 +164,7 @@ extension Future {
         _ f: T -> ErrorType)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -185,7 +185,7 @@ extension Future {
         _ f: T -> ErrorType)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: SynchronousCurrent()) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -333,7 +333,7 @@ extension Future {
         _ f: ErrorType -> T)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result -> () in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -355,7 +355,7 @@ extension Future {
         _ f: ErrorType -> T)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: SynchronousCurrent()) { [weak returnedFuture] result -> () in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -393,7 +393,7 @@ extension Future {
         _ f: ErrorType -> Result<T>)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -415,7 +415,7 @@ extension Future {
         _ f: ErrorType -> Result<T>)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: SynchronousCurrent()) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -453,7 +453,7 @@ extension Future {
         _ f: ErrorType -> ErrorType)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -474,7 +474,7 @@ extension Future {
         _ f: ErrorType -> ErrorType)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: SynchronousCurrent()) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -512,7 +512,7 @@ extension Future {
         _ f: ErrorType -> Future<T>)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -533,7 +533,7 @@ extension Future {
         _ f: ErrorType -> Future<T>)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: SynchronousCurrent()) { [weak returnedFuture] result in
             if let strongReturnedFuture = returnedFuture {
                 switch result {
@@ -587,7 +587,7 @@ extension Future {
         _ f: () -> R)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver: self)
+        let returnedFuture = Future<R>()
         onComplete(on: executor, cancellationToken: cancellationToken) { [weak returnedFuture] _ in
             let r = f()
             returnedFuture?.resolve(Result(r))
@@ -600,7 +600,7 @@ extension Future {
         _ f: () -> R)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver: self)
+        let returnedFuture = Future<R>()
         onComplete(on: executor) { [weak returnedFuture] _ in
             let r = f()
             returnedFuture?.resolve(Result(r))
@@ -615,7 +615,7 @@ extension Future {
         _ f: () -> Result<R>)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver: self)
+        let returnedFuture = Future<R>()
         onComplete(on: executor, cancellationToken: cancellationToken) { [weak returnedFuture] _ in
             let r = f()
             returnedFuture?.resolve(r)
@@ -627,7 +627,7 @@ extension Future {
         _ f: () -> Result<R>)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver: self)
+        let returnedFuture = Future<R>()
         onComplete(on: executor) { [weak returnedFuture] _ in
             let r = f()
             returnedFuture?.resolve(r)
@@ -643,7 +643,7 @@ extension Future {
         _ f: () -> ErrorType)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: executor, cancellationToken: cancellationToken) { [weak returnedFuture] _  in
             let r = f()
             returnedFuture?.resolve(Result(r))
@@ -655,7 +655,7 @@ extension Future {
         _ f: () -> ErrorType)
         -> Future<T>
     {
-        let returnedFuture = Future<T>(resolver: self)
+        let returnedFuture = Future<T>()
         onComplete(on: executor) { [weak returnedFuture] _  in
             let r = f()
             returnedFuture?.resolve(Result(r))
@@ -669,7 +669,7 @@ extension Future {
         _ f: () -> Future<R>)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver: self)
+        let returnedFuture = Future<R>()
         onComplete(on: SynchronousCurrent(), cancellationToken: cancellationToken) { [weak returnedFuture] _ -> () in
             if let strongReturnedFuture = returnedFuture {
                 executor.schedule(strongReturnedFuture) {
@@ -686,7 +686,7 @@ extension Future {
         _ f: () -> Future<R>)
         -> Future<R>
     {
-        let returnedFuture = Future<R>(resolver: self)
+        let returnedFuture = Future<R>()
         onComplete(on: SynchronousCurrent()) { [weak returnedFuture] _ -> () in
             if let strongReturnedFuture = returnedFuture {
                 executor.schedule(strongReturnedFuture) {

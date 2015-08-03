@@ -264,9 +264,10 @@ class FutureTests: XCTestCase {
 //    // Livetime
     
     func testFutureShouldDeallocateIfThereAreNoObservers() {
+        let promise = Promise<Int>()
         weak var weakRef: Future<Int>?
         func t() {
-            let future = Promise<Int>().future
+            let future = promise.future
             weakRef = future
         }
         t()

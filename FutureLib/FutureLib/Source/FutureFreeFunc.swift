@@ -20,7 +20,7 @@ import Dispatch
                     closure.
 */
 public func future<R>(f:()->Result<R>) -> Future<R> {
-    let returnedFuture :Future<R> = Future<R>(resolver: nil)
+    let returnedFuture :Future<R> = Future<R>()
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), {
         switch f() {
         case .Success(let value): returnedFuture.resolve(Result(value))
@@ -44,7 +44,7 @@ public func future<R>(f:()->Result<R>) -> Future<R> {
                     given closure.
 */
 public func future<R>(f:() throws -> R) -> Future<R> {
-    let returnedFuture :Future<R> = Future<R>(resolver: nil)
+    let returnedFuture :Future<R> = Future<R>()
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), {
         do {
             let value = try f()
@@ -74,7 +74,7 @@ public func future<R>(f:() throws -> R) -> Future<R> {
                     closure.
 */
 public func future<R>(on executor: ExecutionContext, f:()->Result<R>) -> Future<R> {
-    let returnedFuture :Future<R> = Future<R>(resolver:nil)
+    let returnedFuture :Future<R> = Future<R>()
     executor.execute() {
         switch f() {
         case .Success(let value): returnedFuture.resolve(Result(value))
@@ -101,7 +101,7 @@ public func future<R>(on executor: ExecutionContext, f:()->Result<R>) -> Future<
                     given closure.
 */
 public func future<R>(on executor: ExecutionContext, f:() throws ->R) -> Future<R> {
-    let returnedFuture :Future<R> = Future<R>(resolver: nil)
+    let returnedFuture :Future<R> = Future<R>()
     executor.execute() {
         do {
             let value = try f()
