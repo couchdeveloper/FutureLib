@@ -10,6 +10,15 @@ import XCTest
 import FutureLib
 
 
+class MyCancelable : Cancelable {
+    
+    func cancel() -> () {
+    }
+
+    func cancel(error:ErrorType) -> () {
+    }
+
+}
 
 class CancellationTests: XCTestCase {
 
@@ -45,8 +54,36 @@ class CancellationTests: XCTestCase {
         XCTAssertTrue(ct.isCancellationRequested)
     }
     
+    func testGivenACancelledTokenACancellationHandlerWillRun1a() {
+        let cr = CancellationRequest()
+        let ct = cr.token
+        let expect1 = self.expectationWithDescription("cancellation handler should be called")
+        cr.cancel()
+        // the effect of cancel() is asynchronous!
+        for _ in 0..<10 { usleep(1000) }
+        ct.onCancel {
+            expect1.fulfill()
+        }
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    
+    func testGivenACancelledTokenACancellationHandlerWillRun1b() {
+        let op = MyCancelable()
+        let cr = CancellationRequest()
+        let ct = cr.token
+        let expect1 = self.expectationWithDescription("cancellation handler should be called")
+        cr.cancel()
+        // the effect of cancel() is asynchronous!
+        for _ in 0..<10 { usleep(1000) }
+        ct.onCancel(cancelable: op) { c in
+            expect1.fulfill()
+        }
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
 
-    func testRequestingCancellationRunsRegisteredHandler1() {
+    func testRequestingCancellationRunsRegisteredHandler1a() {
         let cr = CancellationRequest()
         let ct = cr.token
         let expect1 = self.expectationWithDescription("cancellation handler should be called")
@@ -56,9 +93,22 @@ class CancellationTests: XCTestCase {
         cr.cancel()
         waitForExpectationsWithTimeout(1, handler: nil)
     }
+
+    func testRequestingCancellationRunsRegisteredHandler1b() {
+        let op = MyCancelable()
+        let cr = CancellationRequest()
+        let ct = cr.token
+        let expect1 = self.expectationWithDescription("cancellation handler should be called")
+        ct.onCancel(cancelable:op) { c in
+            XCTAssertTrue(op === c)
+            expect1.fulfill()
+        }
+        cr.cancel()
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
     
     
-    func testRequestingCancellationRunsRegisteredHandler2() {
+    func testRequestingCancellationRunsRegisteredHandler2a() {
         let cr = CancellationRequest()
         let ct = cr.token
         let expect1 = self.expectationWithDescription("cancellation handler should be called")
@@ -73,16 +123,58 @@ class CancellationTests: XCTestCase {
         waitForExpectationsWithTimeout(1, handler: nil)
     }
     
+    func testRequestingCancellationRunsRegisteredHandler2b() {
+        let op = MyCancelable()
+        let cr = CancellationRequest()
+        let ct = cr.token
+        let expect1 = self.expectationWithDescription("cancellation handler should be called")
+        let expect2 = self.expectationWithDescription("cancellation handler should be called")
+        ct.onCancel(cancelable:op) { c in
+            XCTAssertTrue(op === c)
+            expect1.fulfill()
+        }
+        ct.onCancel(cancelable:op) { c in
+            XCTAssertTrue(op === c)
+            expect2.fulfill()
+        }
+        cr.cancel()
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
     
-    func testRequestingCancellationRunsRegisteredHandler3() {
+
+    func testRequestingCancellationRunsRegisteredHandler3a() {
         let cr = CancellationRequest()
         let expect1 = self.expectationWithDescription("cancellation handler should be called")
         let expect2 = self.expectationWithDescription("cancellation handler should be called")
         func f(ct: CancellationToken)-> () {
-            ct.onCancel {
+            ct.onCancel() {
                 expect1.fulfill()
             }
             ct.onCancel {
+                expect2.fulfill()
+            }
+        }
+        dispatch_async(dispatch_get_main_queue()) {
+            f(cr.token)
+        }
+        dispatch_async(dispatch_get_main_queue()) {
+            cr.cancel()
+        }
+        waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    func testRequestingCancellationRunsRegisteredHandler3b() {
+        let op = MyCancelable()
+        let cr = CancellationRequest()
+        let expect1 = self.expectationWithDescription("cancellation handler should be called")
+        let expect2 = self.expectationWithDescription("cancellation handler should be called")
+        func f(ct: CancellationToken)-> () {
+            ct.onCancel(cancelable:op) { c in
+                XCTAssertTrue(op === c)
+                expect1.fulfill()
+            }
+            ct.onCancel(cancelable:op) { c in
+                XCTAssertTrue(op === c)
                 expect2.fulfill()
             }
         }

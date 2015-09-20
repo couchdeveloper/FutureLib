@@ -1,24 +1,26 @@
 # FutureLib
 
-A thread safe implementation of [Futures and Promises](https://en.wikipedia.org/wiki/Futures_and_promises) in Swift 2.
+FutureLib is a thread safe implementation of Futures & Promises for Swift 2 inspired by Scala's [Futures and Promises](http://docs.scala-lang.org/overviews/core/futures.html), [Promises/A+](https://github.com/promises-aplus/promises-spec) and [Cancellation in Managed Threads](https://msdn.microsoft.com/en-us/library/)
 
 ## Overview
 
 
 ### A Brief Feature List:
 
+ - Implements the "Future & Promise" pattern.
 
- - Employs the asynchronous "non-blocking" style
+ - Employs the asynchronous "non-blocking" style.
 
- - Supports composition of multiple tasks through chained continuations
+ - Supports composition of tasks.
 
- - Simplifies error handling in asynchronous tasks
+ - Supports a powerful cancellation conzept by means of "cancellation tokens".
 
- - Supports cancellation and error propagation
+ - Greatly simplifies error handling in asynchronous code.
 
- - The implementation is thread-safe and emphasizes on clarity, high performance and low memory consumption.
+ - Defines an abstract _execution context_. This is where continuations will be executed and where concurrency relationships can be defined in concret classes.
 
- - Continuations can execute on diverse _execution contexts_, for example on a particular `dispatch_queue` in order to satisfy certain concurrency or "QoS" requirements. Other execution contexts (`NSThread`, `NSOperationQueue`) can be easily provided through [Swift extensions](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Extensions.html).
+ - Provides a method to notify the result provider when there are no "observers" for the eventual result any more.
+
 
 
 
@@ -60,23 +62,68 @@ TBD
 -----
 ## Introduction
 
-### What Is A Promise
+### What is a Future and what is a Promise?
 
-In general, a promise represents the _eventual result_  of an asynchronous task,  respectively the _error reason_ when the task fails. Equal and similar concepts are also called _future_, _deferred_ or _delay_ (see also wiki article: [Futures and promises](http://en.wikipedia.org/wiki/Futures_and_promises)).
+A promise and a future always exist as a pair. There is one and only one future for a promise. A promise and its accompanying future represent one and only one _eventual result_ of a potentially long lasting task which is associated with the promise.
 
-The `RXPromise` implementation strives to meet the requirements specified in the [Promises/A+ specification](https://github.com/promises-aplus/promises-spec) as close as possible. The specification was originally written for the JavaScript language but the architecture and the design can be implemented in virtually any language.
+> A promise and future have a 1 to 1 relationship - that is, for one promise there is exactly one future.
 
-**Asynchronous non-blocking**
+Internally, both the promise and its future represent this _eventual result_ through a _shared state_. This shared state is capable to indicate whether the promise is still pending or whether it has been fulfilled with a value or has been rejected with an error. Initially, when a promise will be created by a task the result is not yet computed. That is, there is no result yet - and the future respectively the promise is "pending". Eventually, the task will either fulfill or reject the promise (with either a value or an error) and the shared state will be assigned this result and becomes _completed_.
 
-A `RXPromise` employs the asynchronous non-blocking style. That is, a call-site can invoke an _asynchronous_ task which _immediately_ returns a `RXPromise` object. For example, starting an asynchronous network request:
+> In FutureLib, the shared state will be realized through an `Optional` of a generic enum `Result<T>`. The generic enum `Result<T>` is a "discriminated union" whose _two_ possible values are either of type `T` or of the type `ErrorType`.  That is, a `Result<T>` represents _either_ a value of type `T` or an error of type `ErrorType`. `T` is the generic type of the value of a fulfilled promise.  `ErrorType` is the type of the error of a rejected promise.
 
-```Objective-C
-RXPromise* usersPromise = [self fetchUsers];
-```
+"Resolving" the promise, that is either fulfilling or rejecting it, is the sole responsibility of the _task_ - which also "made" the promise. Assigning the shared state which holds the eventual result is only possible by means of the promise. Thus, only the task which "made" that promise should have access to this promise. The task will only pass the promise' accompanying future to its client - not the promise itself.
 
-The asynchronous method `fetchUsers` returns immediately and its _eventual_ result will be represented by the _returned_ object, a _promise_.
+A client can only _read_ the result of the task - which is encapsulated in the shared state -  by means of the future. A client can obtain the result when it is available though  "registering" one or more _continuations_. These continuations, which are functions or closures whose argument is the eventual result of the promise, get called when the future will be _completed_. Obtaining the eventual result through a continuation is a non-blocking approach.
 
-Given a promise, a call-site can obtain the result respectively the error reason and define _how_ to continue with the program _when_ the result is available through "registering" a _Continuation_.
+> Note: While it's possible to use a blocking approach to obtain the eventual result, it's not recommended to be used in production code.
+
+
+
+ Equal and similar concepts are also called _deferred_ or _delay_ (see also wiki article: [Futures and promises](http://en.wikipedia.org/wiki/Futures_and_promises)).
+
+
+**A quick example:**
+
+Suppose, a view controller implementes a method that executes some network request asynchronously. You would probably expect a method signature with a completion handler - but we don't need a completion handler parameter when utilizing futures as you will see soon. Instead this method returns a future which represents the eventual result of the network request. Say, the network request returns some JSON as a string representing an array of users:
+
+ It will be declared as below:
+
+````Swift
+    func  fetchUser() -> Future<String>  
+````
+
+In FutureLib a `Future<T>` is a generic class. The type parameter `T` equals the type of the value which will be returned from the asynchronous method when it succeeds. Here we expect to eventually obtain a `String` (a JSON) from the network request when it succeeds. When it fails, we will receive an error of type `ErrorType`.
+
+The next code snippet shows how we can obtain the result of the asynchronous method. With the `OnComplete` method, we "register" a completion handler which gets called when the future will be completed - regardless if the promise has been fulfilled or rejected. The completion handler will be passed an argument of type `Result<String>` (the type parameter `String` equals the type parameter of the `Future`) which is the actual result of the asynchronous method. A type `Result<T>` is pretty perfect for this use case, since it can hold either a value or an error.
+
+For illustration only, the completion handler just prints out whatever it got. Here's the snippet:
+
+````Swift
+
+// Get a future
+let future = self.fetchUsers()
+
+// "Register" a completion handler:
+future.onComplete { result in
+    switch result {
+        case .Success(let value):
+            print("value: \(value)")
+
+        case .Failure(let error):
+            print("error: \(error)")
+    }  
+}
+
+````
+The asynchronous method `fetchUsers()` returns immediately and its _eventual_ result will be represented by the _returned_ object, a _future_.  Internally, the method `fetchUser()` will create a promise and return the promise' accompanying future. Sometimes later, when the task finished successfully it will fulfill the promise with the computed value. When it failed, it will reject the promise with the error.
+
+What we can see here quite easily is _what_ will be executed when the future completes: the _closure expression_ given as an argument to the `OnComplete` method. The parameter `result` is the actual result of the asynchronous method. Its type is `Result<String>`. The `switch` statement simply extracts either the value or the error from the result.
+
+`OnComplete` is an asynchronous method - it will register the completion handler and return immediately. That is, the program continues with the next statement regardless of the promise' state.
+
+
+Given a future, a call-site can obtain the result respectively the error reason and define _how_ to continue with the program _when_ the result is available through "registering" a _Continuation_.
 
 Basically, a "Continuation" is a completion handler and an erorr handler, which are blocks providing the result respectively the error as a parameter. Having a promise, one or more continuations can be setup any time.
 

@@ -68,91 +68,6 @@ class FutureTests: XCTestCase {
     }
     
     
-    func testOnCompleteShouldBeExecutedWhenFulfilled() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
-        let test:()->() = {
-            let promise = Promise<String>()
-            let future = promise.future!
-            future.onComplete { r -> () in
-                Log.Info("result: \(r)")
-                switch (r) {
-                case .Success(let value): XCTAssert(value=="OK")
-                case .Failure(let error): XCTFail("unexpected error: \(error)")
-                }
-                expect.fulfill()
-            }
-            promise.fulfill("OK")
-        }
-        test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
-    }
-    
-    func testOnCompleteShouldBeExecutedWhenRejected() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
-        let test:()->() = {
-            let promise = Promise<String>()
-            let future = promise.future!
-            future.onComplete { r -> () in
-                Log.Info("result: \(r)")
-                switch (r) {
-                    case .Success: XCTFail("unexpected success")
-                    case .Failure(let error):
-                        XCTAssertTrue(TestError.Failed.isEqual(error))
-                }
-                expect.fulfill()
-            }
-            promise.reject(TestError.Failed)
-        }
-        test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
-    }
-    
-    func testOnCompleteShouldBeExecutedWhenAlreadeFulfilled() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
-        let test:()->() = {
-            let promise = Promise<String>()
-            promise.fulfill("OK")
-            let future = promise.future!
-            future.onComplete { r -> () in
-                Log.Info("result: \(r)")
-                expect.fulfill()
-            }
-        }
-        test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
-    }
-    
-    func testOnCompleteShouldBeExecutedWhenAlreadyRejected() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
-        let test:()->() = {
-            let promise = Promise<String>()
-            promise.reject(TestError.Failed)
-            let future = promise.future!
-            future.onComplete { r -> () in
-                Log.Info("result: \(r)")
-                expect.fulfill()
-            }
-        }
-        test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
-    }
-    
-    
-//    func testWeakOnCompleteShouldBeExecutedAfterFulfillIfFutureExists() {
-//        // The future in this test case should be deinited *before* the handler
-//        // queue will be resumed. Thus, the handler should actually *not* be executed.
-//        let test:()->Future<String> = {
-//            let promise = Promise<String>()
-//            let future = promise.future!
-//            future.weakOnComplete { r -> () in
-//                XCTFail("unexpected");
-//            }
-//            promise.fulfill("OK")
-//            return future
-//        }
-//        test()
-//        usleep(100000);
-//    }
     
     
     func testExample1a() {
@@ -169,22 +84,58 @@ class FutureTests: XCTestCase {
         test()
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-
-    func testExample1b() {
+    
+    func testExample10() {
+        let promise = Promise<String>()
         let expect = self.expectationWithDescription("future should be rejected")
         let test:()->() = {
-            let promise = Promise<String>()
             let future = promise.future!
             promise.reject(TestError.Failed)
             future.`catch` { error -> () in
                 Log.Info ("result: \(error)")
                 expect.fulfill()
             }
+            sleep(1)
         }
         test()
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
+
+    func testGivenARejectedFutureWhenRegisteringFailureHandlerItShouldRunItsFailureHandler() {
+        let promise = Promise<String>(error: TestError.Failed)
+        let expect = self.expectationWithDescription("future should be rejected")
+        let test:()->() = {
+            let future = promise.future!
+            //promise.reject(TestError.Failed)
+            //usleep(1000)
+            future.`catch` { error -> () in
+                Log.Info ("result: \(error)")
+                expect.fulfill()
+            }
+        }
+        test()
+        self.waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testGivenAFutureWithRegisteredFailureHandlerWhenRejectedItShouldRunItsFailureHandler() {
+        let promise = Promise<String>()
+        let expect = self.expectationWithDescription("future should be rejected")
+        let test:()->() = {
+            let future = promise.future!
+            //promise.reject(TestError.Failed)
+            //usleep(1000)
+            future.`catch` { error -> () in
+                Log.Info ("result: \(error)")
+                expect.fulfill()
+            }
+        }
+        test()
+        promise.reject(TestError.Failed)
+        self.waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+
     func testExample2() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let promise = Promise<String>()
@@ -465,7 +416,7 @@ class FutureTests: XCTestCase {
                 return Result<String>("OK")
             }
             else {
-                return Result<String>(TestError.Failed)
+                return Result<String>(error: TestError.Failed)
             }
         }
         .then { str -> Int in

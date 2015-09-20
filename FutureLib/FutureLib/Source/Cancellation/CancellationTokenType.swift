@@ -57,11 +57,11 @@ public protocol CancellationTokenType {
         - parameter f:  The closure which will be executed when a cancellation has
         been requested.
     */
-    func onCancel(on executor: ExecutionContext, cancelable: Cancelable, _ f: (Cancelable)->())
+    func onCancel(on executor: AsyncExecutionContext, cancelable: Cancelable, _ f: (Cancelable)->())
     
     
     /**
-        Executes closure `f` on a given execution context when its associated
+        Executes closure `f` on the given execution context when its associated
         `CancellationRequest` has been cancelled.
         
         Registering a closure shall not retain `self`.
@@ -83,35 +83,9 @@ public protocol CancellationTokenType {
         - parameter f:  The closure which will be executed when a cancellation has
         been requested.
     */
-    func onCancel(on executor: ExecutionContext, f: ()->())
+    func onCancel(on executor: AsyncExecutionContext, f: ()->())
 
 
-
-
-    /**
-        Executes closure `f` on a given execution context when its associated
-        `CancellationRequest` has been cancelled.
-        
-        Registering a closure shall not retain `self`.
-        
-        **Remarks:**
-        
-        When the corresponding cancellation request has not been cancelled it may
-        deinit at any time, or it may have been already deinited when this method
-        will be called. In this case, registered closures will not execute, but
-        instead the closure will be deinited itself and any imported strong references
-        will be released.
-        
-        If the corresponding cancellation request has been cancelled the closure
-        `f` will be dispatched immediately on the specified execution context.
-        
-        
-        - parameter on: An execution context where the colsure will be scheduled on.
-        
-        - parameter f:  The closure which will be executed when a cancellation has
-        been requested.
-    */
-    func onCancel(f: ()->())
 }
 
 

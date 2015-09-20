@@ -2,11 +2,13 @@
 //  FutureBaseTests.swift
 //  FutureLib
 //
-//  Created by Andreas Grosam on 04/08/15.
+//  Created by Andreas Grosam on 19/09/15.
 //  Copyright © 2015 Andreas Grosam. All rights reserved.
 //
 
 import XCTest
+import FutureLib
+
 
 class FutureBaseTests: XCTestCase {
 
@@ -20,16 +22,40 @@ class FutureBaseTests: XCTestCase {
         super.tearDown()
     }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
+    func testExample1a() {
+        let expect = self.expectationWithDescription("future should be fulfilled")
+        let test:()->() = {
+            let promise = Promise<String>()
+            let future: FutureBaseType = promise.future!
+            promise.fulfill("OK")
+            let ec = GCDAsyncExecutionContext()
+            future.onCompleteFuture(on: ec) { f in
+                expect.fulfill()
+            }
+            
         }
+        test()
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
 
+    
+    
+    
+    func testExample1b() {
+        let expect = self.expectationWithDescription("future should be fulfilled")
+        let test:()->() = {
+            let promise = Promise<String>()
+            let future = promise.future!
+            promise.fulfill("OK")
+            
+            let ec = GCDAsyncExecutionContext()
+            future.onCompleteFuture(on: ec) { f in
+                expect.fulfill()
+            }
+            
+        }
+        test()
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
 }

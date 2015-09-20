@@ -26,7 +26,7 @@ class FutureFuncTests: XCTestCase {
         // This is an example of a functional test case.
         
         let r = future {
-            Result<String>("OK")
+            Result("OK")
         }
         
         
@@ -34,4 +34,47 @@ class FutureFuncTests: XCTestCase {
     }
 
 
+    func testFutureFuncCreatesFulfilledFuture() {
+        let expect1 = self.expectationWithDescription("future should be fulfilled")
+        
+        let f = future { Result("OK") }
+        XCTAssertNotNil(f)
+        
+        f.onComplete { _ in
+            expect1.fulfill()
+        }
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+        XCTAssertTrue(f.isCompleted)
+    }
+    
+    func testFutureFuncCreatesRejectedFuture() {
+        let expect1 = self.expectationWithDescription("future should be rejected")
+        let f = future { Result<Void>(error: TestError.Failed) }
+        XCTAssertNotNil(f)
+        
+        f.onFailure { _ in
+            expect1.fulfill()
+        }
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+        XCTAssertTrue(f.isCompleted)
+    }
+    
+    func testPromiseVoidCtorWithErrorCreatesRejectedFuture() {
+        let expect1 = self.expectationWithDescription("future should be rejected")
+        let p = Promise<Void>(error: TestError.Failed)
+        
+        let future = p.future!
+        XCTAssertNotNil(future)
+        XCTAssertTrue(future.isCompleted)
+        
+        future.onFailure { _ in
+            expect1.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    
+    
+    
 }

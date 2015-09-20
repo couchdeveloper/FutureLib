@@ -85,7 +85,7 @@ public struct GCDSyncExecutionContext : SyncExecutionContext {
     
     let _queue : dispatch_queue_t
     
-    public init(_ q: dispatch_queue_t = dispatch_get_global_queue(0, 0)) {
+    public init(_ q: dispatch_queue_t = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
         _queue = q
     }
     

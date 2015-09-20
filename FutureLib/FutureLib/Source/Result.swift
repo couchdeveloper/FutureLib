@@ -42,7 +42,7 @@ public enum Result<T>{
     
         - parameter error: The error with which Result will be initialzed.
     */
-    public init(_ error: ErrorType) {
+    public init(error: ErrorType) {
         self = Failure(error)
     }
     
@@ -86,7 +86,7 @@ public enum Result<T>{
         case .Success(let s):
             return Result<U>(f(s))
         case .Failure(let error):
-            return Result<U>(error)
+            return Result<U>(error: error)
         }
     }
     
@@ -95,7 +95,7 @@ public enum Result<T>{
         case .Success(let value):
             return f(value)
         case .Failure(let error):
-            return Result<U>(error)
+            return Result<U>(error: error)
         }
     }
     

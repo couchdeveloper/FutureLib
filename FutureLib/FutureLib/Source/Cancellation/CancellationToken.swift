@@ -10,7 +10,7 @@
     The CancelationToken is passed from the client to a task when it creates the task
     to let it know when the client has requested a cancellation.
 */
-public struct CancellationToken  {
+public struct CancellationToken : CancellationTokenType  {
     
     
     private weak var _cancellationRequest : CancellationRequest?

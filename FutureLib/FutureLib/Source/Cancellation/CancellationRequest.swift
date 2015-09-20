@@ -45,16 +45,18 @@ internal class SharedState {
     that they are no more interested in the result. The task will be notified about the
     cancellation request signaled by its client and may now cancel its operation.
 */
-public class CancellationRequest  {
+public class CancellationRequest : CancellationRequestType {
     
+    public typealias CancellationToken = FutureLib.CancellationToken
     
-    private var _queue : dispatch_queue_t? = dispatch_queue_create("test", DISPATCH_QUEUE_SERIAL)
+    private var _queue : dispatch_queue_t?
     private let _sharedState = SharedState()
     
     /**
         Designated initializer. Initializes a CancellationRequest object.
     */
     public init() {
+        _queue =  dispatch_queue_create("FutureLib.CancellationRequest.HandlerQueue (\(id)", DISPATCH_QUEUE_SERIAL)
         dispatch_suspend(_queue!)
     }
 
@@ -111,7 +113,7 @@ public class CancellationRequest  {
         CancellationTokenType.
     */
     public final var token : CancellationToken {
-        return CancellationToken(cancellationRequest: self)
+        return FutureLib.CancellationToken(cancellationRequest: self)
     }
     
     

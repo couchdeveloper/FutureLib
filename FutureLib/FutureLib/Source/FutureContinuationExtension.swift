@@ -15,6 +15,8 @@ import Dispatch
 
 extension Future {
     
+    //typealias ValaueType = T
+    
     //    /**
     //        Registers a continuation with a success handler `onSuccess` which takes a value
     //        of type `T` and an error handler `onError` which takes an error of type `ErrorType`
@@ -114,7 +116,7 @@ extension Future {
                         strongReturnedFuture.resolve(Result(f(value)))
                     }
                 case .Failure(let error):
-                    strongReturnedFuture._resolve(Result(error))
+                    strongReturnedFuture._resolve(Result(error: error))
                 }
             }
         }
@@ -135,7 +137,7 @@ extension Future {
                         strongReturnedFuture.resolve(Result(f(value)))
                     }
                 case .Failure(let error):
-                    strongReturnedFuture._resolve(Result(error))
+                    strongReturnedFuture._resolve(Result(error: error))
                 }
             }
         }
@@ -170,10 +172,10 @@ extension Future {
                 switch result {
                 case .Success(let value):
                     executor.execute { [value] in
-                        strongReturnedFuture.resolve(Result(f(value)))
+                        strongReturnedFuture.resolve(Result(error: f(value)))
                     }
                 case .Failure(let error):
-                    strongReturnedFuture._resolve(Result(error))
+                    strongReturnedFuture._resolve(Result(error: error))
                 }
             }
         }
@@ -191,10 +193,10 @@ extension Future {
                 switch result {
                 case .Success(let value):
                     executor.execute { [value] in
-                        strongReturnedFuture.resolve(Result(f(value)))
+                        strongReturnedFuture.resolve(Result(error: f(value)))
                     }
                 case .Failure(let error):
-                    strongReturnedFuture._resolve(Result(error))
+                    strongReturnedFuture._resolve(Result(error: error))
                 }
             }
         }
@@ -461,7 +463,7 @@ extension Future {
                     strongReturnedFuture._resolve(Result(value))
                 case .Failure(let error):
                     executor.execute {
-                        strongReturnedFuture.resolve(Result(f(error)))
+                        strongReturnedFuture.resolve(Result(error: f(error)))
                     }
                 }
             }
@@ -482,7 +484,7 @@ extension Future {
                     strongReturnedFuture._resolve(Result(value))
                 case .Failure(let error):
                     executor.execute {
-                        strongReturnedFuture.resolve(Result(f(error)))
+                        strongReturnedFuture.resolve(Result(error: f(error)))
                     }
                 }
             }
@@ -646,7 +648,7 @@ extension Future {
         let returnedFuture = Future<T>()
         onComplete(on: executor, cancellationToken: cancellationToken) { [weak returnedFuture] _  in
             let r = f()
-            returnedFuture?.resolve(Result(r))
+            returnedFuture?.resolve(Result(error: r))
         }
         return returnedFuture
     }
@@ -658,7 +660,7 @@ extension Future {
         let returnedFuture = Future<T>()
         onComplete(on: executor) { [weak returnedFuture] _  in
             let r = f()
-            returnedFuture?.resolve(Result(r))
+            returnedFuture?.resolve(Result(error: r))
         }
         return returnedFuture
     }

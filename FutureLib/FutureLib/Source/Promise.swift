@@ -21,6 +21,7 @@ import Dispatch
 public enum PromiseError : Int, ErrorType {
     
     case BrokenPromise = -1
+    case Timeout = -2
     
 }
 
@@ -45,12 +46,12 @@ private class RootFuture<T> : Future<T> {
         super.init()
     }
     
-    private override init(_ value:T) {
-        super.init(value)
+    private override init(value : T) {
+        super.init(value: value)
     }
     
-    private override init(_ error:ErrorType) {
-        super.init(error)
+    private override init(error : ErrorType) {
+        super.init(error: error)
     }
     
     deinit {
@@ -102,8 +103,8 @@ public class Promise<T>
     
         - parameter value: The value which fulfills the future.
     */
-    public init(_ value : ValueType) {
-        _future = RootFuture<T>(value)
+    public init(value : ValueType) {
+        _future = RootFuture<T>(value: value)
         _weakFuture = _future
     }
     
@@ -113,14 +114,14 @@ public class Promise<T>
         - parameter error: The error which rejects the future.
     */
     public init(error : ErrorType) {
-        _future = RootFuture<T>(error)
+        _future = RootFuture<T>(error: error)
         _weakFuture = _future
     }
     
     deinit {
         if let future = _weakFuture {
             if !future.isCompleted {
-                future.resolve(Result(PromiseError.BrokenPromise))
+                future.resolve(Result(error: PromiseError.BrokenPromise))
             }
         }
     }
@@ -191,7 +192,7 @@ public class Promise<T>
     */
     public final func reject(error : ErrorType) {
         if let future = _weakFuture {
-            future.resolve(Result(error))
+            future.resolve(Result(error: error))
         }
         else {
             Log.Warning("Cannot reject the future: the future has been destroyed prematurely.")
@@ -199,7 +200,14 @@ public class Promise<T>
     }
     
     
-    
+    public final func resolve(result : Result<T>) {
+        if let future = _weakFuture {
+            future.resolve(result)
+        }
+        else {
+            Log.Warning("Cannot reject the future: the future has been destroyed prematurely.")
+        }
+    }
     
     
 }

@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import FutureLib
 
 class PromiseTests: XCTestCase {
 
@@ -19,17 +20,55 @@ class PromiseTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
+    
+    
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
+    func testPromiseVoidDefaultCtorCreatesPendingFuture() {
+        let expect1 = self.expectationWithDescription("future should be fulfilled")
+        let p = Promise<Void>()
+        
+        let future = p.future!
+        XCTAssertNotNil(future)
+        XCTAssertFalse(future.isCompleted)
+        
+        future.onComplete { _ in
+            expect1.fulfill()
         }
+        
+        p.fulfill()
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
+    
+    func testPromiseVoidCtorWithValueCreatesFulfilledFuture() {
+        let expect1 = self.expectationWithDescription("future should be fulfilled")
+        let p = Promise<Void>(value: ())
+        
+        let future = p.future!
+        XCTAssertNotNil(future)
+        XCTAssertTrue(future.isCompleted)
+        
+        future.onComplete { _ in
+            expect1.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    func testPromiseVoidCtorWithErrorCreatesRejectedFuture() {
+        let expect1 = self.expectationWithDescription("future should be fulfilled")
+        let p = Promise<Void>(error: TestError.Failed)
+        
+        let future = p.future!
+        XCTAssertNotNil(future)
+        XCTAssertTrue(future.isCompleted)
+        
+        future.onFailure { _ in
+            expect1.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    
 
 }

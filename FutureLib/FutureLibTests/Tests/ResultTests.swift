@@ -29,7 +29,7 @@ class ResultTests: XCTestCase {
         r.map {
             XCTAssert($0 == 3, "Failed")
         }
-        r.map(print)
+        r.map { print($0) }
     }
     
     func testExample2() {
@@ -38,17 +38,17 @@ class ResultTests: XCTestCase {
         func stringToDouble(s:String) -> Result<Double> {
             let buffer = s.cStringUsingEncoding(NSUTF8StringEncoding);
             errno = 0
-            var endptr:UnsafeMutablePointer<Int8> = nil
+            var endptr: UnsafeMutablePointer<Int8> = nil
             let x = strtod(buffer!, &endptr)
-            if UnsafePointer<Int8>(buffer!) == endptr {
+            if UnsafeMutablePointer<Int8>(buffer!) == endptr {
                 let userInfo = [NSLocalizedFailureReasonErrorKey: "no digits"]
-                return Result<Double>(NSError(domain: "StringToDouble", code: -1, userInfo: userInfo))
+                return Result<Double>(error: NSError(domain: "StringToDouble", code: -1, userInfo: userInfo))
             }
             else if errno != 0 {
                 let errorString:String = String.fromCString(strerror(errno))!
                 let userInfo = [NSLocalizedFailureReasonErrorKey: errorString]
                 let error = NSError(domain: "StringToDouble", code: -1, userInfo: userInfo)
-                return Result<Double>(error)
+                return Result<Double>(error: error)
             }
             else  {
                 return Result<Double>(x)
@@ -60,7 +60,10 @@ class ResultTests: XCTestCase {
 //            $0
 //        }
         
-        Result<Double>(1.23).map { $0 }.map(print)
+        let r1 = Result<Double>(1.23)
+        let r2 : Result<Double> = r1.map { $0 }
+        r2.map() { print($0) }
+        Result<Double>(1.23).map { $0 }.map { print("\($0)") }
     }
     
     
@@ -81,17 +84,16 @@ class ResultTests: XCTestCase {
         let e = TestError.Test
         print(e)
         
-        r.map { $0 }.map(print)
-        
+        r.map { $0 }.map { print("\($0)") }
     }
     
     
     func testResultWithErrorThrows() {
         
-        let r = Result<Int>(NSError(domain: "Test", code: -1, userInfo: nil))
+        let r = Result<Int>(error: NSError(domain: "Test", code: -1, userInfo: nil))
         
         do {
-            let value = try r.value()
+            _ = try r.value()
             XCTFail("expected exception")
         }
         catch let ex {
@@ -101,6 +103,18 @@ class ResultTests: XCTestCase {
         }
         
     }
+    
+    
+    func testResultVoidDefaultCtorYieldsSucceeded() {
+        let result = Result()
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func testResultVoidDefaultCtorWithErrorYieldsFailed() {
+        let result = Result<Void>(error: TestError.Failed)
+        XCTAssertTrue(result.isFailure)
+    }
+    
     
 //    func testEqualityOperator() {
 //        let r1 = Result<Int>(3)

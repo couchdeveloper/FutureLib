@@ -22,7 +22,7 @@
 public protocol CancellationRequestType  {
     
     
-    typealias CancellationTokenT : CancellationTokenType
+    typealias CancellationTokenType
     
     /**
         Returns true if a cancellation has been requested.
@@ -43,7 +43,7 @@ public protocol CancellationRequestType  {
     /**
         Returns the cancellation token.
     */
-    var token : CancellationTokenT { get }
+    var token : CancellationTokenType { get }
     
 }
 

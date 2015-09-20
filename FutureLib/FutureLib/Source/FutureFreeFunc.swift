@@ -9,110 +9,112 @@
 import Dispatch
 
 /**
-    Asynchronously executes the closure f, which is usually a CPU-bound function
-    computating a result which takes a significant time to complete, on a private
-    execution context returning a future.
+    Returns a future which will be completed with the result of function `f`
+    which will be executed on the given execution context. Function `f` is usually
+    a CPU-bound function computating a result which takes a significant time to
+    complete.
 
-    - parameter f:  A closure which takes no parameters and which returns a value
-                    of type Result<R> representing the result of the closure.
-
-    - returns:      A Future whose ValueType equals the return type of the given
-                    closure.
-*/
-public func future<R>(f:()->Result<R>) -> Future<R> {
-    let returnedFuture :Future<R> = Future<R>()
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), {
-        switch f() {
-        case .Success(let value): returnedFuture.resolve(Result(value))
-        case .Failure(let error): returnedFuture.resolve(Result(error))
-        }
-    })
-    return returnedFuture
-}
-
-
-/**
-    Asynchronously executes the closure `f`, which is usually a CPU-bound function
-    computating a result which takes a significant time to complete, on a private
-    execution context returning a future.
-
-    - parameter f:  A closure which takes no parameters and which returns a value
-                    of type `R` representing the result of the closure. If the
-                    closure fails it throws an error.
-
-    - returns:      A `Future` whose `ValueType` equals the return type of the
-                    given closure.
-*/
-public func future<R>(f:() throws -> R) -> Future<R> {
-    let returnedFuture :Future<R> = Future<R>()
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), {
-        do {
-            let value = try f()
-            returnedFuture.resolve(Result(value))
-        }
-        catch let error {
-            returnedFuture.resolve(Result(error))
-        }
-    })
-    return returnedFuture
-}
-
-
-
-/**
-    Asynchronously executes the closure `f`, which is usually a CPU-bound function
-    computating a result which takes a significant time to complete, on the
-    given execution context `executor` returning a future.
-
-    - parameter executor:   An execution context where the closure `f` will be
+    - parameter executor:   An execution context where the function `f` will be
                             executed.
 
-    - parameter f:  A closure which takes no parameters and which returns a value
-                    of type Result<R> representing the result of the closure.
+    - parameter f:  A function takes no parameters and returns a value of type 
+                    `Result<T>`.
 
-    - returns:      A Future whose `ValueType` equals the return type of the given
-                    closure.
+    - returns:      A `Future` whose `ValueType` equals `T`.
 */
-public func future<R>(on executor: ExecutionContext, f:()->Result<R>) -> Future<R> {
-    let returnedFuture :Future<R> = Future<R>()
+public func future<T>(on executor: ExecutionContext = GCDAsyncExecutionContext(), _ f:()->Result<T>) -> Future<T> {
+    let returnedFuture :Future<T> = Future<T>()
     executor.execute() {
         switch f() {
         case .Success(let value): returnedFuture.resolve(Result(value))
-        case .Failure(let error): returnedFuture.resolve(Result(error))
+        case .Failure(let error): returnedFuture.resolve(Result(error: error))
         }
     }
     return returnedFuture
 }
 
 
-/**
-    Asynchronously executes the closure `f`, which is usually a CPU-bound function
-    computating a result which takes a significant time to complete, on the given
-    execution context returning a future.
 
-    - parameter executor:   An execution context where the closure `f` will be
+
+/**
+    Returns a future which will be completed with the result of function `f` 
+    which will be executed on the given execution context. Function `f` is usually 
+    a CPU-bound function computating a result which takes a significant time to
+    complete.
+
+    - parameter executor:   An execution context where the function `f` will be
                             executed.
 
-    - parameter f:  A closure which takes no parameters and which returns a value
-                    of type `R` representing the result of the closure. If the
-                    closure fails it throws an error.
+    - parameter f:  A function takes no parameters, returns a value of type `T` 
+                    and which may throw.
 
     - returns:      A `Future` whose `ValueType` equals the return type of the
-                    given closure.
+                    function `f`.
 */
-public func future<R>(on executor: ExecutionContext, f:() throws ->R) -> Future<R> {
-    let returnedFuture :Future<R> = Future<R>()
+public func future<T>(on executor: ExecutionContext = GCDAsyncExecutionContext(), _ f:() throws -> T) -> Future<T> {
+    let returnedFuture :Future<T> = Future<T>()
     executor.execute() {
         do {
             let value = try f()
             returnedFuture.resolve(Result(value))
         }
         catch let error {
-            returnedFuture.resolve(Result(error))
+            returnedFuture.resolve(Result(error: error))
         }
     }
     return returnedFuture
 }
+
+/**
+    Returns a future which will be completed with the result of function `f`
+    which will be executed on the given execution context. Function `f` is usually
+    a CPU-bound function computating a result which takes a significant time to
+    complete.
+
+    - parameter executor:   An execution context where the function `f` will be
+                            executed.
+
+    - parameter f:          A function takes no parameters and which returns a  
+                            value of type `T`.
+
+    - returns:      A Future whose `ValueType` equals T.
+*/
+public func future<T>(on executor: ExecutionContext = GCDAsyncExecutionContext(), _ f:()-> T) -> Future<T> {
+    let returnedFuture :Future<T> = Future<T>()
+    executor.execute {
+        returnedFuture.resolve(Result(f()))
+    }
+    return returnedFuture
+}
+
+
+
+/**
+    Returns a future which will be completed with the result of function `f`
+    which will be executed on the given execution context. Function `f` is usually
+    a CPU-bound function computating a result which takes a significant time to
+    complete.
+
+    - parameter executor:   An execution context where the function `f` will be
+    executed.
+
+    - parameter f:  A function takes no parameters and returns a value of type
+                    `T`.
+
+    - returns:      A `Future` whose `ValueType` equals `T`.
+*/
+public func future<T>(
+        on executor: ExecutionContext = GCDAsyncExecutionContext(),
+        @autoclosure(escaping) _ f:() -> T)
+-> Future<T>
+{
+    let returnedFuture = Future<T>()
+    executor.execute() {
+        returnedFuture.resolve(Result(f()))
+    }
+    return returnedFuture
+}
+
 
 
 

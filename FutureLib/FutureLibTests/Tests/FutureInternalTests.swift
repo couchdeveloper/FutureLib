@@ -7,6 +7,20 @@
 //
 
 import XCTest
+@testable import FutureLib
+
+
+/**
+A helper execution context which synchronously executes a given closure on the 
+_current_ execution context. This class is used to test private behavior of Future.
+*/
+struct SyncCurrent : SyncExecutionContext {
+    
+    internal func execute(f:()->()) {
+        f()
+    }
+}
+
 
 class FutureInternalTests: XCTestCase {
 
@@ -20,16 +34,42 @@ class FutureInternalTests: XCTestCase {
         super.tearDown()
     }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    //
+    // Test if internal future methods are synchronized with the synchronization context.
+    //
+    
+    func testFutureInternalsExecuteOnTheSynchronizationQueue1() {
+        let expect = self.expectationWithDescription("future should be fulfilled")
+        let promise = Promise<String>()
+        let test:()->() = {
+            let future = promise.future!
+            future.onComplete(on: SyncCurrent()) { r -> () in
+                XCTAssertTrue(future.sync().is_synchronized())
+                expect.fulfill()
+            }
+        }
+        test()
+        promise.fulfill("OK")
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
+
+    
+    
+    func testFutureInternalsExecuteOnTheSynchronizationQueue2() {
+        let expect = self.expectationWithDescription("future should be fulfilled")
+        let promise = Promise<String>()
+        let cr = CancellationRequest()
+        let test:()->() = {
+            let future = promise.future!
+            future.onComplete(on: SyncCurrent(), cancellationToken: cr.token) { r -> () in
+                XCTAssertTrue(future.sync().is_synchronized())
+                expect.fulfill()
+            }
         }
+        test()
+        promise.fulfill("OK")
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
 
 }
