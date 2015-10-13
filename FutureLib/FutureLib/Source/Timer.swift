@@ -48,12 +48,15 @@ public class Timer {
 
         - return: An initialized Timer object.
     */
-    public init(delay : TimeInterval, tolerance : TimeInterval, queue : dispatch_queue_t, f:TimerHandler)
+    public init(delay: TimeInterval, tolerance: TimeInterval, cancellationToken: CancellationTokenType = CancellationTokenNone(), queue: dispatch_queue_t, f: TimerHandler)
     {
         _interval = Int64((delay * Double(NSEC_PER_SEC)) + 0.5)
         _leeway = UInt64((tolerance * Double(NSEC_PER_SEC)) + 0.5)
         _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
         
+        cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
+            dispatch_source_cancel(self._timer);
+        }
         dispatch_source_set_event_handler(_timer) {
             dispatch_source_cancel(self._timer); // one shot timer
             f(self)
@@ -75,18 +78,11 @@ public class Timer {
     public final func start() {
         let time = dispatch_time(DISPATCH_TIME_NOW, _interval)
         dispatch_source_set_timer(_timer, time, DISPATCH_TIME_FOREVER /*one shot*/, _leeway);
-        dispatch_resume(_timer);
+        dispatch_resume(_timer);            
     }
 
-    /**
-        Cancels the timer.
 
-        The timer becomes invalid and its block will not be executed.
-    */
-    public final func cancel() {
-        dispatch_source_cancel(_timer);
-    }
-
+    
     /**
         Returns `True` if the timer has not yet been fired and it is not cancelled.
     */

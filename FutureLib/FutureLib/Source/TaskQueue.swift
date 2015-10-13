@@ -37,7 +37,7 @@ public class TaskQueue {
                 }
                 assert(self._concurrentTasks <= self._maxConcurrentTasks)
                 f(ct: self._cancellationRequest.token)
-                .onCompleteFuture(on: GCDAsyncExecutionContext(self._sync_queue)) { _ in
+                .continueWith(on: GCDAsyncExecutionContext(self._sync_queue)) { _ in
                     if (--self._concurrentTasks < self._maxConcurrentTasks && self._suspended) {
                         self._suspended = false
                         dispatch_resume(self._queue)

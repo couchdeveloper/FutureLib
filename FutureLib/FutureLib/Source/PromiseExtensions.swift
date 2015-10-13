@@ -12,7 +12,7 @@ import Dispatch
 
 
 public func promiseWithTimeout(timeout : Double) -> Promise<Void> {
-    let promise = Promise<Void>.completeAfter(timeout, with: Result<Void>(error: PromiseError.Timeout))
+    let promise = Promise<Void>.resolveAfter(timeout, with: Result<Void>(error: PromiseError.Timeout))
     return promise
 }
 
@@ -21,13 +21,15 @@ public func promiseWithTimeout(timeout : Double) -> Promise<Void> {
 
 extension Promise {
 
-    public static func completeAfter(delay:Double, with result : Result<T>) -> Promise {
+    public static func resolveAfter(delay:Double, with result : Result<T>) -> Promise {
         let promise = Promise<T>()
-        let timer = Timer(delay: delay, tolerance: 0, queue: DISPATCH_TARGET_QUEUE_DEFAULT) { timer in
+        let cr = CancellationRequest()
+        let timer = Timer(delay: delay, tolerance: 0, cancellationToken: cr.token, queue: DISPATCH_TARGET_QUEUE_DEFAULT) { timer in
             promise.resolve(result)
         }
+        timer.start()
         promise.onRevocation {
-            timer.cancel()
+            cr.cancel()
         }
         return promise
     }

@@ -29,7 +29,7 @@ class FutureBaseTests: XCTestCase {
             let future: FutureBaseType = promise.future!
             promise.fulfill("OK")
             let ec = GCDAsyncExecutionContext()
-            future.onCompleteFuture(on: ec) { f in
+            future.continueWith(on: ec) { f in
                 expect.fulfill()
             }
             
@@ -49,7 +49,7 @@ class FutureBaseTests: XCTestCase {
             promise.fulfill("OK")
             
             let ec = GCDAsyncExecutionContext()
-            future.onCompleteFuture(on: ec) { f in
+            future.continueWith(on: ec) { f in
                 expect.fulfill()
             }
             

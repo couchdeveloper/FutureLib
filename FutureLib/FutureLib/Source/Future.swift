@@ -33,15 +33,19 @@ internal extension Future {
 }
 
 
-
+/**
+    A protocol for a Future declaring the basic methods which do not dependend on
+    the ValueType of the future. This protocol can be used in polymorphic containers
+    or sequences of futures.
+*/
 public protocol FutureBaseType : class {
     
-
     var isCompleted: Bool { get }
+    var isSuccess:   Bool { get }
+    var isFailure:   Bool { get }
     
-    func onCompleteFuture(on ec: ExecutionContext, _ f : (FutureBaseType)->())
-    func onCompleteFuture(on ec: ExecutionContext, cancellationToken: CancellationToken, _ f: FutureBaseType -> ())
-    func onCompleteFuture(on ec: ExecutionContext, cancellationToken: CancellationToken?, _ f: FutureBaseType -> ())
+    func continueWith(on ec: ExecutionContext, _ f : (FutureBaseType)->())
+    func continueWith(on ec: ExecutionContext, cancellationToken: CancellationTokenType, _ f: FutureBaseType -> ())
     
     
     /**
@@ -78,9 +82,32 @@ public protocol FutureType : FutureBaseType {
     */
     var result: Result<ValueType>? { get }
     
-    func onComplete<U>(on ec: ExecutionContext, cancellationToken: CancellationToken, _ f: Result<ValueType> -> U)
+    func onComplete<U>(on ec: ExecutionContext, cancellationToken: CancellationTokenType, _ f: Result<ValueType> -> U)
     func onComplete<U>(on ec: ExecutionContext, _ f: Result<ValueType> -> U)
 }
+
+
+
+
+
+extension FutureBaseType {
+
+    public final func continueWith(
+        on ec: ExecutionContext = GCDAsyncExecutionContext(),
+        cancellationToken: CancellationTokenType?,
+        _ f: FutureBaseType -> ())
+    {
+        if let ct = cancellationToken {
+            continueWith(on: ec, cancellationToken: ct, f)
+        }
+        else {
+            continueWith(on: ec, f)
+        }
+    }
+
+    
+}
+
 
 
 
@@ -137,36 +164,22 @@ public class Future<T> : FutureType {
         Returns true if the future has been completed.
     */
     public final var isCompleted: Bool {
-        var result = false
-        Sync.read_sync_safe() {
-            result = self._result != nil
-        }
-        return result
+        return result != nil
     }
 
-//    public var isSuccess throws:  Bool {
-//        if let r = result {
-//            switch r {
-//                case .Success: return true
-//                case .Failure: return false
-//            }
-//        }
-//        else {
-//            throw FutureError.NotCompleted
-//        }
-//    }
+    public var isSuccess:  Bool {
+        if let r = result {
+            return r.isSuccess
+        }
+        return false
+    }
 
-//    public var isFailure throws: Bool {
-//        if let r = result {
-//            switch r {
-//            case .Success: return false
-//            case .Failure: return true
-//            }
-//        }
-//        else {
-//            throw FutureError.NotCompleted
-//        }
-//    }
+    public var isFailure: Bool {
+        if let r = result {
+           return r.isFailure
+        }
+        return false
+    }
     
     
     /**
@@ -176,14 +189,6 @@ public class Future<T> : FutureType {
         returns: An optional Result
     */
     public final var result: Result<ValueType>? {
-        var result: Result<ValueType>? = nil
-        Sync.read_sync() {
-            result = self._result
-        }
-        return result
-    }
-    
-    public final func get() -> Any? {
         var result: Result<ValueType>? = nil
         Sync.read_sync() {
             result = self._result
@@ -289,8 +294,8 @@ public class Future<T> : FutureType {
         Alias for `bind` (aka resolveWith)
     */
     internal final func resolve(other: Future) {
-        Sync.write_async() {
-            self._resolve(other)
+        other.onComplete(on:SynchronousCurrent()) { [weak self] otherResult -> () in
+            self?.resolve(otherResult)
         }
     }
     
@@ -302,26 +307,7 @@ public class Future<T> : FutureType {
         }
     }
     
-    
-    // Registers a completion function for the given future `other` which
-    // completes `self` when other completes with the same result. That is, future 
-    // `other` becomes the resolver of `self` - iff `self` still exists. `self` 
-    // should not be resolved by another resolver.
-    // Retains `other` until `self` remains pending.
-    // Alias for bind (aka resolveWith)
-    internal final func _resolve(other: Future) {
-        assert(Sync.is_synchronized())
-        // Note: unless Future is a protocol, we know that onComplete executes its
-        // continuations on the Future class's sync_queue. So, we can use SynchronousCurrent()
-        // as its execution context which executes on the sync_queue as required
-        // for executing _register as an optimization.
-        // Otherwise we would have to use SyncExecutionContext(queue: Sync.sync_queue)
-        other.onComplete(on:SynchronousCurrent()) { [weak self] otherResult -> () in
-            self?._resolve(otherResult);
-            return
-        }
-    }
-    
+        
     // Completes `self` with the given result.
     internal final func _resolve(result : Result<ValueType>) {
         assert(Sync.is_synchronized())
@@ -353,90 +339,83 @@ public class Future<T> : FutureType {
     */
     public final func onComplete<U>(
         on ec: ExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: Result<ValueType> -> U)
     {
+        if (cancellationToken.isCancellationRequested) {
+            ec.execute{
+                f(Result<ValueType>(error: CancellationError.Cancelled))
+            }
+            return
+        }
+        if let r = self.result {
+            ec.execute {
+                f(r)
+            }
+            return
+        }
         Sync.write_async {
-            if (cancellationToken.isCancellationRequested) {
-                ec.execute{
-                    f(Result<ValueType>(error: CancellationError.Cancelled))
-                }
-                return
-            }
-            if let r = self._result {
+            let id = self._cr.register { result in
                 ec.execute {
-                    f(r)
-                }
+                    self
+                    f(result)
+                }  // import `self` into the closure in order to keep a strong
+                // reference to self until after self will be completed.
             }
-            else {
-                let id = self._cr.register { result in
+            cancellationToken.onCancel(on: GCDAsyncExecutionContext(Sync.sync_queue)) {
+                switch self._cr {
+                case .Empty: break
+                case .Single, .Multiple:
+                    let callback = self._cr.unregister(id)
+                    assert(callback != nil)
                     ec.execute {
-                        self
-                        f(result)
-                    }  // import `self` into the function in order to keep a strong
-                    // reference to self until after self will be completed.
-                }
-                cancellationToken.onCancel(on: GCDAsyncExecutionContext(Sync.sync_queue)) {
-                    switch self._cr {
-                    case .Empty: break
-                    case .Single, .Multiple:
-                        let callback = self._cr.unregister(id)
-                        assert(callback != nil)
-                        ec.execute {
-                            callback!.continuation(Result<ValueType>(error: CancellationError.Cancelled))
-                        }
+                        callback!.continuation(Result<ValueType>(error: CancellationError.Cancelled))
                     }
                 }
             }
         }
     }
 
-    
-    
-    /**
-        When this future is completed the function `f` will be executed on the
-        given execution context with the future's result as its argument.
-        
-        The method retains `self` until it is completed.
-        
-        - parameter on: The execution context where the function `f` will be executed.
-        - parameter f: A function taking the result of the future as its argument.
-    */
+
     public final func onComplete<U>(
         on ec: ExecutionContext = GCDAsyncExecutionContext(),
-        _ f : Result<ValueType> -> U)
-    {
-        Sync.write_async {
-            if let r = self._result {
-                ec.execute {
-                    f(r)
-                }
-            }
-            else {
-                self._cr.register { result in
-                    ec.execute {
-                        self
-                        f(result)
-                    } // import `self` into the function in order to keep a strong
-                    // reference to self until after self will be completed.
-                }
-            }
-        }
-    }
-    
-    
-    public final func onComplete<U>(
-        on ec: ExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken?,
         _ f: Result<ValueType> -> U)
     {
-        if let ct = cancellationToken {
-            onComplete(on: ec, cancellationToken: ct, f)
-        }
-        else {
-            onComplete(on: ec, f)
-        }
+        onComplete(on: ec, cancellationToken: CancellationTokenNone(), f)
     }
+    
+    
+//    /**
+//        When this future is completed the function `f` will be executed on the
+//        given execution context with the future's result as its argument.
+//        
+//        The method retains `self` until it is completed.
+//        
+//        - parameter on: The execution context where the function `f` will be executed.
+//        - parameter f: A function taking the result of the future as its argument.
+//    */
+//    public final func onComplete<U>(
+//        on ec: ExecutionContext = GCDAsyncExecutionContext(),
+//        _ f : Result<ValueType> -> U)
+//    {
+//        Sync.write_async {
+//            if let r = self._result {
+//                ec.execute {
+//                    f(r)
+//                }
+//            }
+//            else {
+//                self._cr.register { result in
+//                    ec.execute {
+//                        self
+//                        f(result)
+//                    } // import `self` into the function in order to keep a strong
+//                    // reference to self until after self will be completed.
+//                }
+//            }
+//        }
+//    }
+    
     
 
     
@@ -449,7 +428,7 @@ public class Future<T> : FutureType {
         - parameter on: The execution context where the function `f` will be executed.
         - parameter f: A function taking the future as its argument.
     */
-    public final func onCompleteFuture (
+    public final func continueWith(
         on ec: ExecutionContext = GCDAsyncExecutionContext(),
         _ f : (FutureBaseType) -> ())
     {
@@ -488,9 +467,9 @@ public class Future<T> : FutureType {
     - parameter cancellationToken: A cancellation token.
     - parameter f: A function taking the result of the future as its argument.
     */
-    public final func onCompleteFuture (
+    public final func continueWith(
         on ec: ExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: FutureBaseType -> ())
     {
         Sync.write_async {
@@ -529,19 +508,6 @@ public class Future<T> : FutureType {
     }
     
     
-    public final func onCompleteFuture (
-        on ec: ExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken?,
-        _ f: FutureBaseType -> ())
-    {
-        if let ct = cancellationToken {
-            onCompleteFuture(on: ec, cancellationToken: ct, f)
-        }
-        else {
-            onCompleteFuture(on: ec, f)
-        }
-    }
-
     
     
     /**
@@ -556,7 +522,7 @@ public class Future<T> : FutureType {
     */
     public final func onSuccess(
         on ec: ExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: T -> ())
     {
         onComplete(on: ec, cancellationToken:cancellationToken) { result in
@@ -601,7 +567,7 @@ public class Future<T> : FutureType {
     */
     public final func onFailure(
         on ec: ExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: ErrorType -> ())
     {
         onComplete(on: ec, cancellationToken:cancellationToken) { result in
@@ -660,7 +626,7 @@ public class Future<T> : FutureType {
     */
     public final func map<U>(
         on ec: ExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: T -> Result<U>)
         -> Future<U>
     {
@@ -673,7 +639,7 @@ public class Future<T> : FutureType {
                         strongReturnedFuture.resolve(f(value))
                     }
                 case .Failure(let error):
-                    strongReturnedFuture._resolve(Result(error: error))
+                    strongReturnedFuture.resolve(Result(error: error))
                 }
             }
         }
@@ -713,7 +679,7 @@ public class Future<T> : FutureType {
                         strongReturnedFuture.resolve(f(value))
                     }
                 case .Failure(let error):
-                    strongReturnedFuture._resolve(Result(error: error))
+                    strongReturnedFuture.resolve(Result(error: error))
                 }
             }
         }
@@ -740,7 +706,7 @@ public class Future<T> : FutureType {
     */
     public final func flatMap<U>(
         on ec: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: T -> Future<U>)
         -> Future<U>
     {
@@ -753,7 +719,7 @@ public class Future<T> : FutureType {
                         strongReturnedFuture.resolve(f(value))
                     }
                 case .Failure(let error):
-                    strongReturnedFuture._resolve(Result(error: error))
+                    strongReturnedFuture.resolve(Result(error: error))
                 }
             }
         }
@@ -791,7 +757,7 @@ public class Future<T> : FutureType {
                         strongReturnedFuture.resolve(f(value))
                     }
                 case .Failure(let error):
-                    strongReturnedFuture._resolve(Result(error: error))
+                    strongReturnedFuture.resolve(Result(error: error))
                 }
             }
         }

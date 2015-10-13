@@ -64,7 +64,7 @@ public struct Synchronize {
     /// If the current execution context is already the synchronization context the
     /// function directly calls the closure. Otherwise it dispatches it on the synchronization
     /// context.
-    public func read_sync_safe(f: ()->()) -> () {
+    public func read_sync_safe(/*@noescape*/ f: ()->()) -> () {
         if is_synchronized() {
             f()
         }
@@ -80,7 +80,7 @@ public struct Synchronize {
     /// The closure can safely read the objects associated to the context. However,
     /// the closure must not modify the objects associated to the context.
     /// The closue will be dispatched on the synchronization context and waits for completion.
-    public func read_sync(f: ()->()) -> () {
+    public func read_sync(/*@noescape*/ f: ()->()) -> () {
         dispatch_sync(sync_queue, f)
     }
     
@@ -98,7 +98,7 @@ public struct Synchronize {
     /// concurrent read or write operation can interfere.
     /// The current execution context must not already be the synchronization context,
     /// otherwise the function will dead lock.
-    public func write_sync(f: ()->()) -> () {
+    public func write_sync(/*@noescape*/ f: ()->()) -> () {
         dispatch_barrier_sync(sync_queue, f)
     }
     

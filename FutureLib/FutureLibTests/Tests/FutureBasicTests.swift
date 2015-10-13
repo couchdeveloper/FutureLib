@@ -9,6 +9,9 @@
 import XCTest
 import FutureLib
 
+
+let timeout: NSTimeInterval = 1
+
 class FutureBasicTests: XCTestCase {
 
     override func setUp() {
@@ -42,7 +45,7 @@ class FutureBasicTests: XCTestCase {
         }
         test()
         promise.fulfill("OK")
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAPendingFutureWithCompletionHandlerWhenRejectedItShouldExecuteHandler1() {
@@ -61,7 +64,7 @@ class FutureBasicTests: XCTestCase {
         }
         test()
         promise.reject(TestError.Failed)
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAFulfilledFutureWhenRegisteringCompletionHandlerItShouldExecuteHandler1() {
@@ -74,7 +77,7 @@ class FutureBasicTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenARejectedFutureWhenRegisteringCompletionHandlerItShouldExecuteHandler1() {
@@ -92,7 +95,7 @@ class FutureBasicTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     
@@ -112,7 +115,7 @@ class FutureBasicTests: XCTestCase {
         }
         test()
         promise.fulfill("OK")
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAPendingFutureWithCompletionHandlerWhenRejectedItShouldExecuteHandler2() {
@@ -132,7 +135,7 @@ class FutureBasicTests: XCTestCase {
         }
         test()
         promise.reject(TestError.Failed)
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAFulfilledFutureWhenRegisteringCompletionHandlerItShouldExecuteHandler2() {
@@ -146,7 +149,7 @@ class FutureBasicTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenARejectedFutureWhenRegisteringCompletionHandlerItShouldExecuteHandler2() {
@@ -165,7 +168,7 @@ class FutureBasicTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
 
@@ -186,7 +189,7 @@ class FutureBasicTests: XCTestCase {
         }
         test()
         promise.fulfill("OK")
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAPendingFutureWithSuccessHandlerWhenRejectedItShouldNotExecuteHandler1() {
@@ -213,7 +216,7 @@ class FutureBasicTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenARejectedFutureWhenRegisteringSuccessHandlerItShouldNotExecutedHandler1() {
@@ -245,7 +248,7 @@ class FutureBasicTests: XCTestCase {
         }
         test()
         promise.fulfill("OK")
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAPendingFutureWithSuccessHandlerWhenRejectedItShouldNotExecutedHandler2() {
@@ -274,7 +277,7 @@ class FutureBasicTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenARejectedFutureWhenRegisteringSuccessHandlerItShouldNotExecuteHandler2() {
@@ -323,7 +326,7 @@ class FutureBasicTests: XCTestCase {
         }
         test()
         promise.reject(TestError.Failed)
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAFulfilledFutureWhenRegisteringFailureHandlerItShouldNotExecuteHandler1() {
@@ -349,7 +352,7 @@ class FutureBasicTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     
@@ -380,7 +383,7 @@ class FutureBasicTests: XCTestCase {
         }
         test()
         promise.reject(TestError.Failed)
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAFulfilledFutureWhenRegisteringFailureHandlerItShouldNotExecuteHandler2() {
@@ -408,7 +411,7 @@ class FutureBasicTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     
@@ -438,7 +441,7 @@ class FutureBasicTests: XCTestCase {
         }
     
         promise.fulfill("OK")
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithMapFunctionWhenRejectedItShouldPropagateError1() {
@@ -458,7 +461,7 @@ class FutureBasicTests: XCTestCase {
         }
         
         promise.reject(TestError.Failed)
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAPendingFutureWithMapFunctionWhenFulfilledItShouldExecuteHandler2() {
@@ -481,7 +484,7 @@ class FutureBasicTests: XCTestCase {
         }
         
         promise.fulfill("OK")
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAPendingFutureWithMapFunctionWhenRejectedItShouldPropagateError2() {
@@ -502,7 +505,7 @@ class FutureBasicTests: XCTestCase {
         }
         
         promise.reject(TestError.Failed)
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
 
@@ -524,7 +527,7 @@ class FutureBasicTests: XCTestCase {
             expect2.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenARejectededFutureWithMapFunctionItShouldPropagateError1() {
@@ -543,7 +546,7 @@ class FutureBasicTests: XCTestCase {
             expect2.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAFulfilledFutureWithMapFunctionItShouldExecuteHandler2() {
@@ -565,7 +568,7 @@ class FutureBasicTests: XCTestCase {
             expect2.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenARejectedFutureWithMapFunctionItShouldPropagateError2() {
@@ -585,7 +588,7 @@ class FutureBasicTests: XCTestCase {
             expect2.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
 
@@ -609,7 +612,7 @@ class FutureBasicTests: XCTestCase {
         }
         
         promise.fulfill("OK")
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAPendingFutureWithFlatMapFunctionWhenRejectedItShouldPropagateError1() {
@@ -625,7 +628,7 @@ class FutureBasicTests: XCTestCase {
         }
         
         promise.reject(TestError.Failed)
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithFlatMapFunctionWhenFulfilledItShouldExecuteHandler2() {
@@ -643,7 +646,7 @@ class FutureBasicTests: XCTestCase {
         }
         
         promise.fulfill("OK")
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAPendingFutureWithFlatMapFunctionWhenRejectedItShouldPropagateError2() {
@@ -660,7 +663,7 @@ class FutureBasicTests: XCTestCase {
         }
         
         promise.reject(TestError.Failed)
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
 
@@ -678,7 +681,7 @@ class FutureBasicTests: XCTestCase {
             expect2.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenARejectededFutureWithFlatMapFunctionItShouldPropagateError1() {
@@ -692,7 +695,7 @@ class FutureBasicTests: XCTestCase {
             expect2.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenAFulfilledFutureWithFlatMapFunctionItShouldExecuteHandler2() {
@@ -709,7 +712,7 @@ class FutureBasicTests: XCTestCase {
             expect2.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     func testGivenARejectedFutureWithFlatMapFunctionItShouldPropagateError2() {
@@ -724,7 +727,7 @@ class FutureBasicTests: XCTestCase {
             expect2.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
     
     

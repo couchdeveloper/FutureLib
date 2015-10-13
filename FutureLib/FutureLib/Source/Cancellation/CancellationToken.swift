@@ -57,7 +57,7 @@ public struct CancellationToken : CancellationTokenType  {
             }
         }
         else if let cr = _cancellationRequest {
-            cr.onCancel(on: executor, cancelable: cancelable, f:f)
+            cr.onCancel(on: executor, cancelable: cancelable, f: f)
         }
     }
     
@@ -72,7 +72,7 @@ public struct CancellationToken : CancellationTokenType  {
         - parameter f:  The closure which will be executed when a cancellation has
         been requested.
     */
-    public func onCancel(on executor: AsyncExecutionContext = GCDAsyncExecutionContext(), f: ()->()) {
+    public func onCancel(on executor: AsyncExecutionContext = GCDAsyncExecutionContext(), _ f: ()->()) {
         if _sharedState.isCompleted {
             executor.execute(f)
         }

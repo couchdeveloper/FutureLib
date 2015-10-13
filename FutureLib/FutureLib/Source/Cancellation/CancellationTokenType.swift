@@ -64,7 +64,8 @@ public protocol CancellationTokenType {
         Executes closure `f` on the given execution context when its associated
         `CancellationRequest` has been cancelled.
         
-        Registering a closure shall not retain `self`.
+        **Caution:** An implementation MUST not retain `self` when registering a 
+        closure .
     
         **Remarks:**
         
@@ -83,9 +84,75 @@ public protocol CancellationTokenType {
         - parameter f:  The closure which will be executed when a cancellation has
         been requested.
     */
-    func onCancel(on executor: AsyncExecutionContext, f: ()->())
+    func onCancel(on executor: AsyncExecutionContext, _ f: ()->())
 
 
+}
+
+
+
+public extension CancellationTokenType {
+
+
+    /**
+        Registers the closure `f` which is invoked on a private execution context
+        when its associated `CancellationRequest` has been cancelled and when the
+        `cancelable` still exists.
+
+        `Closure `f` will be called with the given cancellable as its argument.
+        `self` and the `cancelable` shall not be retained.
+
+        **Remarks:**
+
+        When the corresponding cancellation request has not been cancelled it may
+        deinit at any time, or it may have been already deinited when this method
+        will be called. In this case, registered closures will not execute, but
+        instead the closure will be deinited itself and any imported strong references
+        will be released.
+
+        If the corresponding cancellation request has been cancelled the closure
+        `f` will be dispatched immediately on the specified execution context.
+
+        - parameter cancelable: The "cancelable", that is - the object that registered
+        this handler.
+
+        - parameter f:  The closure which will be executed when a cancellation has
+        been requested.
+    */
+    public func onCancel(cancelable: Cancelable, _ f: (Cancelable)->()) {
+        self.onCancel(on: GCDAsyncExecutionContext(), cancelable: cancelable, f)
+    }
+    
+    
+    /**
+        Executes closure `f` on a private execution context when its associated
+        `CancellationRequest` has been cancelled.
+        
+        **Caution:** An implementation MUST not retain `self` when registering a
+        closure .
+        
+        **Remarks:**
+        
+        When the corresponding cancellation request has not been cancelled it may
+        deinit at any time, or it may have been already deinited when this method
+        will be called. In this case, registered closures will not execute, but
+        instead the closure will be deinited itself and any imported strong references
+        will be released.
+        
+        If the corresponding cancellation request has been cancelled the closure
+        `f` will be dispatched immediately on the specified execution context.
+        
+        
+    
+        - parameter f:  The closure which will be executed when a cancellation has
+        been requested.
+    */
+    public func onCancel(f: ()->()) {
+        self.onCancel(on: GCDAsyncExecutionContext(), f)
+    }
+    
+    
+    
 }
 
 

@@ -70,7 +70,7 @@ extension Future {
     */
     public final func then(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: T -> ())
     {
         onSuccess(on: executor, cancellationToken:cancellationToken, f)
@@ -103,7 +103,7 @@ extension Future {
     */
     public final func then<R>(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: T -> R)
         -> Future<R>
     {
@@ -162,7 +162,7 @@ extension Future {
     */
     public final func then(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: T -> ErrorType)
         -> Future<T>
     {
@@ -221,7 +221,7 @@ extension Future {
     */
     public final func then<R>(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: T -> Result<R>)
         -> Future<R>
     {
@@ -256,7 +256,7 @@ extension Future {
     */
     public final func then<R>(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: T -> Future<R>)
         -> Future<R>
     {
@@ -295,7 +295,7 @@ extension Future {
     */
     public final func `catch`(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: ErrorType -> ())
     {
         onFailure(on: executor, cancellationToken: cancellationToken) {
@@ -331,7 +331,7 @@ extension Future {
     */
     public final func `catch`(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: ErrorType -> T)
         -> Future<T>
     {
@@ -391,7 +391,7 @@ extension Future {
     */
     public final func `catch`(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: ErrorType -> Result<T>)
         -> Future<T>
     {
@@ -451,7 +451,7 @@ extension Future {
     */
     public final func `catch`(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: ErrorType -> ErrorType)
         -> Future<T>
     {
@@ -510,7 +510,7 @@ extension Future {
     */
     public final func `catch`(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: ErrorType -> Future<T>)
         -> Future<T>
     {
@@ -564,7 +564,7 @@ extension Future {
     
     public final func finally(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: () -> ())
     {
         onComplete(on: executor, cancellationToken:cancellationToken) { _ -> () in
@@ -585,7 +585,7 @@ extension Future {
     
     public final func finally<R>(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: () -> R)
         -> Future<R>
     {
@@ -613,7 +613,7 @@ extension Future {
     
     public final func finally<R>(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: () -> Result<R>)
         -> Future<R>
     {
@@ -641,7 +641,7 @@ extension Future {
     
     public final func finally(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: () -> ErrorType)
         -> Future<T>
     {
@@ -667,7 +667,7 @@ extension Future {
     
     public final func finally<R>(
         on executor: AsyncExecutionContext = GCDAsyncExecutionContext(),
-        cancellationToken: CancellationToken,
+        cancellationToken: CancellationTokenType,
         _ f: () -> Future<R>)
         -> Future<R>
     {

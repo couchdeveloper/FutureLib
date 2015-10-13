@@ -11,24 +11,6 @@ import FutureLib
 
 
 
-// Error type
-
-enum TestError : ErrorType {
-    case Failed
-    
-    internal func isEqual(other: TestError) -> Bool {
-        return true
-    }
-    internal func isEqual(other: ErrorType) -> Bool {
-        if let _ = other as? TestError {
-            return true
-        }
-        else {
-            return false
-        }
-    }
-}
-
 class Dummy {
     let _expect : XCTestExpectation
     init(_ expect : XCTestExpectation) {

@@ -17,14 +17,59 @@ private enum ResultError : Int, ErrorType {
 }
 
 
+/**
+    A couple of convenience methods which return a completed future without
+    requiring a promise object.
+*/
+extension Future {
+    
+    static public func failed(error: ErrorType) -> Future<ValueType> {
+        return Future<ValueType>(error: error)
+    }
+    
+    
+    static public func succeeded(value: ValueType) -> Future<ValueType> {
+        return Future<ValueType>(value: value)
+    }
+    
+
+    static public func failedAfter(delay: Double, cancellationToken: CancellationTokenType = CancellationTokenNone(), error: ErrorType) -> Future<ValueType> {
+        let returnedFuture = Future<ValueType>()
+        let timer = Timer(delay: delay, tolerance: 0, cancellationToken: cancellationToken, queue: dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), f: { _ in
+            returnedFuture.resolve(Result<ValueType>(error: error))
+        })
+        cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
+            returnedFuture.resolve(Result<ValueType>(error: CancellationError.Cancelled))
+        }
+        timer.start()
+        return returnedFuture
+    }
+    
+    
+    static public func succeededAfter(delay: Double, cancellationToken: CancellationTokenType = CancellationTokenNone(), value: ValueType) -> Future<ValueType> {
+        let returnedFuture = Future<ValueType>()
+        let timer = Timer(delay: delay, tolerance: 0, cancellationToken: cancellationToken, queue: dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), f: { _ in
+            returnedFuture.resolve(Result<ValueType>(value))
+        })
+        cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
+            returnedFuture.resolve(Result<ValueType>(error: CancellationError.Cancelled))
+        }
+        timer.start()
+        return returnedFuture
+    }
+    
+}
+
+
+
 extension CollectionType where Generator.Element: FutureType {
     
-    typealias ResultType = Result<Generator.Element.ValueType>
+    public typealias ResultType = Result<Generator.Element.ValueType>
     
-    func whenAllComplete<U>(
-        on ec: ExecutionContext,
-        cancellationToken: CancellationToken,
-        f: [ResultType] -> U)
+    public func whenAllComplete<U>(
+        on ec: ExecutionContext = GCDAsyncExecutionContext(),
+        cancellationToken: CancellationTokenType = CancellationTokenNone(),
+        f: AnySequence<ResultType> -> U)
         -> Future<U>
     {
         let returnedFuture = Future<U>()
@@ -37,10 +82,10 @@ extension CollectionType where Generator.Element: FutureType {
     
     
     
-    func onAllComplete<U>(
-        on ec: ExecutionContext,
-        cancellationToken: CancellationToken,
-        f: [ResultType] -> U)
+    public func  onAllComplete<U>(
+        on ec: ExecutionContext = GCDAsyncExecutionContext(),
+        cancellationToken: CancellationTokenType = CancellationTokenNone(),
+        f: AnySequence<ResultType> -> U)
     {
         let sync_queue = dispatch_queue_create("private sync queue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))
         let private_ec = GCDAsyncExecutionContext(sync_queue)
@@ -50,7 +95,7 @@ extension CollectionType where Generator.Element: FutureType {
                 ++count
                 future.onComplete(on: private_ec, cancellationToken: cancellationToken) { r in
                     if --count == 0 {
-                        let results = self.map {$0.result!}
+                        let results = AnySequence(self.map {$0.result!})
                         ec.execute {
                             f(results)
                         }
@@ -62,7 +107,7 @@ extension CollectionType where Generator.Element: FutureType {
     }
     
     
-    func onFirstSuccess<U>(
+    public func onFirstSuccess<U>(
         on ec: ExecutionContext,
         cancellationToken: CancellationToken,
         f: (Int, ResultType) -> U)
@@ -94,33 +139,38 @@ extension CollectionType where Generator.Element: FutureType {
         }
         return ()
     }
+    
 
-    func onFirstFailure<U>(
+    public func onFirstFailure<U>(
         on ec: ExecutionContext,
         cancellationToken: CancellationToken,
         f: [ResultType] -> U)
     {
+        fatalError("not yet implemented")
     }
     
 
     
-    func whenFirstSuccess<U>(
+    public func whenFirstSuccess<U>(
         on ec: ExecutionContext,
         cancellationToken: CancellationToken,
         f: [ResultType] -> U)
         -> Future<U>
     {
         let returnedFuture = Future<U>()
+        fatalError("not yet implemented")
         return returnedFuture
     }
     
-    func onFirstFailure<U>(
+    
+    public func onFirstFailure<U>(
         on ec: ExecutionContext,
         cancellationToken: CancellationToken,
         f: [ResultType] -> U)
         -> Future<U>
     {
         let returnedFuture = Future<U>()
+        fatalError("not yet implemented")
         return returnedFuture
     }
     
