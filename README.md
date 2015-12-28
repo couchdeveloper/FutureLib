@@ -63,7 +63,7 @@ FutureLib helps you to write concise and comprehensible code to implement correc
 
 ## Getting Started
 
-The following sections show how to use futures and promises in short examples.  A more detailed description can be found in the [documentation](file://documentation.md).
+The following sections show how to use futures and promises in short examples. 
 
 
 ### What is a Future?
@@ -74,9 +74,9 @@ A future represents the _eventual result_ of an _asynchronous_ function.  Say, t
 func doSomethingAsync() -> Future<Int> 
 ```
 
-When the function returns, the returned future is not yet _completed_ - but there executes a background task which computes the value and eventually _completes_ the future. We can say, the returned future is a _placeholder_ for the result of the asynchronous function. 
+When the function returns, the returned future is not yet _completed_ - but there executes a background task which computes the value and _eventually_ completes the future. We can say, the returned future is a _placeholder_ for the result of the asynchronous function. 
 
-The underlying task may fail. In this case the future will be _completed_ with an _error_. Note however, that the asynchronous function itself does not throw an error.
+The underlying task may fail. In this case the future will be completed with an _error_. Note however, that the asynchronous function itself does not throw an error.
 
 > A Future is a placeholder for the result of a computation which is not yet finished. Eventually it will be completed with _either_ the _value_ or an _error_.
 
@@ -210,7 +210,7 @@ future.onFailure { error in
 
 ### Combinators
 
-Continuations will also be registered with _Combinators_.  A combinator is a method which returns a new future. There are quite a few combinators, most notable `map` and `flatMap` .  There are however quite a few more combinators which build upon the basic ones.
+Continuations will also be registered with _Combinators_.  A combinator is a method which returns a new future. There are quite a few combinators, most notable `map` and `flatMap`. There are however quite a few more combinators which build upon the basic ones.
 
 With combinators we can combine two or more futures and build more complex asynchronous patterns and programs.
 
@@ -237,7 +237,9 @@ fetchUserAsync(url).map { user in
 Note, that the mapping function will be called asynchronously with respect to the caller! In fact the entire expression is asynchronous! Here, the type of the expression above is `Void` since `onError` returns `Void`.
 
 #### flatMap
-`func flatMap<U>(f: T -> Future<U>) -> Future<U>`
+
+`func flatMap<U>(f: T -> Future<U>) -> Future<U>`  
+
 Method `flatMap` returns a new future which is completed with the _eventual_ result of the function `f` which is applied to the success value of `self`. If `self` has been completed with an error the returned future will be  completed with the same error. The continuation will not be called when `self` fails.
 
 An example:
@@ -284,7 +286,8 @@ let future = computeString().recover { error in
 
 #### filter
 
-`func filter(predicate: T throws -> Bool) -> Future<T>`
+`func filter(predicate: T throws -> Bool) -> Future<T>` 
+
 Method `filter` returns a new future which is completed with the success value of `self` if the function `predicate` applied to the value returns `true`. Otherwise, the returned future will be completed with the error `FutureError.NoSuchElement`. If `self` will be completed with an error or if the predicate throws an error, the returned future will be completed with the same error.
 
 ```swift 
@@ -302,7 +305,8 @@ Returns a new Future which is completed with the result of function `s` applied 
 
 #### zip 
 
-`func zip(other: Future<U>) -> Future<(T, U)>`
+`func zip(other: Future<U>) -> Future<(T, U)>`  
+
 Returns a new future which is completed with a tuple of the success value of `self` and `other`. If `self` or other fails with an error, the returned future will be completed with the same error.
 
 
@@ -518,6 +522,7 @@ cr.cancel()
 When a cancellation has been requested and the future is not yet completed, a continuation which takes a success value as parameter, e.g. a closure registered with`onSuccess`, will be unregistered and subsequently deallocated.
 
 On the other hand, a continuation which takes a `Result` or an error value as parameter, e.g. continuations registered with`onComplete` and `onFailure`, will be first unregistered and then called with a corresponding argument, that is with an error set to `CancellationError.Cancelled`.  If the future is not yet completed, it won't be completed due to the cancellation request, though. That is, when the completion handler executes, the corresponding future may not yet be completed:
+
 ```swift
 future.onFailure(ct: ct) { error in
 	if CancellationError.Cancelled.isEqual(error) {
@@ -581,6 +586,7 @@ func get(
 ```
 
 Now we can use it as follows:
+
 ```swift
 let cr = CancellationRequest()
 session.get(url, cr.token)
@@ -597,9 +603,6 @@ session.get(url, cr.token)
     return json
 }
 ```
-
-## Documentation
-TBD
 
 
 ## Installation
