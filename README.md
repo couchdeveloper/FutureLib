@@ -1,6 +1,6 @@
 # FutureLib
 
-![Status](https://img.shields.io/badge/Status-Alpha-orange.svg) [![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Swift 2.0](https://img.shields.io/badge/Swift-2.0-orange.svg?style=flat)](https://developer.apple.com/swift/)  ![Platforms OS X | iOS](https://img.shields.io/badge/Platforms-OS%20X%20%7C%20iOS-lightgray.svg?style=flat)  [![Carthage Compatible](https://img.shields.io/badge/Carthage-Compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Swift 2.0](https://img.shields.io/badge/Swift-2.0-orange.svg?style=flat)](https://developer.apple.com/swift/)  ![Platforms OS X | iOS](https://img.shields.io/badge/Platforms-OS%20X%20%7C%20iOS-lightgray.svg?style=flat)  [![Carthage Compatible](https://img.shields.io/badge/Carthage-Compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 --------------------------------
 **FutureLib** is a pure Swift 2 library implementing Futures & Promises inspired by
@@ -54,7 +54,6 @@ FutureLib helps you to write concise and comprehensible code to implement correc
   - [Specify an Execution Context where callbacks will execute](#specify-an-execution-context-where-callbacks-will-execute)
   - [Cancelling a Continuation](#cancelling-a-continuation)
   - [Wrap an asynchronous function with a completion handler into a function which returns a corresponding future](#wrap-an-asynchronous-function-with-a-completion-handler-into-a-function-which-returns-a-corresponding-future)
-- [Documentation](#documentation)
 - [Installation](#installation)
   - [Carthage](#carthage)
   - [CocoaPods](#cocoapods)
