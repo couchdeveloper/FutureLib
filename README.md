@@ -366,7 +366,7 @@ For a sequence of futures `Future<T>`, the method `result` returns a new future 
 
 `func fold<U>(initial: U, combine T throws -> U) -> Future<U>`
 
-For a sequence of futures `Future<T>` returns a new future `Future<U>`  which will be completed with the result of the function `combine` repeatedly applied to  the success value for each future in `self` and the accumulated value  initialized with `initial`.
+For a sequence of futures `Future<T>` returns a new future `Future<U>`  which will be completed with the result of the function `combine` repeatedly applied to  the success value for each future in `self` and the accumulated value  initialised with `initial`.
 
 That is, it transforms a `SequenceOf<Future<T>>` into a `Future<U>` whose result is the combined value of the success values of each future.
 
@@ -467,7 +467,7 @@ let ec = GCDAsyncExecutionContext(queue)
 
 Then, pass this execution context to the parameter `ec`:
 ```swift
-future.onSucces(ec: ec) { value in
+future.onSuccess(ec: ec) { value in
 	// we are executing on the queue "sync queue"
 	let data = value.0    
 	let response = value.1
@@ -481,7 +481,7 @@ If we now register more than one continuation with this execution context, all c
 
 Note that continuations will _always_ execute on a certain  _Execution Context_.  If no execution context is explicitly specified a _private_ one is implicitly given, which means we should not make any assumptions about where and when the callbacks execute.
 
-An execution context can be created in various flavors and for many concrete underlying execution environments. See more chapter "Execution Context".
+An execution context can be created in various flavours and for many concrete underlying execution environments. See more chapter "Execution Context".
 
 
 ### Cancelling a Continuation
@@ -500,7 +500,7 @@ let ct = cr.token
 This cancellation token will be passed as an additional parameter to any function which register a continuation. We can share the same token for multiple continuations or anywhere where a cancellation token is required:
 
 ```swift
-future.onSucces(ct: ct) { value in
+future.onSuccess(ct: ct) { value in
 	...
 }
 future.onFailure(ct: ct) { error in
@@ -535,7 +535,7 @@ Traditionally, system libraries and third party libraries pass the result of an 
 
 Here, the `Promise` enters the scene!
 
-As an example, use an extension for `NSURLSession` which performs a very basic GET request using a `NSURLSessionDadtaTask` which can be cancelled by means of a cancellation token. Without focussing too much on a "industrial strength" implementation it aims to demonstrate how to use a promise - and also a cancellation token:
+As an example, use an extension for `NSURLSession` which performs a very basic GET request using a `NSURLSessionDataTask` which can be cancelled by means of a cancellation token. Without focussing too much on a "industrial strength" implementation it aims to demonstrate how to use a promise - and also a cancellation token:
 
 Get a future from an asynchronous function that returns a `Future<T>`
 
