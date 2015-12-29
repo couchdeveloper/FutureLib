@@ -5,6 +5,7 @@
 //  Copyright © 2015 Andreas Grosam. All rights reserved.
 //
 
+import Dispatch
 
 extension SequenceType where Generator.Element: CancellationTokenType {
     
