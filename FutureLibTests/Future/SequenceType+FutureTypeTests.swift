@@ -228,7 +228,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             task(0.01) { "A"},
             task(0.07) { "B"},
             task(0.05) { throw TestError.Failed },
-            task(0.09) { "D"}
+            task(0.20) { "D"}
         ]
         futures.fold(initial: ()) { _,_ -> Void in }.onFailure { error in
             XCTAssertTrue(futures[0].isSuccess)

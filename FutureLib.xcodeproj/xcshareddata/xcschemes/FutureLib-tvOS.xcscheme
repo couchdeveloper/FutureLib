@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A1BF1B741C3297EC00C7A236"
-               BuildableName = "FutureLib-tvOS.framework"
+               BuildableName = "FutureLib.framework"
                BlueprintName = "FutureLib-tvOS"
                ReferencedContainer = "container:FutureLib.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A1BF1B741C3297EC00C7A236"
-            BuildableName = "FutureLib-tvOS.framework"
+            BuildableName = "FutureLib.framework"
             BlueprintName = "FutureLib-tvOS"
             ReferencedContainer = "container:FutureLib.xcodeproj">
          </BuildableReference>
@@ -65,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A1BF1B741C3297EC00C7A236"
-            BuildableName = "FutureLib-tvOS.framework"
+            BuildableName = "FutureLib.framework"
             BlueprintName = "FutureLib-tvOS"
             ReferencedContainer = "container:FutureLib.xcodeproj">
          </BuildableReference>
@@ -83,7 +83,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A1BF1B741C3297EC00C7A236"
-            BuildableName = "FutureLib-tvOS.framework"
+            BuildableName = "FutureLib.framework"
             BlueprintName = "FutureLib-tvOS"
             ReferencedContainer = "container:FutureLib.xcodeproj">
          </BuildableReference>
