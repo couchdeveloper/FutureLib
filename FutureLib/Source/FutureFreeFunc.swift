@@ -22,7 +22,7 @@ import Dispatch
  `Result<T>`.
  
  - returns:      A `Future` whose `ValueType` equals `T`.
-*/
+ */
 @available(*, deprecated=1.0)
 public func future<T>(on executor: ExecutionContext = GCDAsyncExecutionContext(), f: ()->Result<T>) -> Future<T> {
     let returnedFuture: Future<T> = Future<T>()
@@ -50,7 +50,7 @@ public func future<T>(on executor: ExecutionContext = GCDAsyncExecutionContext()
  
  - returns:      A `Future` whose `ValueType` equals the return type of the
  function `f`.
-*/
+ */
 @available(*, deprecated=1.0)
 public func future<T>(ec: ExecutionContext = GCDAsyncExecutionContext(), f: () throws -> T) -> Future<T> {
     let returnedFuture: Future<T> = Future<T>()
@@ -80,7 +80,7 @@ public func future<T>(ec: ExecutionContext = GCDAsyncExecutionContext(), f: () t
  value of type `T`.
  
  - returns:      A Future whose `ValueType` equals T.
-*/
+ */
 @available(*, deprecated=1.0)
 public func future<T>(ec: ExecutionContext = GCDAsyncExecutionContext(), f: ()-> T) -> Future<T> {
     let returnedFuture: Future<T> = Future<T>()

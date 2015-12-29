@@ -9,16 +9,16 @@
 
 
 /**
-    A couple of convenience methods which return a completed future without
-    requiring a promise object.
-*/
+ A couple of convenience methods which return a completed future without
+ requiring a promise object.
+ */
 extension FutureType {
 
     /**
      Creates a future which is completed with `error`.
      - parameter error: The error with which the future will be completed.
      - returns: A completed future.
-    */
+     */
     static public func failed(error: ErrorType) -> Future<ValueType> {
         return Future<ValueType>(error: error)
     }
@@ -28,7 +28,7 @@ extension FutureType {
      Creates a future which is completed with `value`.
      - parameter value: The value with which the future will be completed.
      - returns: A completed future.
-    */
+     */
     static public func succeeded(value: ValueType) -> Future<ValueType> {
         return Future<ValueType>(value: value)
     }
@@ -43,7 +43,7 @@ extension FutureType {
      - parameter cancellationToken: A cancellation token which will be monitored.
      - parameter error: The error with which the future will be completed after the delay.
      - returns: A new future.
-    */
+     */
     static public func failedAfter(delay: Double, cancellationToken: CancellationTokenType = CancellationTokenNone(), error: ErrorType)
         -> Future<ValueType>
     {
@@ -70,7 +70,7 @@ extension FutureType {
      - parameter cancellationToken: A cancellation token which will be monitored.
      - parameter value: The value with which the future will be completed after the delay.
      - returns: A future.
-    */
+     */
     static public func succeededAfter(delay: Double, cancellationToken: CancellationTokenType = CancellationTokenNone(), value: ValueType)
         -> Future<ValueType>
     {

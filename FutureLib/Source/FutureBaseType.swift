@@ -12,7 +12,7 @@
  A protocol for a Future declaring the basic methods which do not depend on
  the `ValueType` of the future. This protocol can be used in polymorphic containers
  or sequences of futures.
-*/
+ */
 public protocol FutureBaseType : class {
 
     var isCompleted: Bool { get }
@@ -91,7 +91,7 @@ public protocol FutureBaseType : class {
     /**
      Blocks the current thread until after Self is completed.
      returns: Self
-    */
+     */
     func wait() -> Self
 
     
@@ -99,16 +99,17 @@ public protocol FutureBaseType : class {
      Blocks the current thread until after Self is completed or a cancellation has
      been requested. Throws a CancellationError.Cancelled error if the cancellation
      token has been cancelled before Self has been completed.
-
+     
      - parameter cancellationToken: A cancellation token where the call-site can request a
-                        a cancellation.
+     a cancellation.
      - returns: Self if Self has been completed before a cancellation has been requested.
-    */
-    //func wait(cancellationToken: CancellationToken) throws -> Self
+     */
     func wait(cancellationToken: CancellationTokenType) -> Self
 
 }
 
+
+// MARK: - Extension FutureBaseType
 
 extension FutureBaseType {
     

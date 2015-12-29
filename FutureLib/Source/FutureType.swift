@@ -5,6 +5,10 @@
 //  Copyright © 2015 Andreas Grosam. All rights reserved.
 //
 
+
+
+// MARK: FutureError
+
 /**
 Defines errors which belong to the domain Future.
 
@@ -99,6 +103,7 @@ public protocol FutureType : FutureBaseType {
 }
 
 
+// MARK: - Protocol CompletableFutureType
 
 /**
  This protocol extends the protocol `FutureType` which defines methods to complete
@@ -146,6 +151,7 @@ internal protocol CompletableFutureType: FutureType {
 
 
 
+// MARK: - Extension CompletableFutureType
 /**
  Define useful functions in terms of the protocol `CompletableFutureType`.
  */
@@ -163,7 +169,7 @@ internal extension CompletableFutureType {
 
 
 
-// MARK: FutureType Extension
+// MARK: Extension FutureType 
 
 /**
  Implements the bulk of operations defining a Future in terms of `ResultType`, 

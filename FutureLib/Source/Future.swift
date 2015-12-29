@@ -57,8 +57,7 @@ public class Future<T> : FutureType {
     /**
      Designatated initializer which creates a pending future.
     */
-    internal init() {
-        //Log.Info("Future with id \(id)")
+    internal init() { 
     }
 
     /**
@@ -67,7 +66,6 @@ public class Future<T> : FutureType {
      */
     internal init(value: T) {
         _result = Result<ValueType>(value)
-        //Log.Info("Future with id \(id)")
     }
 
     /**
@@ -76,14 +74,9 @@ public class Future<T> : FutureType {
     */
     internal init(error: ErrorType) {
         _result = Result<ValueType>(error: error)
-        //Log.Info("Future with id \(id)")
     }
 
-    deinit {
-        //Log.Info("Future with id \(id)")
-        //  The deinitializer is not called when self has continuations.
-        //assert(case _cr.Empty)
-    }
+    // deinit { }
 
 
     /**
@@ -128,7 +121,6 @@ public class Future<T> : FutureType {
      - parameter ec: The execution context where the function `f` will be executed.
      - parameter ct: A cancellation token.
      - parameter f: A function taking the result of the future as its argument.
-     
     */
     public final func onComplete<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),

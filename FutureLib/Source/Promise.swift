@@ -63,8 +63,7 @@ public enum PromiseError : Int, ErrorType {
  in order to cancel the underlying tasks - since when there is no future anymore,
  obviously there is nothing which is interested in the result anymore and the task
  can be aborted in order to release resources.
- 
-*/
+ */
 public class Promise<T>
 {
     public typealias ValueType = T
@@ -76,7 +75,7 @@ public class Promise<T>
      Initializes the promise whose future is pending.
      
      - parameter resolver: The resolver object which will eventually resove the future.
-    */
+     */
     public init() {
         _future = RootFuture<T>()
         _weakFuture = _future
@@ -86,7 +85,7 @@ public class Promise<T>
      Initializes the promise whose future is fulfilled with value.
      
      - parameter value: The value which fulfills the future.
-    */
+     */
     public init(value: ValueType) {
         _future = RootFuture<T>(value: value)
         _weakFuture = _future
@@ -97,7 +96,7 @@ public class Promise<T>
      Initializes the promise whose future is rejected with error.
      
      - parameter error: The error which rejects the future.
-    */
+     */
     public init(error: ErrorType) {
         _future = RootFuture<T>(error: error)
         _weakFuture = _future
@@ -107,7 +106,7 @@ public class Promise<T>
     /**
      Deinitializes `self`. If `self` has not been resolved, the associated
      future will be completed with the error `PromiseError.BrokenPromise`.
-    */
+     */
     deinit {
         if let future = _weakFuture {
             future.tryComplete(Result(error: PromiseError.BrokenPromise))
@@ -129,7 +128,7 @@ public class Promise<T>
      result. The service provider may then choose to cancel its operation.
      
      - parameter f: The closure
-    */
+     */
     public final func onRevocation(f:()->()) {
         if let future = _weakFuture {
             future.onRevocation = f
@@ -149,7 +148,7 @@ public class Promise<T>
      - returns: If this is the first call, returns the future. Otherwise it may return `nil`.
      
      TODO: must be thread-safe
-    */
+     */
     public final var future: Future<T>? {
         if let future = _weakFuture {
             _future = nil;
@@ -166,7 +165,7 @@ public class Promise<T>
      prematurely deinitialized, the method has no effect.
      
      - parameter value: The value which the promise will be bound to.
-    */
+     */
     public final func fulfill(value: T) {
         if let future = _weakFuture {
             future.complete(Result(value))
@@ -196,7 +195,7 @@ public class Promise<T>
      prematurely deinitialized, the method has no effect.
      
      - parameter result: The result which the promise will be bound to.
-    */
+     */
     public final func resolve(result: Result<T>) {
         if let future = _weakFuture {
             future.complete(result)

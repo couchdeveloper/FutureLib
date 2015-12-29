@@ -17,8 +17,8 @@ internal struct Callback<T> {
 }
 
 /**
-    A ClosureRegistry manages closures.
-*/
+ A ClosureRegistry manages closures.
+ */
 internal enum ClosureRegistry<T> {
 
     typealias CallbackType = Callback<T>
@@ -99,8 +99,7 @@ internal final class ClosureRegistryMultiple<T> {
         _callbacks.append(Callback(id: id,f: f))
     }
 
-//    deinit {
-//    }
+//    deinit { }
 
     final var count: Int {
         return _callbacks.count

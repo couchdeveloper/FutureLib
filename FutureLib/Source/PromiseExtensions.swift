@@ -53,7 +53,7 @@ extension Promise {
      - parameter delay: The delay in seconds.
      - parameter result: The result with which the promise will be resolved.
      - returns: A new promise.
-    */
+     */
     public static func resolveAfter(delay: Double, result: Result<T>) -> Promise {
         let promise = Promise<T>()
         let cr = CancellationRequest()

@@ -10,7 +10,7 @@ import Foundation
 
 /**
  An error which encapsulates a sequence of errors.
-*/
+ */
 public struct AggregateError : ErrorType {
     
     let errors: AnySequence<ErrorType>

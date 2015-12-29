@@ -8,9 +8,9 @@
 
 
 /**
-    The generic type `Result` represents the result of a computation which
-    either yields a value of type `T` or an error of type `NSError`.
-*/
+ The generic type `Result` represents the result of a computation which
+ either yields a value of type `T` or an error of type `NSError`.
+ */
 public enum Result<T>{
 
     public typealias ValueType = T
@@ -22,7 +22,7 @@ public enum Result<T>{
      Creates and initializes `self` with the given value `v`.
      
      - parameter v: The value with which `self` will be initialized.
-    */
+     */
     public init(_ v: T) {
         self = Success(v)
     }
@@ -31,7 +31,7 @@ public enum Result<T>{
      Creates and initializes `self` with the given error `error`.
      
      - parameter error: The error with which `self` will be initialized.
-    */
+     */
     public init(error: ErrorType) {
         self = Failure(error)
     }
@@ -42,7 +42,7 @@ public enum Result<T>{
      initialized with the error thrown from the closure.
      
      - parameter f: A closure whose result will initialize `self`.
-    */
+     */
     public init(@noescape _ f: Void throws -> T) {
         do {
             self = Success(try f())
@@ -62,7 +62,7 @@ public enum Result<T>{
 
     /**
      - returns: `true` if self is a `Failure`, other wise `false`.
-    */
+     */
     public var isFailure: Bool {
         return !isSuccess
     }
@@ -74,7 +74,7 @@ public enum Result<T>{
      value of `Failure`.
      
      - returns: A Result<U>.
-    */
+     */
     @warn_unused_result
     public func map<U>(@noescape f: T throws -> U) -> Result<U> {
         switch self {
@@ -110,7 +110,7 @@ public enum Result<T>{
      
      - returns: `self`'s success value.
      - throws: `self`'s error value.
-    */
+     */
     public func value() throws -> T {
         switch self {
             case .Success(let value): return value
@@ -127,7 +127,7 @@ public enum Result<T>{
 
 /**
  Implements the CustomStringConvertible and CustomDebugStringConvertible protocol.
-*/
+ */
 extension Result : CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         switch self {
