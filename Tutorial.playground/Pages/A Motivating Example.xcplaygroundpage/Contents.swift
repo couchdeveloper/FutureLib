@@ -53,16 +53,16 @@ struct Image {
 // The first API call which fetches the ids of all followers of the signed-in user:
 func fetchFollowers() -> Future<[Int]> {
     NSLog("start fetching followers...")
-    return Promise.resolveAfter(1.0) { 
+    return Promise.resolveAfter(1.0) {
         NSLog("finished fetching followers.")
-        return [Int](1...10) 
+        return [Int](1...10)
     }.future!
 }
 
 // Given a user ID, fetch a user:
 func fetchUser(id: Int) -> Future<User> {
     NSLog("start fetching user[\(id)]...")
-    return Promise.resolveAfter(1.0) { 
+    return Promise.resolveAfter(1.0) {
         NSLog("finished fetching user[\(id)].")
         return User(id)
     }.future!
@@ -79,10 +79,10 @@ func fetchImage(url: String) -> Future<String> {
 }
 
 
-//: Now, the function `downloadRecentImagesFromFollowers` implements the complete task: 
+fun//: Now, the function `downloadRecentImagesFromFollowers` implements the complete task: 
 //:
 //: The following asynchronous function `downloadRecentImagesFromMyFollowers` already *almost* does what we have listed in our requirements above - with just a few lines of code. That is, it fetches all followers, then for each follower it fetches the most recent images and stores it locally. When finished, it completes its returned future with an array of array of file paths, grouped by the user id, where the downloaded images are located.
-func downloadRecentImagesFromFollowers() -> Future<[[String]]> {
+c downloadRecentImagesFromFollowers() -> Future<[[String]]> {
     return fetchFollowers().flatMap { userIds in
         userIds.traverse { userId -> Future<[String]> in
             fetchUser(userId).flatMap { user in
@@ -94,16 +94,16 @@ func downloadRecentImagesFromFollowers() -> Future<[[String]]> {
     }
 }
 
-//: Print each image, once `downloadRecentImagesFromMyFollowers()` finished successfully:
-downloadRecentImagesFromFollowers().map { arrayImages in
+dow//: Print each image, once `downloadRecentImagesFromMyFollowers()` finished successfully:
+nloadRecentImagesFromFollowers().map { arrayImages in
     arrayImages.flatten().forEach { print($0) }
 }.wait()
 
 
-//: What's missing is, that we cannot cancel this function yet. Once started, we need to wait until it is finished - well, not really: FutureLib provides an extremely convenient approach to implement cancellation: 
 
-//: In order to implement cancellation in this case, we pass a cancellation token to the innermost continuation. This is completely sufficient. If a cancellation has been requested, the innermost continuation will be unregistered and then called with a cancellation error. This in turn will complete all dependend futures with the same error. Additionally, any continuation will be deinitialized. This in turn deinitializes the future returned from underlying tasks. When this future will be deinitialized, the taks will be noticed and subsequently aborts its operation. In this case, this is just the timer - a real implemenation performing a network request can be easily implemented to behave exactly the same as well.
-print("\n\n========================")
+pr//: What's missing is, that we cannot cancel this function yet. Once started, we need to wait until it is finished - well, not really: FutureLib provides an extremely convenient approach to implement cancellation: 
+i//: In order to implement cancellation in this case, we pass a cancellation token to the innermost continuation. This is completely sufficient. If a cancellation has been requested, the innermost continuation will be unregistered and then called with a cancellation error. This in turn will complete all dependend futures with the same error. Additionally, any continuation will be deinitialized. This in turn deinitializes the future returned from underlying tasks. When this future will be deinitialized, the taks will be noticed and subsequently aborts its operation. In this case, this is just the timer - a real implemenation performing a network request can be easily implemented to behave exactly the same as well.
+nt("\n\n========================")
 print("\n\nDemonstrate cancellation")
 func downloadRecentImagesFromFollowers2(ct: CancellationTokenType) -> Future<[[String]]> {
     let ret: Future<[[String]]> = fetchFollowers().flatMap { userIds in
@@ -123,22 +123,22 @@ let future2 = downloadRecentImagesFromFollowers2(cr.token).map { arrayImages in
     arrayImages.flatten().forEach { print($0) }
 }
 
-//: Later, if we need to cancel for some reason, we call `cancel`:
-schedule_after(3) {
+sch//: Later, if we need to cancel for some reason, we call `cancel`:
+edule_after(3) {
     cr.cancel()
 }
 future2.onFailure { error in
     print("Error: \(error)")
 }
-    
+
 future2.wait()
 
 print("\n\n========================")
 print("\n\nDemonstrate execution context")
 
 
-//: Still, we are not yet finished: tasks started with the `traverse` method will execute concurrently, no matter how many. However, we want to limit the maximum number of requests to four. We need two "execution contexts" which limit the maximum number of concurrent tasks, which we pass the `traverse` method as argument. A `TaskQueue` exists specifically for that purpose. This will limit the maximum number of concurrent network requests:
-let ec1 = TaskQueue(maxConcurrentTasks: 4)
+let ec1//: Still, we are not yet finished: tasks started with the `traverse` method will execute concurrently, no matter how many. However, we want to limit the maximum number of requests to four. We need two "execution contexts" which limit the maximum number of concurrent tasks, which we pass the `traverse` method as argument. A `TaskQueue` exists specifically for that purpose. This will limit the maximum number of concurrent network requests:
+ = TaskQueue(maxConcurrentTasks: 4)
 let ec2 = TaskQueue(maxConcurrentTasks: 4)
 
 func downloadRecentImagesFromFollowers3(ct: CancellationTokenType) -> Future<[[String]]> {

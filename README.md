@@ -62,7 +62,7 @@ FutureLib helps you to write concise and comprehensible code to implement correc
 
 ## Getting Started
 
-The following sections show how to use futures and promises in short examples. 
+The following sections show how to use futures and promises in short examples.
 
 
 ### What is a Future?
@@ -70,16 +70,16 @@ The following sections show how to use futures and promises in short examples.
 A future represents the _eventual result_ of an _asynchronous_ function.  Say, the computed value is of type `T`,  the asynchronous function _immediately_ returns a value of type `Future<T>`:
 
 ```swift
-func doSomethingAsync() -> Future<Int> 
+func doSomethingAsync() -> Future<Int>
 ```
 
-When the function returns, the returned future is not yet _completed_ - but there executes a background task which computes the value and _eventually_ completes the future. We can say, the returned future is a _placeholder_ for the result of the asynchronous function. 
+When the function returns, the returned future is not yet _completed_ - but there executes a background task which computes the value and _eventually_ completes the future. We can say, the returned future is a _placeholder_ for the result of the asynchronous function.
 
 The underlying task may fail. In this case the future will be completed with an _error_. Note however, that the asynchronous function itself does not throw an error.
 
 > A Future is a placeholder for the result of a computation which is not yet finished. Eventually it will be completed with _either_ the _value_ or an _error_.
 
-In order to represent that kind of result, a future uses an enum type `Result<T>` internally. `Result` is a kind of variant, or _discriminated union_ which contains _either_ a value _or_ an error. 
+In order to represent that kind of result, a future uses an enum type `Result<T>` internally. `Result` is a kind of variant, or _discriminated union_ which contains _either_ a value _or_ an error.
 
 > In FutureLib, `Result<T>` can contain either a value of type `T` or a value conforming to the Swift protocol `ErrorType`.
 
@@ -181,7 +181,7 @@ There a few approaches to get the actual value of a result:
 	}
 ```
 
-The next basic methods are `onSuccess` and `onFailure`, which get called when the future completes with success respectively with an error. 
+The next basic methods are `onSuccess` and `onFailure`, which get called when the future completes with success respectively with an error.
 
 
 #### onSuccess
@@ -237,7 +237,7 @@ Note, that the mapping function will be called asynchronously with respect to th
 
 #### flatMap
 
-`func flatMap<U>(f: T -> Future<U>) -> Future<U>`  
+`func flatMap<U>(f: T -> Future<U>) -> Future<U>`
 
 Method `flatMap` returns a new future which is completed with the _eventual_ result of the function `f` which is applied to the success value of `self`. If `self` has been completed with an error the returned future will be  completed with the same error. The continuation will not be called when `self` fails.
 
@@ -285,11 +285,11 @@ let future = computeString().recover { error in
 
 #### filter
 
-`func filter(predicate: T throws -> Bool) -> Future<T>` 
+`func filter(predicate: T throws -> Bool) -> Future<T>`
 
 Method `filter` returns a new future which is completed with the success value of `self` if the function `predicate` applied to the value returns `true`. Otherwise, the returned future will be completed with the error `FutureError.NoSuchElement`. If `self` will be completed with an error or if the predicate throws an error, the returned future will be completed with the same error.
 
-```swift 
+```swift
 computeString().filter { str in
 	
 }
@@ -302,9 +302,9 @@ computeString().filter { str in
 Returns a new Future which is completed with the result of function `s` applied to the successful result of `self` or with the result of function `f` applied to the error value of `self`. If `s` throws an error, the returned future will be completed with the same error.
 
 
-#### zip 
+#### zip
 
-`func zip(other: Future<U>) -> Future<(T, U)>`  
+`func zip(other: Future<U>) -> Future<(T, U)>`
 
 Returns a new future which is completed with a tuple of the success value of `self` and `other`. If `self` or other fails with an error, the returned future will be completed with the same error.
 
@@ -319,7 +319,7 @@ An extension method which can be applied to any sequence type is `traverse`:
 
 For any sequence of `T`, the asynchronous method `traverse` applies the function `task` to each value of the sequence (thus, getting a sequence of tasks) and then completes the returned future with an array of `U`s once all tasks have been completed successfully.
 
-```swift 
+```swift
 let ids = [14, 34, 28]
 ids.traverse { id in
     return fetchUser(id)
@@ -331,7 +331,7 @@ ids.traverse { id in
 The tasks will be executed concurrently, unless an _execution context_ is specified which defines certain concurrency constraints (e.g., restricting the number of concurrent tasks to a fixed number).
 
 
-#### sequence 
+#### sequence
 
 `func sequence() -> Future<[T]>`
 
@@ -349,7 +349,7 @@ For a sequence of futures `Future<T>` the method `sequence` returns a new future
 
 ```
 
-#### results 
+#### results
 
 `func results() -> Future<Result<T>>`
 
@@ -461,7 +461,7 @@ The continuations registered above will execute concurrently and we should not m
 
 As an example, define a GCD based execution context which uses an underlying serial dispatch queue where closures will be submitted asynchronously on the specified queue with the given quality of service class:
 ```swift
-let queue = dispatch_queue_create("sync queue", 
+let queue = dispatch_queue_create("sync queue",
 dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
 			QOS_CLASS_USER_INITIATED, 0))
 
@@ -472,7 +472,7 @@ Then, pass this execution context to the parameter `ec`:
 ```swift
 future.onSuccess(ec: ec) { value in
 	// we are executing on the queue "sync queue"
-	let data = value.0    
+	let data = value.0
 	let response = value.1
 	...
 }
@@ -611,7 +611,7 @@ session.get(url, cr.token)
 > **Note:** Carthage only supports dynamic frameworks which are supported in Mac OS X and iOS 8 and later.
 
 1. Follow the instruction [Installing Carthage](https://github.com/Carthage/Carthage) to install Carthage on your system.
-2. Follow the instructions [Adding frameworks to an application](https://github.com/Carthage/Carthage), while adding  
+2. Follow the instructions [Adding frameworks to an application](https://github.com/Carthage/Carthage), while adding
     `github couchdeveloper/FutureLib`
     to the file `Cartfile.private`.		
 

@@ -14,16 +14,16 @@ class FutureExtensionsTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
 
-    
+
     // MARK: Future<T>.failed(error:) -> Future<T>
-    
-    
+
+
     func testClassMethodFailedReturnsRejectedFuture() {
         let future = Future<Int>.failed(TestError.Failed)
         XCTAssertTrue(future.isCompleted)
@@ -43,10 +43,10 @@ class FutureExtensionsTests: XCTestCase {
         }
     }
 
-    
+
     // MARK: Future<T>.succeeded(value:) -> Future<T>
-    
-    
+
+
     func testClassMethodSucceededReturnsFulfilledFuture() {
         let future = Future.succeeded(1)
         XCTAssertTrue(future.isCompleted)
@@ -63,7 +63,7 @@ class FutureExtensionsTests: XCTestCase {
             }
         }
     }
-    
+
 
     func testClassMethodSucceededReturnsFulfilledFuture2() {
         let a = [1,2,3]
@@ -82,8 +82,8 @@ class FutureExtensionsTests: XCTestCase {
             }
         }
     }
-    
-    
+
+
     // MARK: Future<T>.failedAfter(delay:, error:) -> Future<T>
 
     func testClassMethodFailedAfterReturnsAFutureWhichBecomesFailedAfterTheDelay() {
@@ -106,10 +106,10 @@ class FutureExtensionsTests: XCTestCase {
         }
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
+
+
     // MARK: Future<T>.succeededAfter(delay:, value:) -> Future<T>
-    
+
     func testClassMethodSucceededAfterReturnsAFutureWhichBecomesSucceededAfterTheDelay() {
         let expect1 = self.expectationWithDescription("continuation should be called")
         let future = Future<Int>.succeededAfter(0.1, value: 1)
@@ -128,10 +128,10 @@ class FutureExtensionsTests: XCTestCase {
         }
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
+
+
     // MARK: Future<T>.failedAfter(delay:, cancellationToken:, error:) -> Future<T>
-    
+
     func testCancellingClassMethodFailedAfterReturnsAFutureWhichBecomesRejectedWithACancellationError() {
         let expect1 = self.expectationWithDescription("continuation should be called")
         let cr1 = CancellationRequest()
@@ -154,7 +154,7 @@ class FutureExtensionsTests: XCTestCase {
         cr1.cancel()
         waitForExpectationsWithTimeout(0.1, handler: nil)
     }
-    
+
 
     // MARK: Future<T>.succeededAfter(delay:, cancellationToken:, value:) -> Future<T>
 
@@ -180,8 +180,8 @@ class FutureExtensionsTests: XCTestCase {
         cr1.cancel()
         waitForExpectationsWithTimeout(0.1, handler: nil)
     }
-    
-    
-    
-    
+
+
+
+
 }

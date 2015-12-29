@@ -10,7 +10,7 @@
 /**
  An error used when a task or operation has been cancelled.
 */
-public enum CancellationError : Int, ErrorType {
+public enum CancellationError: Int, ErrorType {
     case Cancelled = -1
 }
 
@@ -18,8 +18,7 @@ public enum CancellationError : Int, ErrorType {
 public func == (lhs: CancellationError, rhs: ErrorType) -> Bool {
     if let e = rhs as? CancellationError {
         return lhs.rawValue == e.rawValue
-    }
-    else {
+    } else {
         return false
     }
 }
@@ -27,8 +26,7 @@ public func == (lhs: CancellationError, rhs: ErrorType) -> Bool {
 public func == (lhs: ErrorType, rhs: CancellationError) -> Bool {
     if let e = lhs as? CancellationError {
         return e.rawValue == rhs.rawValue
-    }
-    else {
+    } else {
         return false
     }
 }

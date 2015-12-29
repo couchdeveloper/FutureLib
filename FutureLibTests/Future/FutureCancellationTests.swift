@@ -14,7 +14,7 @@ class FutureCancellationTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
@@ -23,7 +23,7 @@ class FutureCancellationTests: XCTestCase {
     func testCancellation1() {
         let promise = Promise<String>()
         let future = promise.future!
-        
+
         let cancellationRequest1 = CancellationRequest()
         let cancellationRequest2 = CancellationRequest()
         let expect1 = self.expectationWithDescription("continuation1 should be called")
@@ -38,64 +38,64 @@ class FutureCancellationTests: XCTestCase {
         future.onComplete(ct: cancellationRequest2.token) { result in
             expect3.fulfill()
         }
-        
-        
+
+
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
+
+
     func testCancellation2() {
         let promise = Promise<String>()
         let future = promise.future!
-        
+
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let expect1 = self.expectationWithDescription("continuation1 should be called")
         let expect2 = self.expectationWithDescription("continuation2 should be called")
         let expect3 = self.expectationWithDescription("continuation3 should be called")
-        
+
         future.onComplete { result -> () in
             _ = result.map { s -> () in
                 expect1.fulfill()
             }
         }
-        
+
         future.onComplete(ct: cr1.token) { result in
             _ = result.map { s -> () in
                 XCTFail("unexpected")
             }
             expect2.fulfill()
         }
-        
+
         future.onComplete(ct: cr2.token) { result in
             _ = result.map { s -> () in
                 expect3.fulfill()
             }
         }
-        
+
         cr1.cancel()
-        // Note: cancellation may be slower than the subsequent fulfill. Thus, get 
+        // Note: cancellation may be slower than the subsequent fulfill. Thus, get
         // the cancellation handler some time to become effective:
         usleep(1000)
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
-    
+
+
+
     func testCancellation3() {
         let promise = Promise<String>()
         let future = promise.future!
-        
+
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let cr3 = CancellationRequest()
-        
+
         let expect1 = self.expectationWithDescription("continuation1 should be called")
         let expect2 = self.expectationWithDescription("continuation2 should be called")
         let expect3 = self.expectationWithDescription("continuation3 should be called")
-        
+
         future.onComplete(ct: cr1.token) { result in
             _ = result.map { s -> () in
                 XCTFail("unexpected")
@@ -114,7 +114,7 @@ class FutureCancellationTests: XCTestCase {
             }
             expect3.fulfill()
         }
-        
+
         cr1.cancel()
         cr2.cancel()
         cr3.cancel()
@@ -124,18 +124,18 @@ class FutureCancellationTests: XCTestCase {
         promise.fulfill("OK") // should have no effect
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
+
+
     func testCancellation4() {
         let promise = Promise<String>()
         let future = promise.future!
-        
+
         let cr = CancellationRequest()
 
         let expect1 = self.expectationWithDescription("continuation1 should be called")
         let expect2 = self.expectationWithDescription("continuation2 should be called")
         let expect3 = self.expectationWithDescription("continuation3 should be called")
-        
+
         future.onComplete(ct: cr.token) { result in
             _ = result.map { s in
                 XCTFail("unexpected")
@@ -154,7 +154,7 @@ class FutureCancellationTests: XCTestCase {
             }
             expect3.fulfill()
         }
-        
+
         cr.cancel()
         for _ in 1..<10 {
             usleep(1000) // give the cancellation handlers a chance to be called
@@ -162,18 +162,18 @@ class FutureCancellationTests: XCTestCase {
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
+
+
     func testCancellation5() {
         let promise = Promise<String>()
         let future = promise.future!
-        
+
         let cr = CancellationRequest()
         let expect1 = self.expectationWithDescription("continuation1 should be called")
         let expect2 = self.expectationWithDescription("continuation2 should be called")
         let expect3 = self.expectationWithDescription("continuation3 should be called")
         let expect4 = self.expectationWithDescription("continuation3 should be called")
-        
+
         future.onComplete(ct: cr.token) { result in
             _ = result.map { s in
                 XCTFail("unexpected")
@@ -192,7 +192,7 @@ class FutureCancellationTests: XCTestCase {
             }
             expect3.fulfill()
         }
-        
+
         cr.cancel()
         for _ in 1..<10 {
             usleep(1000) // give the cancellation handlers a chance to be called
@@ -206,17 +206,17 @@ class FutureCancellationTests: XCTestCase {
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     func testBrokenPromise1() {
         var promise: Promise<String>? = Promise<String>()
         let future = promise!.future!
-        
+
         let expect1 = self.expectationWithDescription("continuation1 should be called")
-        
+
         future.onComplete { result in
             do {
                 _ = try result.value()
@@ -232,12 +232,12 @@ class FutureCancellationTests: XCTestCase {
                 XCTFail("unexpected")
             }
         }
-        
+
         promise = nil
         waitForExpectationsWithTimeout(1, handler: nil)
     }
 
-    
-    
+
+
 
 }

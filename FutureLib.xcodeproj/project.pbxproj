@@ -237,8 +237,8 @@
 		A108DFE31B73FFE900A34BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A108DFEB1B747F7E00A34BFD /* FutureTypeStaticExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeStaticExtension.swift; sourceTree = "<group>"; };
 		A10CB91B1C15EA060019060A /* FuturePerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = FuturePerformanceTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A10CB91F1C15EAFC0019060A /* CancellationOperatorsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationOperatorsTests.swift; sourceTree = "<group>"; };
-		A10CB9201C15EAFC0019060A /* CancellationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationTests.swift; sourceTree = "<group>"; };
+		A10CB91F1C15EAFC0019060A /* CancellationOperatorsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancellationOperatorsTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A10CB9201C15EAFC0019060A /* CancellationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancellationTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A10CB9211C15EAFC0019060A /* SharedCancellationStateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedCancellationStateTests.swift; sourceTree = "<group>"; };
 		A10CB9231C15EAFC0019060A /* ClosureRegistryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureRegistryTests.swift; sourceTree = "<group>"; };
 		A10CB9251C15EAFC0019060A /* FutureBaseContinueWithTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureBaseContinueWithTests.swift; sourceTree = "<group>"; };
@@ -295,7 +295,7 @@
 		A1A0700F1BEBE12C000061FC /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		A1A153B21C23424F00F1750F /* FutureBaseType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureBaseType.swift; sourceTree = "<group>"; };
 		A1A8E1811BF4A998003B0002 /* CancellationOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationOperators.swift; sourceTree = "<group>"; };
-		A1B6AFD71C171C1F00E5E994 /* AggregateError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AggregateError.swift; sourceTree = "<group>"; };
+		A1B6AFD71C171C1F00E5E994 /* AggregateError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AggregateError.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A1B6AFDA1C17389C00E5E994 /* FutureBaseMapToTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureBaseMapToTests.swift; sourceTree = "<group>"; };
 		A1B80E861BE15FBC0031A489 /* Tutorial.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Tutorial.playground; sourceTree = "<group>"; };
 		A1BBF91D1C229FA00003B9C3 /* FutureType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureType.swift; sourceTree = "<group>"; };
@@ -1614,6 +1614,7 @@
 				A1BF1BEB1C32A84600C7A236 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

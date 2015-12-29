@@ -15,12 +15,12 @@ class FutureBaseTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
+
     func testPendingFutureInvariants() {
         let promise = Promise<String>()
         let future: FutureBaseType = promise.future!
@@ -28,7 +28,7 @@ class FutureBaseTests: XCTestCase {
         XCTAssertFalse(future.isSuccess)
         XCTAssertFalse(future.isFailure)
     }
-    
+
     func testFulfilledFutureInvariants() {
         let promise = Promise<String>()
         let future: FutureBaseType = promise.future!
@@ -37,7 +37,7 @@ class FutureBaseTests: XCTestCase {
         XCTAssertTrue(future.isSuccess)
         XCTAssertFalse(future.isFailure)
     }
-    
+
     func testFailedFutureInvariants() {
         let promise = Promise<String>()
         let future: FutureBaseType = promise.future!
@@ -46,8 +46,8 @@ class FutureBaseTests: XCTestCase {
         XCTAssertFalse(future.isSuccess)
         XCTAssertTrue(future.isFailure)
     }
-    
-    
+
+
     func testWaitBlocksTheCurrentThreadUntilAfterTheFutureIsCompleted() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let promise = Promise<Int>()
@@ -65,8 +65,8 @@ class FutureBaseTests: XCTestCase {
         promise.fulfill(1)
         self.waitForExpectationsWithTimeout(0.1, handler: nil)
     }
-    
-    
+
+
     func testWaitBlocksTheCurrentThreadUntilAfterWaitGetsCancelled() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let promise = Promise<Int>()
@@ -86,8 +86,8 @@ class FutureBaseTests: XCTestCase {
         self.waitForExpectationsWithTimeout(0.1, handler: nil)
         promise.fulfill(1)
     }
-    
-    
 
-    
+
+
+
 }

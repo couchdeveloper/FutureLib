@@ -11,21 +11,21 @@ import Foundation
 /**
  An error which encapsulates a sequence of errors.
  */
-public struct AggregateError : ErrorType {
-    
+public struct AggregateError: ErrorType {
+
     let errors: AnySequence<ErrorType>
-    
+
     init(_ errors: AnySequence<ErrorType>) {
         self.errors = errors
     }
-    
+
 }
 
 
 // MARK: Extension CustomStringConvertible
 
-extension AggregateError : CustomStringConvertible {
-    
+extension AggregateError: CustomStringConvertible {
+
     /**
      - returns: A description of `self`.
      */

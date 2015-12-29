@@ -10,7 +10,7 @@ import FutureLib
 
 
 class MyCancelable : Cancelable {
-    
+
     func cancel() -> () {
     }
 
@@ -25,7 +25,7 @@ class CancellationTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
@@ -34,15 +34,15 @@ class CancellationTests: XCTestCase {
     func testACancellationRequestStartsOutWithNoCancellationRequest() {
         let cr = CancellationRequest()
         XCTAssertFalse(cr.isCancellationRequested)
-        
+
     }
-    
+
     func testACancellationRequestTokenStartsOutWithNoCancellationRequest() {
         let cr = CancellationRequest()
         XCTAssertFalse(cr.token.isCancellationRequested)
-        
+
     }
-    
+
     func testRequestingCancellation() {
         let cr = CancellationRequest()
         let ct = cr.token
@@ -52,7 +52,7 @@ class CancellationTests: XCTestCase {
         XCTAssertTrue(crv)
         XCTAssertTrue(ctv)
     }
-    
+
     func testGivenACancelledTokenACancellationHandlerWillRun1a() {
         let cr = CancellationRequest()
         let ct = cr.token
@@ -63,8 +63,8 @@ class CancellationTests: XCTestCase {
         }
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
+
+
     func testGivenACancelledTokenACancellationHandlerWillRun1b() {
         let op = MyCancelable()
         let cr = CancellationRequest()
@@ -76,7 +76,7 @@ class CancellationTests: XCTestCase {
         }
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
 
     func testRequestingCancellationRunsRegisteredHandler1a() {
         let cr = CancellationRequest()
@@ -101,8 +101,8 @@ class CancellationTests: XCTestCase {
         cr.cancel()
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
+
+
     func testRequestingCancellationRunsRegisteredHandler2a() {
         let cr = CancellationRequest()
         let ct = cr.token
@@ -117,7 +117,7 @@ class CancellationTests: XCTestCase {
         cr.cancel()
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
     func testRequestingCancellationRunsRegisteredHandler2b() {
         let op = MyCancelable()
         let cr = CancellationRequest()
@@ -135,7 +135,7 @@ class CancellationTests: XCTestCase {
         cr.cancel()
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
 
     func testRequestingCancellationRunsRegisteredHandler3a() {
         let cr = CancellationRequest()
@@ -157,7 +157,7 @@ class CancellationTests: XCTestCase {
         }
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
     func testRequestingCancellationRunsRegisteredHandler3b() {
         let op = MyCancelable()
         let cr = CancellationRequest()
@@ -181,9 +181,9 @@ class CancellationTests: XCTestCase {
         }
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
 
-    
+
+
     func testNotRequestingCancellationMaintainsTokenState1() {
         var cr: CancellationRequest? = CancellationRequest()
         let ct = cr!.token
@@ -199,7 +199,7 @@ class CancellationTests: XCTestCase {
         }
         XCTAssertFalse(ct.isCancellationRequested)
     }
-    
+
     func testRequestingCancellationMaintainsTokenState2() {
         var cr: CancellationRequest? = CancellationRequest()
         let expect1 = self.expectationWithDescription("cancellation handler should be called")
@@ -216,8 +216,8 @@ class CancellationTests: XCTestCase {
         waitForExpectationsWithTimeout(1, handler: nil)
         XCTAssertTrue(ct.isCancellationRequested)
     }
-    
-    
+
+
     func testNotRequestingCancellationUnregistersRegisteredHandler() {
         class Dummy {
             let _expect: XCTestExpectation
@@ -228,7 +228,7 @@ class CancellationTests: XCTestCase {
                 _expect.fulfill()
             }
         }
-        
+
         func f(expect: XCTestExpectation, ct: CancellationToken)-> () {
             let dummy = Dummy(expect: expect)
             _ = ct.onCancel {
@@ -236,20 +236,20 @@ class CancellationTests: XCTestCase {
                 dummy
             }
         }
-        
+
         var cr: CancellationRequest? = CancellationRequest()
         let expect1 = self.expectationWithDescription("cancellation handler should be unregistered")
-        
+
         f(expect1, ct: cr!.token)
-        
+
         cr = nil    // Should deinit cr, and as a consequence unregistering its handlers,
                     // which in turn deinits dummy.
-        
+
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
 
-    
+
+
+
 
 }

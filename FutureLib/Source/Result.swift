@@ -11,7 +11,7 @@
  The generic type `Result` represents the result of a computation which
  either yields a value of type `T` or an error of type `NSError`.
  */
-public enum Result<T>{
+public enum Result<T> {
 
     public typealias ValueType = T
 
@@ -20,7 +20,7 @@ public enum Result<T>{
 
     /**
      Creates and initializes `self` with the given value `v`.
-     
+
      - parameter v: The value with which `self` will be initialized.
      */
     public init(_ v: T) {
@@ -29,7 +29,7 @@ public enum Result<T>{
 
     /**
      Creates and initializes `self` with the given error `error`.
-     
+
      - parameter error: The error with which `self` will be initialized.
      */
     public init(error: ErrorType) {
@@ -40,14 +40,13 @@ public enum Result<T>{
      Creates and initializes a Result with the return value of the given
      closure. When the closure fails and throws and error, the result will be
      initialized with the error thrown from the closure.
-     
+
      - parameter f: A closure whose result will initialize `self`.
      */
     public init(@noescape _ f: Void throws -> T) {
         do {
             self = Success(try f())
-        }
-        catch let ex  {
+        } catch let ex {
             self = Failure(ex)
         }
     }
@@ -70,9 +69,10 @@ public enum Result<T>{
     /**
      If `self` is `Success` returns a new result with the throwing mapping function
      `f` applied to the value of `Success`. If `f` throws an error, the new result
-     will be initialized with this error. Otherwise, returns a new result with the 
+     will be initialized with this error. Otherwise, returns a new result with the
      value of `Failure`.
-     
+
+     - parameter f: The maping function.
      - returns: A Result<U>.
      */
     @warn_unused_result
@@ -90,7 +90,8 @@ public enum Result<T>{
      If `self` is `Success` returns the mapping function `f` applied to the
      value of `Success`. Otherwise, returns a new Result with the value of
      `Failure`.
-     
+
+     - parameter f: The maping function.
      - returns: A Result<U>.
      */
     @warn_unused_result
@@ -107,7 +108,7 @@ public enum Result<T>{
     /**
      If `self` is `Success` returns the value of `Success`. Otherwise throws
      the value of `Failure`.
-     
+
      - returns: `self`'s success value.
      - throws: `self`'s error value.
      */
@@ -115,7 +116,7 @@ public enum Result<T>{
         switch self {
             case .Success(let value): return value
             case .Failure(let error):
-                throw error // NSError(domain: "ResultError", code: ResultError.Faulted.rawValue, userInfo: [NSUnderlyingErrorKey: error])
+                throw error
         }
     }
 }

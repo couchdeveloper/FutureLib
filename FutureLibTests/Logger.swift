@@ -34,7 +34,7 @@ public protocol EventType {
 public struct Event<T> : EventType {
 
     public typealias ValueType = T
-    
+
 
     init(category: String, severity: Logger.Severity, message: T, function: StaticString = "", file: StaticString = "" , line: UInt = 0) {
         gettimeofday(&timeStamp, nil)
@@ -81,7 +81,7 @@ public struct WriteOptions: OptionSetType {
 public struct EventOptions : OptionSetType {
     public let rawValue: Int
     public init(rawValue: Int) { self.rawValue = rawValue }
-    
+
     public static let None         = EventOptions(rawValue: 0)
     public static let TimeStamp    = EventOptions(rawValue: 1 << 0)
 
@@ -97,7 +97,7 @@ public struct EventOptions : OptionSetType {
     public static let Line         = EventOptions(rawValue: 1 << 9)
     public static let All: EventOptions = [.TimeStamp, .ThreadId, .GCDQueue, .Category, .Severity, .Function, .File, .Line]
     public static let Default: EventOptions = [.TimeStamp, .ThreadId, .GCDQueue, .Category, .Severity, .Function]
-    
+
     public static let Verbose      = EventOptions(rawValue: 1 << 15)
 }
 
@@ -128,8 +128,8 @@ internal struct DateTime {
     internal static func localTime(tval: timeval) -> DateTime {
         return DateTime(tval: tval, localtime: true)
     }
-    
-    
+
+
     internal static func defaultDateTimeFormatter(tval: timeval) -> String {
         let t = DateTime.localTime(tval)
         let s: String = String(format: "%hu-%.2hhu-%.2hhu %.2hhu:%.2hhu:%06.3f", t.year, t.month, t.day, t.hour, t.min, t.sec)
@@ -141,10 +141,10 @@ internal struct DateTime {
 
 
 public protocol EventTargetType  {
-    
+
     var name: String { get }
     var writeOptions: WriteOptions { get set }
-    
+
     mutating func writeEvent<T>(event: Event<T>)
 }
 
@@ -158,11 +158,11 @@ public protocol Flushable {
 
 
 public protocol StreamEventTargetType : EventTargetType, Flushable {
-    
+
     var eventOptions: EventOptions { get set }
-    
+
     var dateFormat: (timeval: timeval)-> String { get set }
-    
+
     func flush()
 }
 
@@ -191,17 +191,17 @@ public class ConsoleEventTarget : StreamEventTarget {
 
     static private var stdOutputStream = StdOutputStream()
     static private let _executionQueue = dispatch_queue_create("ConsoleEventTarget queue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INTERACTIVE, 0))
-    
+
     public init() {
         super.init(name: "Console", ostream: StdOutputStream(), executionQueue: ConsoleEventTarget._executionQueue)
     }
-    
+
 }
 
 
 
 public class StreamEventTarget : StreamEventTargetType {
-    
+
     private (set) public var name: String
     public let executionQueue: dispatch_queue_t
 
@@ -209,8 +209,8 @@ public class StreamEventTarget : StreamEventTargetType {
     private var _writeOptions: WriteOptions
     private var _eventOptions: EventOptions
     private var _dateFormat: (timeval: timeval)-> String = DateTime.defaultDateTimeFormatter
-    
-    
+
+
     public init(name: String,
         ostream: FlushableOutputStreamType,
         writeOptions: WriteOptions = WriteOptions(),
@@ -223,21 +223,21 @@ public class StreamEventTarget : StreamEventTargetType {
         _eventOptions = eventOptions
         executionQueue = eq
     }
-    
+
     deinit {
         dispatch_barrier_sync(executionQueue) {}
     }
-    
-    
+
+
     public func writeEvent<T>(event: Event<T>) {
         StreamEventTarget.writeEvent(&_ostream, event: event, writeOptions: writeOptions, eventOptions: eventOptions, dateFormat: dateFormat, executionQueue: executionQueue)
     }
-    
+
     public func flush() {
         _ostream.flush()
     }
-    
-    
+
+
     internal static func writeMessage<T>(
         inout ostream: FlushableOutputStreamType,
         message: T,
@@ -248,7 +248,7 @@ public class StreamEventTarget : StreamEventTargetType {
             ostream.write(messageString)
         }
     }
-    
+
     internal static func writeVerboseMessage<T>(
         inout ostream: FlushableOutputStreamType,
         message: T,
@@ -259,9 +259,9 @@ public class StreamEventTarget : StreamEventTargetType {
             ostream.write(messageString)
         }
     }
-    
-    
-    
+
+
+
     internal static func writeEvent<T>(
         inout ostream: FlushableOutputStreamType,
         event: Event<T>,
@@ -341,7 +341,7 @@ public class StreamEventTarget : StreamEventTargetType {
             dispatch_async(eq, f)
         }
     }
-    
+
 
     final public var writeOptions: WriteOptions {
         get {
@@ -357,7 +357,7 @@ public class StreamEventTarget : StreamEventTargetType {
             }
         }
     }
-    
+
     final public var eventOptions: EventOptions {
         get {
             var result: EventOptions = .None
@@ -373,7 +373,7 @@ public class StreamEventTarget : StreamEventTargetType {
         }
     }
 
-    
+
     final public var dateFormat: (timeval: timeval)-> String {
         get {
             var result: (timeval: timeval)-> String = {_ in return ""}
@@ -388,16 +388,16 @@ public class StreamEventTarget : StreamEventTargetType {
             }
         }
     }
-    
+
 }
 
 
 
 public class Logger {
-    
+
     private let _syncQueue = dispatch_queue_create("Logger sync_queue", DISPATCH_QUEUE_CONCURRENT)
 
-    
+
 
     public enum Severity: Int {
         case None, Error, Warning, Info, Debug, Trace
@@ -407,8 +407,8 @@ public class Logger {
     private let _category: String
 
     public var logLevel = Severity.Error
-    
-    
+
+
     public var eventTargets: [EventTargetType] {
         get {
             var result = [EventTargetType]()

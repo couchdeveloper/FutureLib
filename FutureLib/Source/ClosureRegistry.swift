@@ -43,7 +43,7 @@ internal enum ClosureRegistry<T> {
         switch self {
             case .Empty:
                 self = Single(f)
-                return 0;
+                return 0
 
             case .Single(let first):
                 let cr = ClosureRegistryMultiple<T>(id: 0, f: first)
@@ -96,7 +96,7 @@ internal final class ClosureRegistryMultiple<T> {
     init(id: Int, f: T->()) {
         assert(id == 0)
         _callbacks.reserveCapacity(4)
-        _callbacks.append(Callback(id: id,f: f))
+        _callbacks.append(Callback(id: id, f: f))
     }
 
 //    deinit { }
@@ -106,7 +106,7 @@ internal final class ClosureRegistryMultiple<T> {
     }
 
     final func register(f: T->()) -> Int {
-        let id = ++_id;
+        let id = ++_id
         let callback = Callback<T>(id: id, f: f)
         _callbacks.append(callback)
         return id

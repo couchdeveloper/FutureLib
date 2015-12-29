@@ -23,18 +23,18 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
-    
+
+
     // MARK: traverse
-    
+
     func testTraverseInputAppliedToTaskCompletesWithArrayOfSuccessValues() {
         let expect1 = self.expectationWithDescription("future should be completed")
-        let inputs = ["a", "b", "c", "d"]    
+        let inputs = ["a", "b", "c", "d"]
         inputs.traverse { s in
             return task(0.1) { s.uppercaseString }
         }.onSuccess { value in
@@ -44,7 +44,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
 
-    
+
     func testTraverseInputAppliedToTaskFails() {
         let expect1 = self.expectationWithDescription("future should be completed")
         let inputs = ["a", "b", "cc", "d"]
@@ -61,7 +61,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
     func testTraverseCanBeCancelled() {
         let expect1 = self.expectationWithDescription("future should be completed")
         let cr = CancellationRequest()
@@ -79,20 +79,20 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
 
     func testTraverseCompletesWithErrorFromTask() {
         let expect1 = self.expectationWithDescription("future should be completed")
         let inputs = [0.1, 0.3, 0.01, 0.3]
-        
+
         let task: (Double) -> Future<Double> = { d in
             return Promise.resolveAfter(d) {
                 if d >= 0.1 { return d }
                 throw TestError.Failed
-                
+
             }.future!
         }
-        
+
         inputs.traverse() { d in task(d) }
         .onFailure { error in
             XCTAssertTrue(TestError.Failed == error, String(error))
@@ -100,12 +100,12 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(2, handler: nil)
     }
-    
-    
+
+
     func testTraverseInputAppliedToTaskFails2() {
         let expect1 = self.expectationWithDescription("future should be completed")
         let inputs = [1.1, 1.5, 0.01, 3.0]
-        
+
         // Utilize a cancellation token to cancel all pending tasks when one
         // task fails:
         let cr = CancellationRequest()
@@ -117,7 +117,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
                     throw error
                 }
         }
-        
+
         inputs.traverse(ct: cr.token) { d in task(d) }
         .onFailure { error in
             XCTAssertTrue(CancellationError.Cancelled == error, String(error))
@@ -125,14 +125,14 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
-    
+
+
+
     func testTraverseWithTaskQueueExecutionContext1() {
         let expect1 = self.expectationWithDescription("future should be completed")
         let ec = TaskQueue(maxConcurrentTasks: 1)
         let inputs = ["a", "b", "c", "d"]
-        
+
         // The tasks confirms that it is the only one executing concurrently:
         let sem = dispatch_semaphore_create(1)
         let task: (String) -> Future<String> = { s in
@@ -143,7 +143,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
                 return s.uppercaseString
             }).future!
         }
-        
+
         inputs.traverse(ec: ec) { s in
             return task(s)
         }.onSuccess { value in
@@ -153,12 +153,12 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
 
-    
+
     func testTraverseWithTaskQueueExecutionContext2() {
         let expect1 = self.expectationWithDescription("future should be completed")
         let ec = TaskQueue(maxConcurrentTasks: 2)
         let inputs = ["a", "b", "c", "d"]
-        
+
         // The task confirms that there are only two executing concurrently:
         let sem = dispatch_semaphore_create(2)
         let task: (String) -> Future<String> = { s in
@@ -169,7 +169,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
                 return s.uppercaseString
             }).future!
         }
-        
+
         inputs.traverse(ec: ec) { s in
             return task(s)
         }.onSuccess { value in
@@ -178,15 +178,15 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
+
+
     // MARK: fold
-    
-    
+
+
     func testFoldCallsCombineInOrder() {
-        
+
         let expect1 = self.expectationWithDescription("future1 should be completed")
-        
+
         let futures = [
             task(0.01) { "A"},
             task(0.07) { "B"},
@@ -199,10 +199,10 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
 
     func testFoldWillContinueWhenAllFuturesHaveBeenCompleted1() {
-        
+
         let expect1 = self.expectationWithDescription("future1 should be completed")
 
         let futures = [
@@ -219,11 +219,11 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
     func testFoldWillContinueWhenNextinSequenceFails() {
-        
+
         let expect1 = self.expectationWithDescription("future1 should be completed")
-        
+
         let futures = [
             task(0.01) { "A"},
             task(0.07) { "B"},
@@ -240,11 +240,11 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
 
-    
+
     func testFoldWillContinueWhenNextinSequenceFails2() {
-        
+
         let expect1 = self.expectationWithDescription("future1 should be completed")
-        
+
         let futures = [
             task(0.01) { "A"},
             task(0.07) { "B"},
@@ -260,17 +260,17 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
-    
-    
+
+
+
+
     // MARK: sequence
-    
-    
+
+
     func testSequenceMapsToArrayOfTs() {
-        
+
         let expect1 = self.expectationWithDescription("future1 should be completed")
-        
+
         let futures = [
             task(0.01) { "A"},
             task(0.07) { "B"},
@@ -283,15 +283,15 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
+
+
 
     // MARK: results
-    
+
     func testResultsMapsToArrayOfResults() {
-        
+
         let expect1 = self.expectationWithDescription("future1 should be completed")
-        
+
         let futures = [
             task(0.01) { "A"},
             task(0.07) { "B"},
@@ -307,5 +307,5 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
 }

@@ -10,11 +10,11 @@ import XCTest
 import FutureLib
 
 private struct SyncEC : ExecutionContext {
-    
+
     func execute(f: ()->()) {
         f()
     }
-    
+
     func schedule<FT: FutureType>(task: () -> FT, start: FT -> ()) {
         start(task())
     }
@@ -30,13 +30,13 @@ class FuturePerformanceTests: XCTestCase {
             XCTFail("Performance tests should be run in Release configuration.")
         #endif
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
 
-    
+
     func testResult() {
         self.measureBlock() {
             for _ in 0..<100000 {
@@ -47,7 +47,7 @@ class FuturePerformanceTests: XCTestCase {
             }
         }
     }
-    
+
 
     func testPerformanceCreateAndDestroy100000Futures() {
         self.measureBlock() {
@@ -58,9 +58,9 @@ class FuturePerformanceTests: XCTestCase {
             }
         }
     }
-    
-    
-    
+
+
+
     func testPerformanceSetupAndFire10000ContinuationsSerial1() {
         func f(i: Int, promise: Promise<Void>) {
             if i == 0 {
@@ -73,7 +73,7 @@ class FuturePerformanceTests: XCTestCase {
                 }
             }
         }
-        
+
         self.measureBlock() {
             let sem = dispatch_semaphore_create(0)
             let promise = Promise<Void>()
@@ -86,7 +86,7 @@ class FuturePerformanceTests: XCTestCase {
         }
     }
 
-    
+
     func testPerformanceSetupAndFire10000ContinuationsSerial2() {
         func f(i: Int, promise: Promise<Void>) {
             if i == 0 {
@@ -94,12 +94,12 @@ class FuturePerformanceTests: XCTestCase {
             }
             else {
                 let p = Promise(value: 0)
-                p.future!.onComplete(GCDAsyncExecutionContext(), ct: CancellationTokenNone()) { _ in
+                p.future!.onComplete(ec: GCDAsyncExecutionContext(), ct: CancellationTokenNone()) { _ in
                     _ = f(i - 1, promise: promise)
                 }
             }
         }
-        
+
         self.measureBlock() {
             let sem = dispatch_semaphore_create(0)
             let promise = Promise<Void>()
@@ -120,12 +120,12 @@ class FuturePerformanceTests: XCTestCase {
             }
             else {
                 let p = Promise(value: 0)
-                p.future!.onComplete(ec) { _ in
+                p.future!.onComplete(ec: ec) { _ in
                     _ = f(i - 1, on: ec, promise: promise)
                 }
             }
         }
-        
+
         self.measureBlock() {
             let sem = dispatch_semaphore_create(0)
             let sync_queue = dispatch_queue_create("private sync queue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_DEFAULT, 0))
@@ -139,9 +139,9 @@ class FuturePerformanceTests: XCTestCase {
             dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
         }
     }
-    
 
-    
+
+
     func testPerformanceSetupAndFire10000x1x1Continuations() {
         self.measureBlock() {
             let count = 10000
@@ -165,15 +165,15 @@ class FuturePerformanceTests: XCTestCase {
             dispatch_group_wait(dg, DISPATCH_TIME_FOREVER)
         }
     }
-    
-        
+
+
     func testPerformanceSetupAndFire10000x2x1Continuations() {
         measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             let count = 10000
             let dg = dispatch_group_create()
             var a = [Promise<Int>]()
             a.reserveCapacity(count)
-            
+
             self.startMeasuring()
             for _ in 0..<count {
                 let p = Promise<Int>()
@@ -190,20 +190,20 @@ class FuturePerformanceTests: XCTestCase {
                 p.fulfill(0)
             }
             dispatch_group_wait(dg, DISPATCH_TIME_FOREVER)
-            
+
             self.stopMeasuring()
             // Cleanup before next invocation
         }
     }
 
-    
+
     func testPerformanceSetup10000x2x1Continuations() {
         measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             let count = 10000
             let dg = dispatch_group_create()
             var a = [Promise<Int>]()
             a.reserveCapacity(count)
-            
+
             self.startMeasuring()
             for _ in 0..<count {
                 let p = Promise<Int>()
@@ -223,17 +223,17 @@ class FuturePerformanceTests: XCTestCase {
                 p.fulfill(0)
             }
             dispatch_group_wait(dg, DISPATCH_TIME_FOREVER)
-            
+
         }
     }
-    
+
     func testPerformanceFullfillAndRunContinuations10000x2x1Continuations() {
         measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             let count = 10000
             let dg = dispatch_group_create()
             var a = [Promise<Int>]()
             a.reserveCapacity(count)
-            
+
             for _ in 0..<count {
                 let p = Promise<Int>()
                 a.append(p)
@@ -251,14 +251,14 @@ class FuturePerformanceTests: XCTestCase {
                 p.fulfill(0)
             }
             dispatch_group_wait(dg, DISPATCH_TIME_FOREVER)
-            
+
             self.stopMeasuring()
             // Cleanup before next invocation
         }
     }
-    
 
-    
+
+
     func testPerformanceSetupAndFire10000x4x1Continuations() {
         self.measureBlock() {
             let count = 10000
@@ -282,8 +282,8 @@ class FuturePerformanceTests: XCTestCase {
             dispatch_group_wait(dg, DISPATCH_TIME_FOREVER)
         }
     }
-    
-    
+
+
     func testPerformanceSetupAndFire10000x8x1Continuations() {
         self.measureBlock() {
             let count = 10000
@@ -307,7 +307,7 @@ class FuturePerformanceTests: XCTestCase {
             dispatch_group_wait(dg, DISPATCH_TIME_FOREVER)
         }
     }
-    
+
     func testPerformanceSetupAndFire10000x1x2Continuations() {
         self.measureBlock() {
             let count = 10000
@@ -336,7 +336,7 @@ class FuturePerformanceTests: XCTestCase {
             dispatch_group_wait(dg, DISPATCH_TIME_FOREVER)
         }
     }
-    
+
     func testPerformanceSetupAndFire10000x1x3Continuations() {
         self.measureBlock() {
             let count = 10000
@@ -368,8 +368,8 @@ class FuturePerformanceTests: XCTestCase {
             dispatch_group_wait(dg, DISPATCH_TIME_FOREVER)
         }
     }
-    
-        
+
+
     func testPerformanceSetupAndFire10000x1x4Continuations() {
         self.measureBlock() {
             let count = 10000
@@ -405,7 +405,7 @@ class FuturePerformanceTests: XCTestCase {
             dispatch_group_wait(dg, DISPATCH_TIME_FOREVER)
         }
     }
-    
+
 
     func testPerformanceSetupAndFire10000x1x8Continuations() {
         self.measureBlock() {
@@ -458,15 +458,15 @@ class FuturePerformanceTests: XCTestCase {
             dispatch_group_wait(dg, DISPATCH_TIME_FOREVER)
         }
     }
-    
-    
-    
+
+
+
     func testPerformanceSetup10000xmap() {
         measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             let count = 10000
             var a = [Promise<Int>]()
             a.reserveCapacity(count)
-            
+
             for _ in 0..<count {
                 let p = Promise<Int>()
                 a.append(p)
@@ -482,13 +482,13 @@ class FuturePerformanceTests: XCTestCase {
             self.stopMeasuring()
         }
     }
-    
+
     func testPerformanceSetup10000xflatMap() {
         measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             let count = 10000
             var a = [Promise<Int>]()
             a.reserveCapacity(count)
-            
+
             for _ in 0..<count {
                 let p = Promise<Int>()
                 a.append(p)
@@ -505,8 +505,8 @@ class FuturePerformanceTests: XCTestCase {
             self.stopMeasuring()
         }
     }
-    
-    
+
+
     func test1000Zip1() {
         measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             let count = 10000
@@ -518,7 +518,7 @@ class FuturePerformanceTests: XCTestCase {
             }
             self.startMeasuring()
             for _ in 0..<count {
-                f1.zip(f2).onComplete(SyncEC()) { _ in
+                f1.zip(f2).onComplete(ec: SyncEC()) { _ in
                     dispatch_group_leave(dg)
                 }
             }
@@ -526,5 +526,5 @@ class FuturePerformanceTests: XCTestCase {
             self.stopMeasuring()
         }
     }
-    
+
 }

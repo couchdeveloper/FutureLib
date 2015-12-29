@@ -37,19 +37,19 @@ class Foo<T> {
 }
 
 class FutureTests: XCTestCase {
-    
+
     override func setUp() {
         super.setUp()
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
-    
-    
-    
+
+
+
+
     func testGivenAPendingFutureWithRegisteredSuccessHandlerWhenFulfilledItShouldRunItsSuccessHandler() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let test: ()->Future<String> = {
@@ -66,7 +66,7 @@ class FutureTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
 
-    
+
     func testGivenAFulfilledFutureWithRegisteredSuccessHandlerItShouldExecuteItsSuccessHandler() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let test: ()->Future<String> = {
@@ -79,7 +79,7 @@ class FutureTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
 
     func testGivenAPendingFutureWithRegisteredFailureHandlerWhenRejectedItShouldRunItsFailureHandler() {
         let expect = self.expectationWithDescription("future should be rejected")
@@ -96,7 +96,7 @@ class FutureTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
     func testGivenARejectedFutureWhenRegisteringFailureHandlerItShouldRunItsFailureHandler() {
         let expect = self.expectationWithDescription("future should be rejected")
         let test:()->Future<String> = {
@@ -109,8 +109,8 @@ class FutureTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(10, handler: nil)
     }
-    
-    
+
+
     func testGivenAPendingFutureWithRegisteredSuccessHandlerItShouldExecuteItsSuccessHandlerOnTheMainThread() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let test: ()->Future<String> = {
@@ -120,7 +120,7 @@ class FutureTests: XCTestCase {
             }
             return promise.future!
         }
-        test().then(on: GCDAsyncExecutionContext(dispatch_get_main_queue())) { str in
+        test().then(ec: GCDAsyncExecutionContext(dispatch_get_main_queue())) { str in
             XCTAssertTrue(NSThread.isMainThread())
             expect.fulfill()
         }
@@ -133,15 +133,15 @@ class FutureTests: XCTestCase {
             let promise = Promise<String>(value: "OK")
             return promise.future!
         }
-        test().then(on: GCDAsyncExecutionContext(dispatch_get_main_queue())) { str in
+        test().then(ec: GCDAsyncExecutionContext(dispatch_get_main_queue())) { str in
             XCTAssertTrue(NSThread.isMainThread())
             expect.fulfill()
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
-    
+
+
+
     func testExample3() {
         let expect1 = self.expectationWithDescription("future1 should be fulfilled")
         let expect2 = self.expectationWithDescription("future2 should be fulfilled")
@@ -177,11 +177,11 @@ class FutureTests: XCTestCase {
             XCTAssertEqual(0, x)
             expect5.fulfill()
         }
-        
+
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
 
     func testExample5() {
         let expect = self.expectationWithDescription("future should be rejected")
@@ -214,8 +214,8 @@ class FutureTests: XCTestCase {
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
+
+
     func testExample6() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let promise = Promise<String>()
@@ -243,7 +243,7 @@ class FutureTests: XCTestCase {
         waitForExpectationsWithTimeout(1, handler: nil)
     }
 
-    
+
     func testExample7() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let promise = Promise<String>()
@@ -268,7 +268,7 @@ class FutureTests: XCTestCase {
         waitForExpectationsWithTimeout(1, handler: nil)
     }
 
-    
+
     func testExample8() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let promise = Promise<String>()
@@ -294,9 +294,9 @@ class FutureTests: XCTestCase {
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
 //    // Livetime
-    
+
     func testFutureShouldDeallocateIfThereAreNoObservers() {
         let promise = Promise<Int>()
         weak var weakRef: Future<Int>?
@@ -307,7 +307,7 @@ class FutureTests: XCTestCase {
         t()
         XCTAssertNil(weakRef)
     }
-    
+
     func testFutureShouldDeallocateIfThereAreNoObservers2() {
         let cr = CancellationRequest()
         let ct = cr.token
@@ -323,25 +323,25 @@ class FutureTests: XCTestCase {
                 return
             }
         }
-        
+
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(100 * NSEC_PER_MSEC)),dispatch_get_global_queue(0,0)) {
             cr.cancel()
         };
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
     func testFutureShouldDeallocateIfThereAreNoObservers3() {
         let cr = CancellationRequest()
         let ct = cr.token
         let promise = Promise<Int>()
         let expect1 = self.expectationWithDescription("cancellation handler should be unregistered")
         let expect2 = self.expectationWithDescription("cancellation handler should be unregistered")
-        
+
         dispatch_async(dispatch_get_global_queue(0,0)) {
             let future = promise.future!
             let d1 = Dummy(expect1)
             let d2 = Dummy(expect2)
-            
+
             future.then(cancellationToken: ct) { i -> () in
                 XCTFail("unexpected")
                 print(d1)
@@ -366,12 +366,12 @@ class FutureTests: XCTestCase {
         let expect1 = self.expectationWithDescription("cancellation handler should be unregistered")
         let expect2 = self.expectationWithDescription("cancellation handler should be unregistered")
         let expect3 = self.expectationWithDescription("cancellation handler should be unregistered")
-        
+
         dispatch_async(dispatch_get_global_queue(0,0)) {
             let future = promise.future!
             let d1 = Dummy(expect1)
             let d2 = Dummy(expect2)
-            
+
             future.then(cancellationToken: ct) { i -> () in
                 XCTFail("unexpected")
                 print(d1)
@@ -394,12 +394,12 @@ class FutureTests: XCTestCase {
                 }
             };
         }
-        
+
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
 
-    
+
+
     func testFutureShouldNotDeallocateIfThereIsOneObserver() {
         weak var weakRef: Future<Int>?
         let promise = Promise<Int>()
@@ -419,7 +419,7 @@ class FutureTests: XCTestCase {
         let future = weakRef
         XCTAssertNil(future)
     }
-    
+
     func testPromiseShouldNotDeallocatePrematurely() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
@@ -452,7 +452,7 @@ class FutureTests: XCTestCase {
             .then { str in
                 expect.fulfill()
             }
-            
+
             dispatch_after(delay, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
                 promise.fulfill("OK")
             }
@@ -471,7 +471,7 @@ class FutureTests: XCTestCase {
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
     func testPromiseFulfillingAPromiseShouldNotInvokeFailureHandler() {
         let promise = Promise<String>()
         let future = promise.future!
@@ -488,7 +488,7 @@ class FutureTests: XCTestCase {
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
+
     func testContinuationReturnsFulfilledResultAndThenInvokesNextContinuation() {
         let promise = Promise<String>()
         let future = promise.future!
@@ -509,10 +509,10 @@ class FutureTests: XCTestCase {
         .recover { err -> Int in
             return -1
         }
-        
+
         promise.fulfill("OK")
         waitForExpectationsWithTimeout(1, handler: nil)
     }
-    
-    
+
+
 }
