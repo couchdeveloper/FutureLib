@@ -148,7 +148,7 @@ The most flexible and useful approach to retrieve the result in a non-blocking m
 
 In order to retrieve the result from a future in a non-blocking manner we can use a _Continuation_. A continuation is a closure which will be _registered_ with certain methods defined for that future. The continuation will be called when the future has been completed.
 
-There are several variants of continuations, including those that are registered with_combinators_ which differ in their signature. Most continuations have a parameter _result_ as `Result<T>`,  _value_ as `T` or _error_ as `ErrorType` which will be set accordingly from the future's result and passed as an argument.
+There are several variants of continuations, including those that are registered with _combinators_ which differ in their signature. Most continuations have a parameter _result_ as `Result<T>`,  _value_ as `T` or _error_ as `ErrorType` which will be set accordingly from the future's result and passed as an argument.
 
 ### Basic Methods Registering Continuations
 
