@@ -24,8 +24,12 @@ ignored
 xcuserdata
 project.xcworkspace
 
+<<<<<<< HEAD
 
 #fastlane
+=======
+# fastlane output
+>>>>>>> 7975d0ffd7a2710279fe2db0698abf31b88e78c0
 test_output
 
 # Automatic backup files
