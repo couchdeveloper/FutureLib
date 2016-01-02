@@ -24,7 +24,8 @@ ignored
 xcuserdata
 project.xcworkspace
 
-
+# fastlane output
+test_output
 
 # Automatic backup files
 *~.nib/
