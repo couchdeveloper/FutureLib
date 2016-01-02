@@ -5,5 +5,10 @@ branches:
  - master
 
 xcode_workspace: FutureLib.xcworkspace
-xcode_scheme: FutureLib
 osx_image: xcode7.2
+
+script:
+  - xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib -destination 'arch=x86_64'| xcpretty
+  - xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-iOS -destination 'platform=iOS Simulator,name=iPhone 6' test | xcpretty
+  - xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-tvOS -destination 'platform=tvOS Simulator,name=Apple TV 1080p' test | xcpretty
+  - xcodebuild build -workspace FutureLib.xcworkspace -scheme FutureLib-watchOS -destination 'platform=watchOS Simulator,name=Apple Watch - 38mm' | xcpretty
