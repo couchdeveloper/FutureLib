@@ -25,6 +25,8 @@ xcuserdata
 project.xcworkspace
 
 
+#fastlane
+test_output
 
 # Automatic backup files
 *~.nib/
