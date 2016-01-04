@@ -24,7 +24,7 @@ end
 
 
 $workspace = "FutureLib.xcworkspace"
-$schemes = ['FutureLib']
+$schemes = ['FutureLib', 'FutureLib-iOS', 'FutureLib-tvOS', 'FutureLib-watchOS']
 $benches = ['FutureLibPerformanceTests']
 
 

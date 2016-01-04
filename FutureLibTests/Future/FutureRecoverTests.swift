@@ -17,14 +17,14 @@ class FutureRecoverTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
 
     // MARK: recover(_:)
-    
+
     func testRecoverReturnsSuccesFutureWithPendingFuturePropagatesSuccessValueWhenCompletedWithSuccessValue() {
         let expect = self.expectationWithDescription("future should be completed")
         let asyncTask: ()-> Future<String> = {
@@ -44,8 +44,8 @@ class FutureRecoverTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
-    
-    
+
+
     func testRecoverReturnsSucceededFutureWithPendingFutureInvokesRecoverHandlerWhenCompletedWithError() {
         let expect1 = self.expectationWithDescription("future1 should be completed")
         let expect2 = self.expectationWithDescription("future2 should be completed")
@@ -67,7 +67,7 @@ class FutureRecoverTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
-    
+
 
     func testRecoverReturnsFailedFutureWithPendingFutureInvokesRecoverHandlerWhichThrowsErrorWhenCompletedWithError() {
         let expect1 = self.expectationWithDescription("future1 should be completed")
@@ -90,11 +90,11 @@ class FutureRecoverTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
-    
-    
-    
+
+
+
     // MARK: recoeverWith(_:)
-    
+
     func testRecoverWithReturnsSuccesFutureWithPendingFuturePropagatesSuccessValueWhenCompletedWithSuccessValue() {
         let expect = self.expectationWithDescription("future should be completed")
         let asyncTask: ()-> Future<String> = {
@@ -114,8 +114,8 @@ class FutureRecoverTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
-    
-    
+
+
     func testRecoverWithReturnsSucceededFutureWithPendingFutureInvokesRecoverHandlerWhenCompletedWithDeferredError() {
         let expect1 = self.expectationWithDescription("future1 should be completed")
         let expect2 = self.expectationWithDescription("future2 should be completed")
@@ -137,9 +137,9 @@ class FutureRecoverTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
-    
 
-    
 
-    
+
+
+
 }

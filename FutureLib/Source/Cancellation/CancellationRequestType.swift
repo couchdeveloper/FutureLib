@@ -28,7 +28,7 @@
     observes the associated cancellation token will be notified by this cancellation
     request and can handle this event appropriately.
 */
-public protocol CancellationRequestType  {
+public protocol CancellationRequestType {
 
 
     typealias CancellationTokenType
@@ -43,12 +43,12 @@ public protocol CancellationRequestType  {
      Request a cancellation. Clients will call this method in order to signal
      a cancellation request to any object which has registered handlers for this
      CancellationRequest.
-     
+
      Cancellation is _asynchronous_, that is, the effect of requesting a cancellation
      may not yet be visible on the same thread immediately after `cancel` returns.
     */
     func cancel()
-    
+
     /**
      - returns:  The associated cancellation token.
     */

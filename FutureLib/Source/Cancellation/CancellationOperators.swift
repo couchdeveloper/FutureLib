@@ -7,7 +7,8 @@
 
 
 
-public func ||(left: CancellationTokenType, right: CancellationTokenType) -> CancellationTokenType {
+public func || (left: CancellationTokenType, right: CancellationTokenType)
+    -> CancellationTokenType {
     let scs = SharedCancellationState()
     let ec = ConcurrentAsync()
     var rid = -1
@@ -28,7 +29,8 @@ public func ||(left: CancellationTokenType, right: CancellationTokenType) -> Can
 
 
 
-public func &&(left: CancellationTokenType, right: CancellationTokenType) -> CancellationTokenType {
+public func && (left: CancellationTokenType, right: CancellationTokenType)
+    -> CancellationTokenType {
     let scs = SharedCancellationState()
     let ec = ConcurrentAsync()
     left.register(on: ec) { cancelled in
@@ -40,7 +42,3 @@ public func &&(left: CancellationTokenType, right: CancellationTokenType) -> Can
     }
     return CancellationToken(sharedState: scs)
 }
-
-
-
-

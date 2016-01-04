@@ -14,20 +14,20 @@ class ExecutionContextTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
 
     func testCreateExecutionContexts() {
-        
+
         let _ = ConcurrentAsync()
         let _ = ConcurrentSync()
-        
+
         let _ = MainThreadAsync()
         let _ = MainThreadSync()
-        
+
     }
 
 }

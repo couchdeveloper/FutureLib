@@ -13,7 +13,7 @@ import Dispatch
  that they are no more interested in the result. The task will be notified about the
  cancellation request signaled by its client and may now cancel its operation.
 */
-public final class CancellationRequest : CancellationRequestType {
+public final class CancellationRequest: CancellationRequestType {
 
     public typealias CancellationToken = FutureLib.CancellationToken
 
@@ -58,17 +58,17 @@ public final class CancellationRequest : CancellationRequestType {
      Request a cancellation. Clients will call this method in order to signal
      a cancellation request to any object which has registered handlers for this
      CancellationRequest.
-     
+
      Cancellation is asynchronous, that is, the effect of requesting a cancellation
      may not yet be visible on the same thread immediately after `cancel` returns.
-     
+
      `self` will be retained up until all registered handlers have been finished executing.
     */
     public final func cancel() {
         _sharedState.cancel()
     }
-    
-    
+
+
     /**
      - returns: The associated "cancellation token" - an instance of a
      CancellationTokenType.

@@ -15,23 +15,23 @@ class ResultTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
-    
+
+
     // MARK: Create a Result
-    
+
     func testResultVoidDefaultCtorYieldsSucceeded() {
         let result = Result()
         XCTAssertTrue(result.isSuccess)
         XCTAssertFalse(result.isFailure)
     }
-    
-    
-    
+
+
+
     func testCreateResultWithSuccess() {
         let r1 = Result("OK")
         switch r1 {
@@ -42,7 +42,7 @@ class ResultTests: XCTestCase {
         }
         XCTAssertTrue(r1.isSuccess)
         XCTAssertFalse(r1.isFailure)
-        
+
         let r2 = Result(2)
         switch r2 {
         case .Success (let value):
@@ -53,7 +53,7 @@ class ResultTests: XCTestCase {
         XCTAssertTrue(r2.isSuccess)
         XCTAssertFalse(r2.isFailure)
     }
-    
+
 
     func testCreateResultWithFailure() {
         let r1 = Result<Int>(error: TestError.Failed)
@@ -65,9 +65,9 @@ class ResultTests: XCTestCase {
         }
         XCTAssertFalse(r1.isSuccess)
         XCTAssertTrue(r1.isFailure)
-        
+
     }
-    
+
 
     func testCreateResultWithThrowingFunction() {
         let f: () throws -> Int = { return 0 }
@@ -79,7 +79,7 @@ class ResultTests: XCTestCase {
             XCTFail("unexpected failure")
         }
     }
-    
+
     func testCreateResultWithThrowingFunctionWhichThrows() {
         let f: () throws -> Int = { throw TestError.Failed }
         let r1 = Result<Int>(f)
@@ -90,12 +90,12 @@ class ResultTests: XCTestCase {
             XCTAssertTrue(TestError.Failed == error)
         }
     }
-    
-    
-    
+
+
+
     func testResultWithNSError() {
         let r = Result<Int>(error: NSError(domain: "Test", code: -1, userInfo: nil))
-        
+
         switch r {
         case .Success:
             XCTFail("unexpected success")
@@ -109,11 +109,11 @@ class ResultTests: XCTestCase {
             }
         }
     }
-    
-    
-    
+
+
+
     // MARK: method map(f:) -> Result<U>
-    
+
     func testSuccessfulResultMapsToNewResult() {
          let r = Result<Int>(3).map { value -> String in
             XCTAssertEqual(3, value)
@@ -126,7 +126,7 @@ class ResultTests: XCTestCase {
             XCTFail("unexpected failure")
         }
     }
-    
+
     func testFailedResultMapsToSameResult() {
         let r0 = Result<Int>({ throw TestError.Failed })
         let r = r0.map { value -> String in
@@ -140,7 +140,7 @@ class ResultTests: XCTestCase {
             XCTAssertTrue(TestError.Failed == error)
         }
     }
-    
+
 
     func testSuccessfulResultWithTrowingMappingFunctionMapsToNewResult() {
         let r = Result<Int>(3).map { value -> String in
@@ -154,10 +154,10 @@ class ResultTests: XCTestCase {
             XCTAssertTrue(TestError.Failed == error)
         }
     }
-    
-    
+
+
     // MARK: method flatMap(f:) -> Result<U>
-    
+
     func testSuccessfulResultFlatMapsToNewResult() {
         let r = Result<Int>(3).flatMap { value -> Result<String> in
             XCTAssertEqual(3, value)
@@ -170,7 +170,7 @@ class ResultTests: XCTestCase {
             XCTFail("unexpected failure")
         }
     }
-    
+
     func testFailedResultFlatMapsToSameResult() {
         let r0 = Result<Int>({ throw TestError.Failed })
         let r = r0.flatMap { value -> Result<String> in
@@ -184,13 +184,13 @@ class ResultTests: XCTestCase {
             XCTAssertTrue(TestError.Failed == error)
         }
     }
-    
-    
-    
+
+
+
     // MARK: value()
-    
-    
-    
+
+
+
     func testValueForSuccessfulResultReturnsSuccessValue() {
         let r = Result<Int>(3)
         do {
@@ -212,14 +212,14 @@ class ResultTests: XCTestCase {
             XCTAssertTrue(TestError.Failed == error)
         }
     }
-    
-    
+
+
 //    func testEqualityOperator() {
 //        let r1 = Result<Int>(3)
 //        let r2 = Result<Int>(3)
 //        XCTAssertTrue(r1 == r2)
 //    }
-    
+
 
 
 }

@@ -8,16 +8,16 @@ public protocol Cancelable {
 }
 
 extension dispatch_queue_t {
-    
+
     public func async(f: () -> ()) {
         dispatch_async(self, f)
     }
 
-    
+
     public func sync(f: () -> ()) {
         dispatch_sync(self, f)
     }
-    
+
 
     public func after(delay: Double, tolerance: Double = 0.0, f: () -> ()) -> Cancelable {
         let timer = Timer(delay: delay, tolerance: tolerance, queue: self) { timer in
@@ -26,8 +26,8 @@ extension dispatch_queue_t {
         timer.resume()
         return timer
     }
-    
-    
+
+
 }
 
 public func schedule_after(delay: Double, tolerance: Double = 0.0, f: () -> ()) {

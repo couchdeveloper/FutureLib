@@ -18,15 +18,15 @@ class FutureThenExtensionTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
 
-    
+
     // MARK: then()
-    
+
     func testPendingFutureInvokesThenHandlerWhenCompletedSuccessfully1() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let asyncTask: ()-> Future<String> = {
@@ -56,8 +56,8 @@ class FutureThenExtensionTests: XCTestCase {
         }
         usleep(100*1000)
     }
-    
-    
+
+
     func testPendingFutureInvokesThenHandlerWhenCompletedSuccessfully2() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let asyncTask: ()-> Future<String> = {
@@ -75,7 +75,7 @@ class FutureThenExtensionTests: XCTestCase {
         dummyFuture
         self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
-    
+
     func testPendingFutureDoesNotInvokeThenHandlerWhenCompletedWithError2() {
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
@@ -92,7 +92,7 @@ class FutureThenExtensionTests: XCTestCase {
         usleep(100*1000)
     }
 
-    
+
     func testPendingFutureInvokesThenHandlerWhenCompletedSuccessfully3() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let asyncTask: ()-> Future<String> = {
@@ -110,7 +110,7 @@ class FutureThenExtensionTests: XCTestCase {
         dummyFuture
         self.waitForExpectationsWithTimeout(timeout, handler: nil)
     }
-    
+
     func testPendingFutureDoesNotInvokeThenHandlerWhenCompletedWithError3() {
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
@@ -126,10 +126,10 @@ class FutureThenExtensionTests: XCTestCase {
         dummyFuture
         usleep(100*1000)
     }
-    
-    
+
+
 //    // MARK: then(:onSuccess:onFailure)
-//    
+//
 //    func testPendingFutureInvokesOnSuccessHandlerWhenCompletedSuccessfully1() {
 //        let expect = self.expectationWithDescription("future should be fulfilled")
 //        let asyncTask: ()-> Future<String> = {
@@ -148,8 +148,8 @@ class FutureThenExtensionTests: XCTestCase {
 //        self.waitForExpectationsWithTimeout(timeout, handler: nil)
 //    }
 
-    
-    
+
+
 //    func testPendingFutureInvokesOnFailureHandlerWhenCompletedWithError() {
 //        let expect = self.expectationWithDescription("future should be fulfilled")
 //        let asyncTask: ()-> Future<String> = {
@@ -167,5 +167,5 @@ class FutureThenExtensionTests: XCTestCase {
 //        })
 //        self.waitForExpectationsWithTimeout(timeout, handler: nil)
 //    }
-    
+
 }

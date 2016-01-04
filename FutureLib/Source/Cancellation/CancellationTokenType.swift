@@ -34,9 +34,9 @@ public protocol CancellationTokenType {
     /**
      Executes the closure `f` on the given execution context when `self` has been
      completed with a boolean value which means either "cancelled" or "not cancelled".
-     
+
      - parameter on: An execution context where the closure will be scheduled on.
-     
+
      - parameter f: The closure which takes a booelan parameter. If it equals `true`
         a cancellation has been requested, otherwise it has been completed with
         "not cancelled".
@@ -47,39 +47,39 @@ public protocol CancellationTokenType {
 
     /**
      Unregister the closure previously registered with `onCancel`.
-     
+
      - parameter id: The `id` representing the closure which has been obtained with `onCancel`.
      */
     func unregister(id: Int)
-    
-    
+
+
     /**
      Registers the closure `f` which is invoked on a given execution context
      when its associated `CancellationRequest` has been cancelled and when the
      `cancelable` still exists.
-     
+
      `Closure `f` will be called with the given cancelable as its argument.
      `self` and the `cancelable` shall not be retained.
-     
+
      **Remarks:**
-     
+
      Having a reference to the cancellation token or registering a closure does not
      retain the corresponding cancellation request. If the cancellation request
      will be deinitialized, the registered closures will not execute, but they will
      be deinitialized as well.
-     
-     
+
+
      If the corresponding cancellation request has been cancelled the closure
      `f` will be dispatched immediately on the specified execution context.
-     
+
      - parameter on: An execution context where the closure will be scheduled on.
-     
+
      - parameter cancelable: The "cancelable", that is - the object that registered
      this handler.
-     
+
      - parameter f:  The closure which will be executed when a cancellation has
      been requested.
-     
+
      - returns: A unique id which represents the handler being registered.
     */
     @warn_unused_result (message="Use the returned id to unregister the handler")
@@ -89,32 +89,32 @@ public protocol CancellationTokenType {
     /**
      Executes closure `f` on the given execution context when its associated
      `CancellationRequest` has been cancelled.
-     
+
      **Caution:** An implementation MUST not retain `self` when registering a
      closure .
-     
+
      **Remarks:**
-     
-     Having a reference to the cancellation token or registering a closure does not 
-     retain the corresponding cancellation request. If the cancellation request 
+
+     Having a reference to the cancellation token or registering a closure does not
+     retain the corresponding cancellation request. If the cancellation request
      will be deinitialized, the registered closures will not execute, but they will
      be deinitialized as well.
-     
+
      If the corresponding cancellation request has been cancelled the closure
      `f` will be dispatched immediately on the specified execution context.
-     
-     
+
+
      - parameter on: An execution context where the closure will be scheduled on.
-     
+
      - parameter f:  The closure which will be executed when a cancellation has
      been requested.
-     
+
      - returns: A unique id which represents the handler being registered.
     */
     @warn_unused_result (message="Use the returned id to unregister the handler")
     func onCancel(on executor: ExecutionContext, f: ()->()) -> Int
 
-    
+
 }
 
 
@@ -126,26 +126,26 @@ public extension CancellationTokenType {
      Registers the closure `f` which is invoked on a private execution context
      when its associated `CancellationRequest` has been cancelled and when the
      `cancelable` still exists.
-     
+
      `Closure `f` will be called with the given cancelable as its argument.
      `self` and the `cancelable` shall not be retained.
-     
+
      **Remarks:**
-     
+
      Having a reference to the cancellation token or registering a closure does not
      retain the corresponding cancellation request. If the cancellation request
      will be deinitialized, the registered closures will not execute, but they will
      be deinitialized as well.
-     
+
      If the corresponding cancellation request has been cancelled the closure
      `f` will be dispatched immediately on the specified execution context.
-     
+
      - parameter cancelable: The "cancelable", that is - the object that registered
      this handler.
-     
+
      - parameter f:  The closure which will be executed when a cancellation has
      been requested.
-     
+
      - returns: A unique id which represents the handler being registered.
     */
     public final func onCancel(cancelable: Cancelable, f: (Cancelable)->()) -> Int {
@@ -157,24 +157,22 @@ public extension CancellationTokenType {
      Registers the closure `f` which is invoked on a given execution context
      when its associated `CancellationRequest` has been cancelled and when the
      `cancelable` still exists.
-     
+
      `Closure `f` will be called with the given cancelable as its argument.
      `self` and the `cancelable` shall not be retained.
-     
+
      **Remarks:**
-     
+
      Registering a closure does not retain the corresponding cancellation request.
      If the cancellation request will be deinitialized, the registered closures
-     will not execute, but they will be deinitialized as well.     
-     
+     will not execute, but they will be deinitialized as well.
+
      If the corresponding cancellation request has been cancelled the closure
      `f` will be dispatched immediately on the specified execution context.
-     
-     - parameter on: An execution context where the closure will be scheduled on.
-     
+
      - parameter f:  The closure which will be executed when a cancellation has
      been requested.
-     
+
      - returns: A unique id which represents the handler being registered.
     */
     public final func onCancel(f: ()->()) -> Int {

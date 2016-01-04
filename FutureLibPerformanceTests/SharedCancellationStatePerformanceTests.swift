@@ -16,15 +16,15 @@ class SharedCancellationStatePerformanceTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
 
     // Performance
-    
-    
+
+
     func testPerformanceRegister_1000() {
         self.measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             self.startMeasuring()
@@ -38,7 +38,7 @@ class SharedCancellationStatePerformanceTests: XCTestCase {
             self.stopMeasuring()
         }
     }
-    
+
     func testPerformanceRegister_100() {
         self.measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             self.startMeasuring()
@@ -52,7 +52,7 @@ class SharedCancellationStatePerformanceTests: XCTestCase {
             self.stopMeasuring()
         }
     }
-    
+
     func testPerformanceRegister_10() {
         self.measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             self.startMeasuring()
@@ -66,7 +66,7 @@ class SharedCancellationStatePerformanceTests: XCTestCase {
             self.stopMeasuring()
         }
     }
-    
+
     func testPerformanceRegister_5() {
         self.measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             self.startMeasuring()
@@ -80,7 +80,7 @@ class SharedCancellationStatePerformanceTests: XCTestCase {
             self.stopMeasuring()
         }
     }
-    
+
     func testPerformanceRegister_2() {
         self.measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             self.startMeasuring()
@@ -93,9 +93,9 @@ class SharedCancellationStatePerformanceTests: XCTestCase {
             }
             self.stopMeasuring()
         }
-        
+
     }
-    
+
     func testPerformanceRegister_1() {
         self.measureMetrics(XCTestCase.defaultPerformanceMetrics(), automaticallyStartMeasuring: false) {
             self.startMeasuring()
@@ -109,6 +109,6 @@ class SharedCancellationStatePerformanceTests: XCTestCase {
             self.stopMeasuring()
         }
     }
-    
+
 
 }

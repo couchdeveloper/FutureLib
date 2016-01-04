@@ -3,6 +3,7 @@
 
 # Xcode's folder for intermediate data:
 Build
+build
 DerivedData
 
 # temp nibs and swap files
@@ -22,3 +23,26 @@ ignored
 *.perspectivev3
 xcuserdata
 project.xcworkspace
+
+<<<<<<< HEAD
+
+#fastlane
+=======
+# fastlane output
+>>>>>>> 7975d0ffd7a2710279fe2db0698abf31b88e78c0
+test_output
+
+# Automatic backup files
+*~.nib/
+*.swp
+*~
+*.dat
+*.dep
+
+# Cocoapods
+Pods
+Carthage
+
+# AppCode specific files
+.idea/
+*.iml

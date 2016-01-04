@@ -15,7 +15,7 @@ class SharedCancellationStateTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
@@ -28,23 +28,23 @@ class SharedCancellationStateTests: XCTestCase {
     func testInitialSharedCancellationStateIsNotCompleted() {
         XCTAssertFalse(SharedCancellationState().isCompleted)
     }
-    
+
     func testIsCancelledIsTrueWhenCancellingASharedCancellationState() {
         let cs = SharedCancellationState()
         cs.cancel()
         XCTAssertTrue(cs.isCompleted)
         XCTAssertTrue(cs.isCancelled)
     }
-    
+
     func testIsCancelledIsFalseWhenCompletingASharedCancellationState() {
         let cs = SharedCancellationState()
         cs.complete()
         XCTAssertTrue(cs.isCompleted)
         XCTAssertFalse(cs.isCancelled)
     }
-    
 
-    
+
+
     func testOnCancelHandlerShouldExecuteWhenCancelled() {
         let cs = SharedCancellationState()
         let expect1 = self.expectationWithDescription("cancellation handler should be called")
@@ -56,7 +56,7 @@ class SharedCancellationStateTests: XCTestCase {
         XCTAssertTrue(cs.isCompleted)
         XCTAssertTrue(cs.isCancelled)
     }
-    
+
     func testOnCancelHandlerShouldExecuteIfCancelled() {
         let cs = SharedCancellationState()
         let expect1 = self.expectationWithDescription("cancellation handler should be called")
@@ -68,6 +68,6 @@ class SharedCancellationStateTests: XCTestCase {
         XCTAssertTrue(cs.isCompleted)
         XCTAssertTrue(cs.isCancelled)
     }
-    
-    
+
+
 }

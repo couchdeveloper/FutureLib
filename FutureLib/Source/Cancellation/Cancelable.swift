@@ -41,7 +41,7 @@ public protocol Cancelable : class {
      Requests a cancellation with a given error provided by the client. An
      implementation should as soon as possible cancel the operation or service.
      If the cancelable is already finished, no action should be performed.
-     
+
      - parameter error: The error that can be used to reason about the cancellation.
     */
     func cancel(error: ErrorType)
