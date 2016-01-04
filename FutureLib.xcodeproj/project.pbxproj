@@ -340,6 +340,7 @@
 		A1CD28141B46C04B00B408E4 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		A1DF3E271BC69B4D00136A45 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A1E11FF81C07876C008EC456 /* Rakefile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; path = Rakefile; sourceTree = "<group>"; };
+		A1F8FCAE1C3AF9C6008AC595 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -599,6 +600,7 @@
 				A1B80E861BE15FBC0031A489 /* Tutorial.playground */,
 				A1CD28141B46C04B00B408E4 /* LICENSE.md */,
 				A1DF3E271BC69B4D00136A45 /* README.md */,
+				A1F8FCAE1C3AF9C6008AC595 /* .travis.yml */,
 				A1E11FF81C07876C008EC456 /* Rakefile */,
 				A10336FC1C3AD2B80014C866 /* Sources */,
 				A18FE00D1B46AF8C0094CD2A /* Tests */,
