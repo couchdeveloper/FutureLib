@@ -3,6 +3,7 @@
 
 # Xcode's folder for intermediate data:
 Build
+build
 DerivedData
 
 # temp nibs and swap files
@@ -13,6 +14,8 @@ DerivedData
 #exclude generated html files in folder "doc":
 doc/
 
+ignored
+
 # Xcode's user settings
 *.mode1v3
 *.mode2v3
@@ -20,3 +23,21 @@ doc/
 *.perspectivev3
 xcuserdata
 project.xcworkspace
+
+#fastlane
+test_output
+
+# Automatic backup files
+*~.nib/
+*.swp
+*~
+*.dat
+*.dep
+
+# Cocoapods
+Pods
+Carthage
+
+# AppCode specific files
+.idea/
+*.iml
