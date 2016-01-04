@@ -40,7 +40,7 @@ end
 
 
 desc "Run all tests defined within the given schemes"
-task :test  do
+task :test  => [:build] do
     sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-MacOS -destination 'arch=x86_64'| xcpretty"
     sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-iOS -destination 'platform=iOS Simulator,name=iPhone 6' test | xcpretty"
     sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-tvOS -destination 'platform=tvOS Simulator,name=Apple TV 1080p' test | xcpretty"
