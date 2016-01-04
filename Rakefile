@@ -41,14 +41,14 @@ end
 
 desc "Run all tests defined within the given schemes"
 task :test  do
-    sh "xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-MacOS -destination 'arch=x86_64'| xcpretty"
-    sh "xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-iOS -destination 'platform=iOS Simulator,name=iPhone 6' test | xcpretty"
-    sh "xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-tvOS -destination 'platform=tvOS Simulator,name=Apple TV 1080p' test | xcpretty"
+    sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-MacOS -destination 'arch=x86_64'| xcpretty"
+    sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-iOS -destination 'platform=iOS Simulator,name=iPhone 6' test | xcpretty"
+    sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-tvOS -destination 'platform=tvOS Simulator,name=Apple TV 1080p' test | xcpretty"
 end
 
 
 
 desc "Build and run all benchmark tests defined within the given schemes"
 task :bench do
-    sh "xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLibPerformanceTests -destination 'arch=x86_64'| xcpretty"
+    sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLibPerformanceTests -destination 'arch=x86_64'| xcpretty"
 end
