@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A1BF1B741C3297EC00C7A236"
+               BlueprintIdentifier = "A1F8FCB31C3B063B008AC595"
                BuildableName = "FutureLib.framework"
                BlueprintName = "FutureLib-tvOS"
                ReferencedContainer = "container:FutureLib.xcodeproj">
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A1BF1B7D1C3297EC00C7A236"
+               BlueprintIdentifier = "A1F8FCBC1C3B063B008AC595"
                BuildableName = "FutureLib-tvOSTests.xctest"
                BlueprintName = "FutureLib-tvOSTests"
                ReferencedContainer = "container:FutureLib.xcodeproj">
@@ -42,7 +42,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A1BF1B741C3297EC00C7A236"
+            BlueprintIdentifier = "A1F8FCB31C3B063B008AC595"
             BuildableName = "FutureLib.framework"
             BlueprintName = "FutureLib-tvOS"
             ReferencedContainer = "container:FutureLib.xcodeproj">
@@ -64,7 +64,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A1BF1B741C3297EC00C7A236"
+            BlueprintIdentifier = "A1F8FCB31C3B063B008AC595"
             BuildableName = "FutureLib.framework"
             BlueprintName = "FutureLib-tvOS"
             ReferencedContainer = "container:FutureLib.xcodeproj">
@@ -82,7 +82,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A1BF1B741C3297EC00C7A236"
+            BlueprintIdentifier = "A1F8FCB31C3B063B008AC595"
             BuildableName = "FutureLib.framework"
             BlueprintName = "FutureLib-tvOS"
             ReferencedContainer = "container:FutureLib.xcodeproj">
