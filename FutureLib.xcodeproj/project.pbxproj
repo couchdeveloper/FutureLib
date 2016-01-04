@@ -158,6 +158,7 @@
 		A1B6AFDB1C17389C00E5E994 /* FutureBaseMapToTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B6AFDA1C17389C00E5E994 /* FutureBaseMapToTests.swift */; };
 		A1B6AFDC1C17389C00E5E994 /* FutureBaseMapToTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B6AFDA1C17389C00E5E994 /* FutureBaseMapToTests.swift */; };
 		A1F8FCBE1C3B063B008AC595 /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1F8FCB41C3B063B008AC595 /* FutureLib.framework */; };
+		A1F8FCCB1C3B0B2E008AC595 /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A103371B1C3AD2B80014C866 /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -620,6 +621,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1F8FCCB1C3B0B2E008AC595 /* FutureLib.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
