@@ -17,57 +17,38 @@ def git_is_status_clean
 end
 
 
-desc "Runs the specs [EMPTY]"
-task :spec do
-  # Provide your own implementation
-end
-
-
 $workspace = "FutureLib.xcworkspace"
-$schemes = ['FutureLib', 'FutureLib-iOS', 'FutureLib-tvOS', 'FutureLib-watchOS']
-$benches = ['FutureLibPerformanceTests']
+$allSchemes = ['FutureLib-MacOS', 'FutureLib-iOS', 'FutureLib-tvOS', 'FutureLib-watchOS']
+$testSchemes = ['FutureLib-MacOS', 'FutureLib-iOS', 'FutureLib-tvOS']
+$benchmarkSchemes = ['FutureLibPerformanceTests']
 
 
-desc "Build all targets defined within the given schemes #{$schemes}"
+desc "Build all targets defined within the given schemes #{$allSchemes}"
 task :build do
-    $schemes.each { |scheme|
+    $allSchemes.each { |scheme|
         sh "xctool -workspace #{$workspace} -scheme #{scheme} build"
     }
 end
 
-desc "Clean all targets defined within the given schemes #{$schemes}"
+desc "Clean all targets defined within the given schemes #{$allSchemes}"
 task :clean do
-    $schemes.each { |scheme|
+    $allSchemes.each { |scheme|
         sh "xctool -workspace #{$workspace} -scheme #{scheme} clean"
     }
 end
 
 
-desc "Build all tests defined within the given schemes #{$schemes}"
-task :build_tests do
-    $schemes.each { |scheme|
-        sh "xctool -workspace #{$workspace} -scheme #{scheme} build-tests"
-    }
-end
 
-desc "Run all tests defined within the given schemes #{$schemes}"
-task :test  => :build_tests do
-    $schemes.each { |scheme|
-        sh "xctool -workspace #{$workspace} -scheme #{scheme} run-tests"
-    }
-end
-
-desc "Run all tests defined within the given schemes #{$schemes}"
-task :run_tests do
-    $schemes.each { |scheme|
-        sh "xctool -workspace #{$workspace} -scheme #{scheme} run-tests"
-    }
+desc "Run all tests defined within the given schemes"
+task :test  => [:build] do
+    sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-MacOS -destination 'arch=x86_64'| xcpretty"
+    sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-iOS -destination 'platform=iOS Simulator,name=iPhone 6' test | xcpretty"
+    sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLib-tvOS -destination 'platform=tvOS Simulator,name=Apple TV 1080p' test | xcpretty"
 end
 
 
-desc "Build an run all benchmark tests defined within the given schemes #{$benches}"
+
+desc "Build and run all benchmark tests defined within the given schemes"
 task :bench do
-    $benches.each { |scheme|
-        sh "xctool -workspace #{$workspace} -scheme #{scheme} test"
-    }
+    sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLibPerformanceTests -destination 'arch=x86_64'| xcpretty"
 end
