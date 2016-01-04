@@ -7,19 +7,131 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A106F5E61B77902900676E87 /* PromiseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106F5E51B77902900676E87 /* PromiseExtensions.swift */; };
-		A106F5E71B77902900676E87 /* PromiseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106F5E51B77902900676E87 /* PromiseExtensions.swift */; };
-		A1073FF81BFA7C0600E6EE83 /* CancellationOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A8E1811BF4A998003B0002 /* CancellationOperators.swift */; };
-		A1073FF91BFA7C0800E6EE83 /* CancellationOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A8E1811BF4A998003B0002 /* CancellationOperators.swift */; };
-		A107400E1BFB668C00E6EE83 /* SharedCancellationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A107400D1BFB668C00E6EE83 /* SharedCancellationState.swift */; };
-		A107400F1BFB668C00E6EE83 /* SharedCancellationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A107400D1BFB668C00E6EE83 /* SharedCancellationState.swift */; };
-		A10740111BFBA59000E6EE83 /* CancellationSequenceTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10740101BFBA59000E6EE83 /* CancellationSequenceTypeExtension.swift */; };
-		A10740121BFBA59000E6EE83 /* CancellationSequenceTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10740101BFBA59000E6EE83 /* CancellationSequenceTypeExtension.swift */; };
-		A108D7AF1C2D97330099D772 /* TaskQueue+ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108D7AE1C2D97330099D772 /* TaskQueue+ExecutionContext.swift */; };
-		A108D7B01C2D97330099D772 /* TaskQueue+ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108D7AE1C2D97330099D772 /* TaskQueue+ExecutionContext.swift */; };
+		A10337201C3AD2B80014C866 /* Cancelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10336FE1C3AD2B80014C866 /* Cancelable.swift */; };
+		A10337211C3AD2B80014C866 /* Cancelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10336FE1C3AD2B80014C866 /* Cancelable.swift */; };
+		A10337221C3AD2B80014C866 /* Cancelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10336FE1C3AD2B80014C866 /* Cancelable.swift */; };
+		A10337231C3AD2B80014C866 /* Cancelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10336FE1C3AD2B80014C866 /* Cancelable.swift */; };
+		A10337241C3AD2B80014C866 /* CancellationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10336FF1C3AD2B80014C866 /* CancellationError.swift */; };
+		A10337251C3AD2B80014C866 /* CancellationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10336FF1C3AD2B80014C866 /* CancellationError.swift */; };
+		A10337261C3AD2B80014C866 /* CancellationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10336FF1C3AD2B80014C866 /* CancellationError.swift */; };
+		A10337271C3AD2B80014C866 /* CancellationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10336FF1C3AD2B80014C866 /* CancellationError.swift */; };
+		A10337281C3AD2B80014C866 /* CancellationOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337001C3AD2B80014C866 /* CancellationOperators.swift */; };
+		A10337291C3AD2B80014C866 /* CancellationOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337001C3AD2B80014C866 /* CancellationOperators.swift */; };
+		A103372A1C3AD2B80014C866 /* CancellationOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337001C3AD2B80014C866 /* CancellationOperators.swift */; };
+		A103372B1C3AD2B80014C866 /* CancellationOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337001C3AD2B80014C866 /* CancellationOperators.swift */; };
+		A103372C1C3AD2B80014C866 /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337011C3AD2B80014C866 /* CancellationRequest.swift */; };
+		A103372D1C3AD2B80014C866 /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337011C3AD2B80014C866 /* CancellationRequest.swift */; };
+		A103372E1C3AD2B80014C866 /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337011C3AD2B80014C866 /* CancellationRequest.swift */; };
+		A103372F1C3AD2B80014C866 /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337011C3AD2B80014C866 /* CancellationRequest.swift */; };
+		A10337301C3AD2B80014C866 /* CancellationRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337021C3AD2B80014C866 /* CancellationRequestType.swift */; };
+		A10337311C3AD2B80014C866 /* CancellationRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337021C3AD2B80014C866 /* CancellationRequestType.swift */; };
+		A10337321C3AD2B80014C866 /* CancellationRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337021C3AD2B80014C866 /* CancellationRequestType.swift */; };
+		A10337331C3AD2B80014C866 /* CancellationRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337021C3AD2B80014C866 /* CancellationRequestType.swift */; };
+		A10337341C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337031C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift */; };
+		A10337351C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337031C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift */; };
+		A10337361C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337031C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift */; };
+		A10337371C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337031C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift */; };
+		A10337381C3AD2B80014C866 /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337041C3AD2B80014C866 /* CancellationToken.swift */; };
+		A10337391C3AD2B80014C866 /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337041C3AD2B80014C866 /* CancellationToken.swift */; };
+		A103373A1C3AD2B80014C866 /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337041C3AD2B80014C866 /* CancellationToken.swift */; };
+		A103373B1C3AD2B80014C866 /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337041C3AD2B80014C866 /* CancellationToken.swift */; };
+		A103373C1C3AD2B80014C866 /* CancellationTokenNone.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337051C3AD2B80014C866 /* CancellationTokenNone.swift */; };
+		A103373D1C3AD2B80014C866 /* CancellationTokenNone.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337051C3AD2B80014C866 /* CancellationTokenNone.swift */; };
+		A103373E1C3AD2B80014C866 /* CancellationTokenNone.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337051C3AD2B80014C866 /* CancellationTokenNone.swift */; };
+		A103373F1C3AD2B80014C866 /* CancellationTokenNone.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337051C3AD2B80014C866 /* CancellationTokenNone.swift */; };
+		A10337401C3AD2B80014C866 /* CancellationTokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337061C3AD2B80014C866 /* CancellationTokenType.swift */; };
+		A10337411C3AD2B80014C866 /* CancellationTokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337061C3AD2B80014C866 /* CancellationTokenType.swift */; };
+		A10337421C3AD2B80014C866 /* CancellationTokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337061C3AD2B80014C866 /* CancellationTokenType.swift */; };
+		A10337431C3AD2B80014C866 /* CancellationTokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337061C3AD2B80014C866 /* CancellationTokenType.swift */; };
+		A10337441C3AD2B80014C866 /* SharedCancellationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337071C3AD2B80014C866 /* SharedCancellationState.swift */; };
+		A10337451C3AD2B80014C866 /* SharedCancellationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337071C3AD2B80014C866 /* SharedCancellationState.swift */; };
+		A10337461C3AD2B80014C866 /* SharedCancellationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337071C3AD2B80014C866 /* SharedCancellationState.swift */; };
+		A10337471C3AD2B80014C866 /* SharedCancellationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337071C3AD2B80014C866 /* SharedCancellationState.swift */; };
+		A10337481C3AD2B80014C866 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337091C3AD2B80014C866 /* ExecutionContext.swift */; };
+		A10337491C3AD2B80014C866 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337091C3AD2B80014C866 /* ExecutionContext.swift */; };
+		A103374A1C3AD2B80014C866 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337091C3AD2B80014C866 /* ExecutionContext.swift */; };
+		A103374B1C3AD2B80014C866 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337091C3AD2B80014C866 /* ExecutionContext.swift */; };
+		A103374C1C3AD2B80014C866 /* GCDExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370A1C3AD2B80014C866 /* GCDExecutionContext.swift */; };
+		A103374D1C3AD2B80014C866 /* GCDExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370A1C3AD2B80014C866 /* GCDExecutionContext.swift */; };
+		A103374E1C3AD2B80014C866 /* GCDExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370A1C3AD2B80014C866 /* GCDExecutionContext.swift */; };
+		A103374F1C3AD2B80014C866 /* GCDExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370A1C3AD2B80014C866 /* GCDExecutionContext.swift */; };
+		A10337541C3AD2B80014C866 /* ClosureRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370D1C3AD2B80014C866 /* ClosureRegistry.swift */; };
+		A10337551C3AD2B80014C866 /* ClosureRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370D1C3AD2B80014C866 /* ClosureRegistry.swift */; };
+		A10337561C3AD2B80014C866 /* ClosureRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370D1C3AD2B80014C866 /* ClosureRegistry.swift */; };
+		A10337571C3AD2B80014C866 /* ClosureRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370D1C3AD2B80014C866 /* ClosureRegistry.swift */; };
+		A10337581C3AD2B80014C866 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370E1C3AD2B80014C866 /* Future.swift */; };
+		A10337591C3AD2B80014C866 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370E1C3AD2B80014C866 /* Future.swift */; };
+		A103375A1C3AD2B80014C866 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370E1C3AD2B80014C866 /* Future.swift */; };
+		A103375B1C3AD2B80014C866 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370E1C3AD2B80014C866 /* Future.swift */; };
+		A103375C1C3AD2B80014C866 /* FutureBaseType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370F1C3AD2B80014C866 /* FutureBaseType.swift */; };
+		A103375D1C3AD2B80014C866 /* FutureBaseType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370F1C3AD2B80014C866 /* FutureBaseType.swift */; };
+		A103375E1C3AD2B80014C866 /* FutureBaseType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370F1C3AD2B80014C866 /* FutureBaseType.swift */; };
+		A103375F1C3AD2B80014C866 /* FutureBaseType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103370F1C3AD2B80014C866 /* FutureBaseType.swift */; };
+		A10337601C3AD2B80014C866 /* FutureFreeFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337101C3AD2B80014C866 /* FutureFreeFunc.swift */; };
+		A10337611C3AD2B80014C866 /* FutureFreeFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337101C3AD2B80014C866 /* FutureFreeFunc.swift */; };
+		A10337621C3AD2B80014C866 /* FutureFreeFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337101C3AD2B80014C866 /* FutureFreeFunc.swift */; };
+		A10337631C3AD2B80014C866 /* FutureFreeFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337101C3AD2B80014C866 /* FutureFreeFunc.swift */; };
+		A10337641C3AD2B80014C866 /* FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337111C3AD2B80014C866 /* FutureType.swift */; };
+		A10337651C3AD2B80014C866 /* FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337111C3AD2B80014C866 /* FutureType.swift */; };
+		A10337661C3AD2B80014C866 /* FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337111C3AD2B80014C866 /* FutureType.swift */; };
+		A10337671C3AD2B80014C866 /* FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337111C3AD2B80014C866 /* FutureType.swift */; };
+		A10337681C3AD2B80014C866 /* FutureTypeFinallyExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337121C3AD2B80014C866 /* FutureTypeFinallyExtension.swift */; };
+		A10337691C3AD2B80014C866 /* FutureTypeFinallyExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337121C3AD2B80014C866 /* FutureTypeFinallyExtension.swift */; };
+		A103376A1C3AD2B80014C866 /* FutureTypeFinallyExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337121C3AD2B80014C866 /* FutureTypeFinallyExtension.swift */; };
+		A103376B1C3AD2B80014C866 /* FutureTypeFinallyExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337121C3AD2B80014C866 /* FutureTypeFinallyExtension.swift */; };
+		A103376C1C3AD2B80014C866 /* FutureTypeFoundationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337131C3AD2B80014C866 /* FutureTypeFoundationExtension.swift */; };
+		A103376D1C3AD2B80014C866 /* FutureTypeFoundationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337131C3AD2B80014C866 /* FutureTypeFoundationExtension.swift */; };
+		A103376E1C3AD2B80014C866 /* FutureTypeFoundationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337131C3AD2B80014C866 /* FutureTypeFoundationExtension.swift */; };
+		A103376F1C3AD2B80014C866 /* FutureTypeFoundationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337131C3AD2B80014C866 /* FutureTypeFoundationExtension.swift */; };
+		A10337701C3AD2B80014C866 /* FutureTypeStaticExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337141C3AD2B80014C866 /* FutureTypeStaticExtension.swift */; };
+		A10337711C3AD2B80014C866 /* FutureTypeStaticExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337141C3AD2B80014C866 /* FutureTypeStaticExtension.swift */; };
+		A10337721C3AD2B80014C866 /* FutureTypeStaticExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337141C3AD2B80014C866 /* FutureTypeStaticExtension.swift */; };
+		A10337731C3AD2B80014C866 /* FutureTypeStaticExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337141C3AD2B80014C866 /* FutureTypeStaticExtension.swift */; };
+		A10337741C3AD2B80014C866 /* FutureTypeThenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337151C3AD2B80014C866 /* FutureTypeThenExtension.swift */; };
+		A10337751C3AD2B80014C866 /* FutureTypeThenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337151C3AD2B80014C866 /* FutureTypeThenExtension.swift */; };
+		A10337761C3AD2B80014C866 /* FutureTypeThenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337151C3AD2B80014C866 /* FutureTypeThenExtension.swift */; };
+		A10337771C3AD2B80014C866 /* FutureTypeThenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337151C3AD2B80014C866 /* FutureTypeThenExtension.swift */; };
+		A10337781C3AD2B80014C866 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337161C3AD2B80014C866 /* Promise.swift */; };
+		A10337791C3AD2B80014C866 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337161C3AD2B80014C866 /* Promise.swift */; };
+		A103377A1C3AD2B80014C866 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337161C3AD2B80014C866 /* Promise.swift */; };
+		A103377B1C3AD2B80014C866 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337161C3AD2B80014C866 /* Promise.swift */; };
+		A103377C1C3AD2B80014C866 /* PromiseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337171C3AD2B80014C866 /* PromiseExtensions.swift */; };
+		A103377D1C3AD2B80014C866 /* PromiseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337171C3AD2B80014C866 /* PromiseExtensions.swift */; };
+		A103377E1C3AD2B80014C866 /* PromiseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337171C3AD2B80014C866 /* PromiseExtensions.swift */; };
+		A103377F1C3AD2B80014C866 /* PromiseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337171C3AD2B80014C866 /* PromiseExtensions.swift */; };
+		A10337801C3AD2B80014C866 /* SequenceType+FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337181C3AD2B80014C866 /* SequenceType+FutureType.swift */; };
+		A10337811C3AD2B80014C866 /* SequenceType+FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337181C3AD2B80014C866 /* SequenceType+FutureType.swift */; };
+		A10337821C3AD2B80014C866 /* SequenceType+FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337181C3AD2B80014C866 /* SequenceType+FutureType.swift */; };
+		A10337831C3AD2B80014C866 /* SequenceType+FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337181C3AD2B80014C866 /* SequenceType+FutureType.swift */; };
+		A10337841C3AD2B80014C866 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337191C3AD2B80014C866 /* Synchronize.swift */; };
+		A10337851C3AD2B80014C866 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337191C3AD2B80014C866 /* Synchronize.swift */; };
+		A10337861C3AD2B80014C866 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337191C3AD2B80014C866 /* Synchronize.swift */; };
+		A10337871C3AD2B80014C866 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337191C3AD2B80014C866 /* Synchronize.swift */; };
+		A10337881C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371A1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift */; };
+		A10337891C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371A1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift */; };
+		A103378A1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371A1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift */; };
+		A103378B1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371A1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift */; };
+		A103378E1C3AD2B80014C866 /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A103371B1C3AD2B80014C866 /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A103378F1C3AD2B80014C866 /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A103371B1C3AD2B80014C866 /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A10337941C3AD2B80014C866 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Result.swift */; };
+		A10337951C3AD2B80014C866 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Result.swift */; };
+		A10337961C3AD2B80014C866 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Result.swift */; };
+		A10337971C3AD2B80014C866 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Result.swift */; };
+		A10337981C3AD2B80014C866 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371E1C3AD2B80014C866 /* TaskQueue.swift */; };
+		A10337991C3AD2B80014C866 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371E1C3AD2B80014C866 /* TaskQueue.swift */; };
+		A103379A1C3AD2B80014C866 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371E1C3AD2B80014C866 /* TaskQueue.swift */; };
+		A103379B1C3AD2B80014C866 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371E1C3AD2B80014C866 /* TaskQueue.swift */; };
+		A103379C1C3AD2B80014C866 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371F1C3AD2B80014C866 /* Timer.swift */; };
+		A103379D1C3AD2B80014C866 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371F1C3AD2B80014C866 /* Timer.swift */; };
+		A103379E1C3AD2B80014C866 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371F1C3AD2B80014C866 /* Timer.swift */; };
+		A103379F1C3AD2B80014C866 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371F1C3AD2B80014C866 /* Timer.swift */; };
+		A10337A21C3AD49E0014C866 /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A103371B1C3AD2B80014C866 /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A10337A31C3AD4A70014C866 /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A103371B1C3AD2B80014C866 /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A10337A51C3AD57E0014C866 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337A41C3AD57E0014C866 /* AggregateError.swift */; };
+		A10337A61C3AD57E0014C866 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337A41C3AD57E0014C866 /* AggregateError.swift */; };
+		A10337A71C3AD57E0014C866 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337A41C3AD57E0014C866 /* AggregateError.swift */; };
+		A10337A81C3AD57E0014C866 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337A41C3AD57E0014C866 /* AggregateError.swift */; };
 		A108DFE41B73FFE900A34BFD /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A18FDFFF1B46AF8C0094CD2A /* FutureLib.framework */; };
-		A108DFEC1B747F7E00A34BFD /* FutureTypeStaticExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108DFEB1B747F7E00A34BFD /* FutureTypeStaticExtension.swift */; };
-		A108DFED1B747F7E00A34BFD /* FutureTypeStaticExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108DFEB1B747F7E00A34BFD /* FutureTypeStaticExtension.swift */; };
 		A10CB91C1C15EA060019060A /* FuturePerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB91B1C15EA060019060A /* FuturePerformanceTests.swift */; };
 		A10CB9421C15EAFC0019060A /* CancellationOperatorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB91F1C15EAFC0019060A /* CancellationOperatorsTests.swift */; };
 		A10CB9431C15EAFC0019060A /* CancellationOperatorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB91F1C15EAFC0019060A /* CancellationOperatorsTests.swift */; };
@@ -66,81 +178,17 @@
 		A10CB97D1C15EE1A0019060A /* SharedCancellationStatePerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB97C1C15EE1A0019060A /* SharedCancellationStatePerformanceTests.swift */; };
 		A1221F511C2AAEF8004F3F68 /* FutureMiscCombinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1221F501C2AAEF8004F3F68 /* FutureMiscCombinatorTests.swift */; };
 		A1221F521C2AAEF8004F3F68 /* FutureMiscCombinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1221F501C2AAEF8004F3F68 /* FutureMiscCombinatorTests.swift */; };
-		A125A50D1BCD009A006E06C7 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A125A50C1BCD009A006E06C7 /* ExecutionContext.swift */; };
-		A125A50E1BCD009A006E06C7 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A125A50C1BCD009A006E06C7 /* ExecutionContext.swift */; };
-		A125A5101BCD00F6006E06C7 /* GCDExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A125A50F1BCD00F6006E06C7 /* GCDExecutionContext.swift */; };
-		A125A5111BCD00F6006E06C7 /* GCDExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A125A50F1BCD00F6006E06C7 /* GCDExecutionContext.swift */; };
-		A1380E741BEBCC3E00ED91ED /* FutureTypeFoundationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1380E731BEBCC3E00ED91ED /* FutureTypeFoundationExtension.swift */; };
-		A1380E751BEBCC3E00ED91ED /* FutureTypeFoundationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1380E731BEBCC3E00ED91ED /* FutureTypeFoundationExtension.swift */; };
 		A1421F501C2B384E00B8D9BF /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
 		A1421F511C2B384E00B8D9BF /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
-		A1421F581C2B393D00B8D9BF /* ClosureRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F521C2B38C600B8D9BF /* ClosureRegistry.swift */; };
-		A1421F591C2B393E00B8D9BF /* ClosureRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F521C2B38C600B8D9BF /* ClosureRegistry.swift */; };
-		A14893F91B557BF100930C41 /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0331B46B0820094CD2A /* CancellationToken.swift */; };
-		A14893FA1B557BF100930C41 /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0331B46B0820094CD2A /* CancellationToken.swift */; };
-		A14BACBB1C0621D000DE447C /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14BACBA1C0621D000DE447C /* Synchronize.swift */; };
-		A14BACBC1C0621D000DE447C /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14BACBA1C0621D000DE447C /* Synchronize.swift */; };
-		A168412A1BAEEED4000F6C82 /* CancellationTokenNone.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16841291BAEEED4000F6C82 /* CancellationTokenNone.swift */; };
-		A168412B1BAEEED4000F6C82 /* CancellationTokenNone.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16841291BAEEED4000F6C82 /* CancellationTokenNone.swift */; };
 		A187F60E1C29DE5B00D79268 /* ExecutionContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A187F60D1C29DE5B00D79268 /* ExecutionContextTests.swift */; };
 		A187F60F1C29DE5B00D79268 /* ExecutionContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A187F60D1C29DE5B00D79268 /* ExecutionContextTests.swift */; };
-		A18FE0031B46AF8C0094CD2A /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A18FE0021B46AF8C0094CD2A /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A18FE00A1B46AF8C0094CD2A /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A18FDFFF1B46AF8C0094CD2A /* FutureLib.framework */; };
-		A18FE03C1B46B0820094CD2A /* Cancelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0301B46B0820094CD2A /* Cancelable.swift */; };
-		A18FE03D1B46B0820094CD2A /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0311B46B0820094CD2A /* CancellationRequest.swift */; };
-		A18FE0421B46B0820094CD2A /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0361B46B0820094CD2A /* Future.swift */; };
-		A18FE0431B46B0820094CD2A /* FutureFreeFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0371B46B0820094CD2A /* FutureFreeFunc.swift */; };
-		A18FE0451B46B0820094CD2A /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0391B46B0820094CD2A /* Promise.swift */; };
-		A18FE0461B46B0820094CD2A /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE03A1B46B0820094CD2A /* Result.swift */; };
 		A18FE0731B46B3C00094CD2A /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A18FE0691B46B3BF0094CD2A /* FutureLib.framework */; };
-		A18FE0801B46B3D10094CD2A /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A18FE0021B46AF8C0094CD2A /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A19516811C240E5400397963 /* SequenceType+FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700A1BEBE08F000061FC /* SequenceType+FutureType.swift */; };
-		A19516821C240E5500397963 /* SequenceType+FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700A1BEBE08F000061FC /* SequenceType+FutureType.swift */; };
 		A19516841C24535C00397963 /* SequenceType+FutureTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19516831C24535C00397963 /* SequenceType+FutureTypeTests.swift */; };
 		A19516851C24535C00397963 /* SequenceType+FutureTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19516831C24535C00397963 /* SequenceType+FutureTypeTests.swift */; };
-		A1A070101BEBE12C000061FC /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700E1BEBE12C000061FC /* TaskQueue.swift */; };
-		A1A070111BEBE12C000061FC /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700E1BEBE12C000061FC /* TaskQueue.swift */; };
-		A1A070121BEBE12C000061FC /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700F1BEBE12C000061FC /* Timer.swift */; };
-		A1A070131BEBE12C000061FC /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700F1BEBE12C000061FC /* Timer.swift */; };
-		A1A153B31C23424F00F1750F /* FutureBaseType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A153B21C23424F00F1750F /* FutureBaseType.swift */; };
-		A1A153B41C23424F00F1750F /* FutureBaseType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A153B21C23424F00F1750F /* FutureBaseType.swift */; };
-		A1B6AFD81C171C1F00E5E994 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B6AFD71C171C1F00E5E994 /* AggregateError.swift */; };
-		A1B6AFD91C171C1F00E5E994 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B6AFD71C171C1F00E5E994 /* AggregateError.swift */; };
 		A1B6AFDB1C17389C00E5E994 /* FutureBaseMapToTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B6AFDA1C17389C00E5E994 /* FutureBaseMapToTests.swift */; };
 		A1B6AFDC1C17389C00E5E994 /* FutureBaseMapToTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B6AFDA1C17389C00E5E994 /* FutureBaseMapToTests.swift */; };
-		A1BBF91E1C229FA00003B9C3 /* FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1BBF91D1C229FA00003B9C3 /* FutureType.swift */; };
-		A1BBF91F1C229FA00003B9C3 /* FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1BBF91D1C229FA00003B9C3 /* FutureType.swift */; };
 		A1BF1B7F1C3297EC00C7A236 /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1BF1B751C3297EC00C7A236 /* FutureLib.framework */; };
-		A1BF1B8C1C329A2700C7A236 /* ClosureRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F521C2B38C600B8D9BF /* ClosureRegistry.swift */; };
-		A1BF1B8D1C329A2700C7A236 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE03A1B46B0820094CD2A /* Result.swift */; };
-		A1BF1B8E1C329A2700C7A236 /* FutureBaseType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A153B21C23424F00F1750F /* FutureBaseType.swift */; };
-		A1BF1B8F1C329A2700C7A236 /* FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1BBF91D1C229FA00003B9C3 /* FutureType.swift */; };
-		A1BF1B901C329A2700C7A236 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0361B46B0820094CD2A /* Future.swift */; };
-		A1BF1B911C329A2700C7A236 /* FutureTypeStaticExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108DFEB1B747F7E00A34BFD /* FutureTypeStaticExtension.swift */; };
-		A1BF1B921C329A2700C7A236 /* FutureTypeThenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F1216A1B6D1EF90077ACF7 /* FutureTypeThenExtension.swift */; };
-		A1BF1B931C329A2700C7A236 /* FutureTypeFinallyExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EE63151C04C0E100FABA91 /* FutureTypeFinallyExtension.swift */; };
-		A1BF1B941C329A2700C7A236 /* FutureFreeFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0371B46B0820094CD2A /* FutureFreeFunc.swift */; };
-		A1BF1B951C329A2700C7A236 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0391B46B0820094CD2A /* Promise.swift */; };
-		A1BF1B961C329A2700C7A236 /* PromiseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106F5E51B77902900676E87 /* PromiseExtensions.swift */; };
-		A1BF1B971C329A2700C7A236 /* SequenceType+FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700A1BEBE08F000061FC /* SequenceType+FutureType.swift */; };
-		A1BF1B981C329A2700C7A236 /* FutureTypeFoundationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1380E731BEBCC3E00ED91ED /* FutureTypeFoundationExtension.swift */; };
-		A1BF1B991C329A2700C7A236 /* TaskQueue+ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108D7AE1C2D97330099D772 /* TaskQueue+ExecutionContext.swift */; };
-		A1BF1B9A1C329A2700C7A236 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B6AFD71C171C1F00E5E994 /* AggregateError.swift */; };
-		A1BF1B9B1C329A2D00C7A236 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700E1BEBE12C000061FC /* TaskQueue.swift */; };
-		A1BF1B9C1C329A2D00C7A236 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700F1BEBE12C000061FC /* Timer.swift */; };
-		A1BF1B9D1C329A2D00C7A236 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14BACBA1C0621D000DE447C /* Synchronize.swift */; };
-		A1BF1B9E1C329A3300C7A236 /* Cancelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0301B46B0820094CD2A /* Cancelable.swift */; };
-		A1BF1B9F1C329A3300C7A236 /* CancellationRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0321B46B0820094CD2A /* CancellationRequestType.swift */; };
-		A1BF1BA01C329A3300C7A236 /* CancellationTokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0341B46B0820094CD2A /* CancellationTokenType.swift */; };
-		A1BF1BA11C329A3300C7A236 /* CancellationTokenNone.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16841291BAEEED4000F6C82 /* CancellationTokenNone.swift */; };
-		A1BF1BA21C329A3300C7A236 /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0311B46B0820094CD2A /* CancellationRequest.swift */; };
-		A1BF1BA31C329A3300C7A236 /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0331B46B0820094CD2A /* CancellationToken.swift */; };
-		A1BF1BA41C329A3300C7A236 /* CancellationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CE939E1B46F10400FB0C09 /* CancellationError.swift */; };
-		A1BF1BA51C329A3300C7A236 /* CancellationOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A8E1811BF4A998003B0002 /* CancellationOperators.swift */; };
-		A1BF1BA61C329A3300C7A236 /* SharedCancellationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A107400D1BFB668C00E6EE83 /* SharedCancellationState.swift */; };
-		A1BF1BA71C329A3300C7A236 /* CancellationSequenceTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10740101BFBA59000E6EE83 /* CancellationSequenceTypeExtension.swift */; };
-		A1BF1BA81C329A3900C7A236 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A125A50C1BCD009A006E06C7 /* ExecutionContext.swift */; };
-		A1BF1BA91C329A3900C7A236 /* GCDExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A125A50F1BCD00F6006E06C7 /* GCDExecutionContext.swift */; };
 		A1BF1BAA1C329A4D00C7A236 /* TaskQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9401C15EAFC0019060A /* TaskQueueTests.swift */; };
 		A1BF1BAB1C329A5200C7A236 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93B1C15EAFC0019060A /* ResultTests.swift */; };
 		A1BF1BAC1C329A5800C7A236 /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9391C15EAFC0019060A /* PromiseTests.swift */; };
@@ -167,54 +215,6 @@
 		A1BF1BC21C329A7400C7A236 /* TestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9411C15EAFC0019060A /* TestError.swift */; };
 		A1BF1BC31C329A7800C7A236 /* schedule_after.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93C1C15EAFC0019060A /* schedule_after.swift */; };
 		A1BF1BC41C329A7E00C7A236 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
-		A1BF1C021C32F94200C7A236 /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A18FE0021B46AF8C0094CD2A /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A1BF1C031C32F94400C7A236 /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A18FE0021B46AF8C0094CD2A /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A1BF1C041C32F9A500C7A236 /* ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A125A50C1BCD009A006E06C7 /* ExecutionContext.swift */; };
-		A1BF1C051C32F9AA00C7A236 /* GCDExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A125A50F1BCD00F6006E06C7 /* GCDExecutionContext.swift */; };
-		A1BF1C061C32F9B000C7A236 /* Cancelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0301B46B0820094CD2A /* Cancelable.swift */; };
-		A1BF1C071C32F9B000C7A236 /* CancellationRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0321B46B0820094CD2A /* CancellationRequestType.swift */; };
-		A1BF1C081C32F9B000C7A236 /* CancellationTokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0341B46B0820094CD2A /* CancellationTokenType.swift */; };
-		A1BF1C091C32F9B000C7A236 /* CancellationTokenNone.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16841291BAEEED4000F6C82 /* CancellationTokenNone.swift */; };
-		A1BF1C0A1C32F9B000C7A236 /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0311B46B0820094CD2A /* CancellationRequest.swift */; };
-		A1BF1C0B1C32F9B000C7A236 /* CancellationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0331B46B0820094CD2A /* CancellationToken.swift */; };
-		A1BF1C0C1C32F9B000C7A236 /* CancellationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CE939E1B46F10400FB0C09 /* CancellationError.swift */; };
-		A1BF1C0D1C32F9B000C7A236 /* CancellationOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A8E1811BF4A998003B0002 /* CancellationOperators.swift */; };
-		A1BF1C0E1C32F9B000C7A236 /* SharedCancellationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A107400D1BFB668C00E6EE83 /* SharedCancellationState.swift */; };
-		A1BF1C0F1C32F9B000C7A236 /* CancellationSequenceTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10740101BFBA59000E6EE83 /* CancellationSequenceTypeExtension.swift */; };
-		A1BF1C101C32F9B600C7A236 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700E1BEBE12C000061FC /* TaskQueue.swift */; };
-		A1BF1C111C32F9B600C7A236 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700F1BEBE12C000061FC /* Timer.swift */; };
-		A1BF1C121C32F9B600C7A236 /* Synchronize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14BACBA1C0621D000DE447C /* Synchronize.swift */; };
-		A1BF1C131C32F9BD00C7A236 /* ClosureRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F521C2B38C600B8D9BF /* ClosureRegistry.swift */; };
-		A1BF1C141C32F9BD00C7A236 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE03A1B46B0820094CD2A /* Result.swift */; };
-		A1BF1C151C32F9BD00C7A236 /* FutureBaseType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A153B21C23424F00F1750F /* FutureBaseType.swift */; };
-		A1BF1C161C32F9BD00C7A236 /* FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1BBF91D1C229FA00003B9C3 /* FutureType.swift */; };
-		A1BF1C171C32F9BD00C7A236 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0361B46B0820094CD2A /* Future.swift */; };
-		A1BF1C181C32F9BD00C7A236 /* FutureTypeStaticExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108DFEB1B747F7E00A34BFD /* FutureTypeStaticExtension.swift */; };
-		A1BF1C191C32F9BD00C7A236 /* FutureTypeThenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F1216A1B6D1EF90077ACF7 /* FutureTypeThenExtension.swift */; };
-		A1BF1C1A1C32F9BD00C7A236 /* FutureTypeFinallyExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EE63151C04C0E100FABA91 /* FutureTypeFinallyExtension.swift */; };
-		A1BF1C1B1C32F9BD00C7A236 /* FutureFreeFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0371B46B0820094CD2A /* FutureFreeFunc.swift */; };
-		A1BF1C1C1C32F9BD00C7A236 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0391B46B0820094CD2A /* Promise.swift */; };
-		A1BF1C1D1C32F9BD00C7A236 /* PromiseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106F5E51B77902900676E87 /* PromiseExtensions.swift */; };
-		A1BF1C1E1C32F9BD00C7A236 /* SequenceType+FutureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A0700A1BEBE08F000061FC /* SequenceType+FutureType.swift */; };
-		A1BF1C1F1C32F9BD00C7A236 /* FutureTypeFoundationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1380E731BEBCC3E00ED91ED /* FutureTypeFoundationExtension.swift */; };
-		A1BF1C201C32F9BD00C7A236 /* TaskQueue+ExecutionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A108D7AE1C2D97330099D772 /* TaskQueue+ExecutionContext.swift */; };
-		A1BF1C211C32F9BD00C7A236 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B6AFD71C171C1F00E5E994 /* AggregateError.swift */; };
-		A1CD28071B46BD9E00B408E4 /* Cancelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0301B46B0820094CD2A /* Cancelable.swift */; };
-		A1CD28081B46BD9E00B408E4 /* CancellationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0311B46B0820094CD2A /* CancellationRequest.swift */; };
-		A1CD280D1B46BDA300B408E4 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0361B46B0820094CD2A /* Future.swift */; };
-		A1CD280E1B46BDA300B408E4 /* FutureFreeFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0371B46B0820094CD2A /* FutureFreeFunc.swift */; };
-		A1CD28101B46BDA300B408E4 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0391B46B0820094CD2A /* Promise.swift */; };
-		A1CD28111B46BDA300B408E4 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE03A1B46B0820094CD2A /* Result.swift */; };
-		A1CE939F1B46F10400FB0C09 /* CancellationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CE939E1B46F10400FB0C09 /* CancellationError.swift */; };
-		A1CE93A01B46F10400FB0C09 /* CancellationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CE939E1B46F10400FB0C09 /* CancellationError.swift */; };
-		A1EE63161C04C0E100FABA91 /* FutureTypeFinallyExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EE63151C04C0E100FABA91 /* FutureTypeFinallyExtension.swift */; };
-		A1EE63171C04C0E100FABA91 /* FutureTypeFinallyExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EE63151C04C0E100FABA91 /* FutureTypeFinallyExtension.swift */; };
-		A1F1216B1B6D1EF90077ACF7 /* FutureTypeThenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F1216A1B6D1EF90077ACF7 /* FutureTypeThenExtension.swift */; };
-		A1F1216C1B6D1EF90077ACF7 /* FutureTypeThenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F1216A1B6D1EF90077ACF7 /* FutureTypeThenExtension.swift */; };
-		A1F727E91B61595700FDAF19 /* CancellationRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0321B46B0820094CD2A /* CancellationRequestType.swift */; };
-		A1F727EA1B61595700FDAF19 /* CancellationRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0321B46B0820094CD2A /* CancellationRequestType.swift */; };
-		A1F727EB1B61595A00FDAF19 /* CancellationTokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0341B46B0820094CD2A /* CancellationTokenType.swift */; };
-		A1F727EC1B61595A00FDAF19 /* CancellationTokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FE0341B46B0820094CD2A /* CancellationTokenType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -261,13 +261,40 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A106F5E51B77902900676E87 /* PromiseExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseExtensions.swift; sourceTree = "<group>"; };
-		A107400D1BFB668C00E6EE83 /* SharedCancellationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SharedCancellationState.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A10740101BFBA59000E6EE83 /* CancellationSequenceTypeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancellationSequenceTypeExtension.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A108D7AE1C2D97330099D772 /* TaskQueue+ExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TaskQueue+ExecutionContext.swift"; sourceTree = "<group>"; };
+		A10336FE1C3AD2B80014C866 /* Cancelable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cancelable.swift; sourceTree = "<group>"; };
+		A10336FF1C3AD2B80014C866 /* CancellationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationError.swift; sourceTree = "<group>"; };
+		A10337001C3AD2B80014C866 /* CancellationOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationOperators.swift; sourceTree = "<group>"; };
+		A10337011C3AD2B80014C866 /* CancellationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationRequest.swift; sourceTree = "<group>"; };
+		A10337021C3AD2B80014C866 /* CancellationRequestType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationRequestType.swift; sourceTree = "<group>"; };
+		A10337031C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationSequenceTypeExtension.swift; sourceTree = "<group>"; };
+		A10337041C3AD2B80014C866 /* CancellationToken.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationToken.swift; sourceTree = "<group>"; };
+		A10337051C3AD2B80014C866 /* CancellationTokenNone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationTokenNone.swift; sourceTree = "<group>"; };
+		A10337061C3AD2B80014C866 /* CancellationTokenType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationTokenType.swift; sourceTree = "<group>"; };
+		A10337071C3AD2B80014C866 /* SharedCancellationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedCancellationState.swift; sourceTree = "<group>"; };
+		A10337091C3AD2B80014C866 /* ExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionContext.swift; sourceTree = "<group>"; };
+		A103370A1C3AD2B80014C866 /* GCDExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDExecutionContext.swift; sourceTree = "<group>"; };
+		A103370D1C3AD2B80014C866 /* ClosureRegistry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureRegistry.swift; sourceTree = "<group>"; };
+		A103370E1C3AD2B80014C866 /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
+		A103370F1C3AD2B80014C866 /* FutureBaseType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureBaseType.swift; sourceTree = "<group>"; };
+		A10337101C3AD2B80014C866 /* FutureFreeFunc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureFreeFunc.swift; sourceTree = "<group>"; };
+		A10337111C3AD2B80014C866 /* FutureType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureType.swift; sourceTree = "<group>"; };
+		A10337121C3AD2B80014C866 /* FutureTypeFinallyExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeFinallyExtension.swift; sourceTree = "<group>"; };
+		A10337131C3AD2B80014C866 /* FutureTypeFoundationExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeFoundationExtension.swift; sourceTree = "<group>"; };
+		A10337141C3AD2B80014C866 /* FutureTypeStaticExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeStaticExtension.swift; sourceTree = "<group>"; };
+		A10337151C3AD2B80014C866 /* FutureTypeThenExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeThenExtension.swift; sourceTree = "<group>"; };
+		A10337161C3AD2B80014C866 /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
+		A10337171C3AD2B80014C866 /* PromiseExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseExtensions.swift; sourceTree = "<group>"; };
+		A10337181C3AD2B80014C866 /* SequenceType+FutureType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SequenceType+FutureType.swift"; sourceTree = "<group>"; };
+		A10337191C3AD2B80014C866 /* Synchronize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronize.swift; sourceTree = "<group>"; };
+		A103371A1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TaskQueue+ExecutionContext.swift"; sourceTree = "<group>"; };
+		A103371B1C3AD2B80014C866 /* FutureLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FutureLib.h; sourceTree = "<group>"; };
+		A103371C1C3AD2B80014C866 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A103371D1C3AD2B80014C866 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		A103371E1C3AD2B80014C866 /* TaskQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskQueue.swift; sourceTree = "<group>"; };
+		A103371F1C3AD2B80014C866 /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		A10337A41C3AD57E0014C866 /* AggregateError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AggregateError.swift; sourceTree = "<group>"; };
 		A108DFDF1B73FFE900A34BFD /* FutureLibPerformanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FutureLibPerformanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A108DFE31B73FFE900A34BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A108DFEB1B747F7E00A34BFD /* FutureTypeStaticExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeStaticExtension.swift; sourceTree = "<group>"; };
 		A10CB91B1C15EA060019060A /* FuturePerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = FuturePerformanceTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A10CB91F1C15EAFC0019060A /* CancellationOperatorsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancellationOperatorsTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A10CB9201C15EAFC0019060A /* CancellationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancellationTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -293,53 +320,26 @@
 		A10CB9411C15EAFC0019060A /* TestError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestError.swift; sourceTree = "<group>"; };
 		A10CB97C1C15EE1A0019060A /* SharedCancellationStatePerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedCancellationStatePerformanceTests.swift; sourceTree = "<group>"; };
 		A1221F501C2AAEF8004F3F68 /* FutureMiscCombinatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureMiscCombinatorTests.swift; sourceTree = "<group>"; };
-		A125A50C1BCD009A006E06C7 /* ExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionContext.swift; sourceTree = "<group>"; };
-		A125A50F1BCD00F6006E06C7 /* GCDExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDExecutionContext.swift; sourceTree = "<group>"; };
-		A1380E731BEBCC3E00ED91ED /* FutureTypeFoundationExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeFoundationExtension.swift; sourceTree = "<group>"; };
 		A1421F4F1C2B384E00B8D9BF /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
-		A1421F521C2B38C600B8D9BF /* ClosureRegistry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureRegistry.swift; sourceTree = "<group>"; };
-		A14BACBA1C0621D000DE447C /* Synchronize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Synchronize.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A16841291BAEEED4000F6C82 /* CancellationTokenNone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationTokenNone.swift; sourceTree = "<group>"; };
 		A187F60D1C29DE5B00D79268 /* ExecutionContextTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionContextTests.swift; sourceTree = "<group>"; };
 		A18EB58D1B7BDBED00B74714 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/Mac/Nimble.framework; sourceTree = "<group>"; };
 		A18EB58E1B7BDBED00B74714 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/Mac/Quick.framework; sourceTree = "<group>"; };
 		A18EB5931B7BDC2500B74714 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
 		A18EB5941B7BDC2500B74714 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
 		A18FDFFF1B46AF8C0094CD2A /* FutureLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FutureLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A18FE0021B46AF8C0094CD2A /* FutureLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FutureLib.h; sourceTree = "<group>"; };
-		A18FE0041B46AF8C0094CD2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A18FE0091B46AF8C0094CD2A /* FutureLibTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FutureLibTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A18FE0091B46AF8C0094CD2A /* FutureLib-MacOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FutureLib-MacOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A18FE0101B46AF8C0094CD2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A18FE0301B46B0820094CD2A /* Cancelable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Cancelable.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A18FE0311B46B0820094CD2A /* CancellationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancellationRequest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A18FE0321B46B0820094CD2A /* CancellationRequestType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancellationRequestType.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A18FE0331B46B0820094CD2A /* CancellationToken.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancellationToken.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A18FE0341B46B0820094CD2A /* CancellationTokenType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CancellationTokenType.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A18FE0361B46B0820094CD2A /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Future.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A18FE0371B46B0820094CD2A /* FutureFreeFunc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureFreeFunc.swift; sourceTree = "<group>"; };
-		A18FE0391B46B0820094CD2A /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
-		A18FE03A1B46B0820094CD2A /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		A18FE0691B46B3BF0094CD2A /* FutureLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FutureLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A18FE0721B46B3C00094CD2A /* FutureLib-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FutureLib-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A19516831C24535C00397963 /* SequenceType+FutureTypeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SequenceType+FutureTypeTests.swift"; sourceTree = "<group>"; };
-		A1A0700A1BEBE08F000061FC /* SequenceType+FutureType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "SequenceType+FutureType.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A1A0700E1BEBE12C000061FC /* TaskQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TaskQueue.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A1A0700F1BEBE12C000061FC /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
-		A1A153B21C23424F00F1750F /* FutureBaseType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureBaseType.swift; sourceTree = "<group>"; };
-		A1A8E1811BF4A998003B0002 /* CancellationOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationOperators.swift; sourceTree = "<group>"; };
-		A1B6AFD71C171C1F00E5E994 /* AggregateError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AggregateError.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A1B6AFDA1C17389C00E5E994 /* FutureBaseMapToTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureBaseMapToTests.swift; sourceTree = "<group>"; };
 		A1B80E861BE15FBC0031A489 /* Tutorial.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Tutorial.playground; sourceTree = "<group>"; };
-		A1BBF91D1C229FA00003B9C3 /* FutureType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureType.swift; sourceTree = "<group>"; };
 		A1BF1B751C3297EC00C7A236 /* FutureLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FutureLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1BF1B7E1C3297EC00C7A236 /* FutureLib-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FutureLib-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1BF1BE41C32A84600C7A236 /* FutureLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FutureLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1CD28141B46C04B00B408E4 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
-		A1CE939E1B46F10400FB0C09 /* CancellationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellationError.swift; sourceTree = "<group>"; };
 		A1DF3E271BC69B4D00136A45 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A1E11FF81C07876C008EC456 /* Rakefile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; path = Rakefile; sourceTree = "<group>"; };
-		A1EE63151C04C0E100FABA91 /* FutureTypeFinallyExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeFinallyExtension.swift; sourceTree = "<group>"; };
-		A1F1216A1B6D1EF90077ACF7 /* FutureTypeThenExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeThenExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -406,6 +406,69 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A10336FC1C3AD2B80014C866 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				A103371C1C3AD2B80014C866 /* Info.plist */,
+				A103371B1C3AD2B80014C866 /* FutureLib.h */,
+				A10336FD1C3AD2B80014C866 /* Cancellation */,
+				A10337081C3AD2B80014C866 /* ExecutionContext */,
+				A103370B1C3AD2B80014C866 /* Future */,
+				A103371D1C3AD2B80014C866 /* Result.swift */,
+				A10337A41C3AD57E0014C866 /* AggregateError.swift */,
+				A103371E1C3AD2B80014C866 /* TaskQueue.swift */,
+				A103371F1C3AD2B80014C866 /* Timer.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		A10336FD1C3AD2B80014C866 /* Cancellation */ = {
+			isa = PBXGroup;
+			children = (
+				A10336FE1C3AD2B80014C866 /* Cancelable.swift */,
+				A10336FF1C3AD2B80014C866 /* CancellationError.swift */,
+				A10337001C3AD2B80014C866 /* CancellationOperators.swift */,
+				A10337011C3AD2B80014C866 /* CancellationRequest.swift */,
+				A10337021C3AD2B80014C866 /* CancellationRequestType.swift */,
+				A10337031C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift */,
+				A10337041C3AD2B80014C866 /* CancellationToken.swift */,
+				A10337051C3AD2B80014C866 /* CancellationTokenNone.swift */,
+				A10337061C3AD2B80014C866 /* CancellationTokenType.swift */,
+				A10337071C3AD2B80014C866 /* SharedCancellationState.swift */,
+			);
+			path = Cancellation;
+			sourceTree = "<group>";
+		};
+		A10337081C3AD2B80014C866 /* ExecutionContext */ = {
+			isa = PBXGroup;
+			children = (
+				A10337091C3AD2B80014C866 /* ExecutionContext.swift */,
+				A103370A1C3AD2B80014C866 /* GCDExecutionContext.swift */,
+			);
+			path = ExecutionContext;
+			sourceTree = "<group>";
+		};
+		A103370B1C3AD2B80014C866 /* Future */ = {
+			isa = PBXGroup;
+			children = (
+				A103370D1C3AD2B80014C866 /* ClosureRegistry.swift */,
+				A103370E1C3AD2B80014C866 /* Future.swift */,
+				A103370F1C3AD2B80014C866 /* FutureBaseType.swift */,
+				A10337101C3AD2B80014C866 /* FutureFreeFunc.swift */,
+				A10337111C3AD2B80014C866 /* FutureType.swift */,
+				A10337121C3AD2B80014C866 /* FutureTypeFinallyExtension.swift */,
+				A10337131C3AD2B80014C866 /* FutureTypeFoundationExtension.swift */,
+				A10337141C3AD2B80014C866 /* FutureTypeStaticExtension.swift */,
+				A10337151C3AD2B80014C866 /* FutureTypeThenExtension.swift */,
+				A10337161C3AD2B80014C866 /* Promise.swift */,
+				A10337171C3AD2B80014C866 /* PromiseExtensions.swift */,
+				A10337181C3AD2B80014C866 /* SequenceType+FutureType.swift */,
+				A10337191C3AD2B80014C866 /* Synchronize.swift */,
+				A103371A1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift */,
+			);
+			path = Future;
+			sourceTree = "<group>";
+		};
 		A10740141BFE328E00E6EE83 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
@@ -413,14 +476,14 @@
 			path = Scripts;
 			sourceTree = "<group>";
 		};
-		A108DFE01B73FFE900A34BFD /* FutureLibPerformanceTests */ = {
+		A108DFE01B73FFE900A34BFD /* PerformanceTests */ = {
 			isa = PBXGroup;
 			children = (
 				A108DFE31B73FFE900A34BFD /* Info.plist */,
 				A10CB91B1C15EA060019060A /* FuturePerformanceTests.swift */,
 				A10CB97C1C15EE1A0019060A /* SharedCancellationStatePerformanceTests.swift */,
 			);
-			path = FutureLibPerformanceTests;
+			path = PerformanceTests;
 			sourceTree = "<group>";
 		};
 		A10CB91E1C15EAFC0019060A /* Cancellation */ = {
@@ -494,15 +557,6 @@
 			path = TaskQueue;
 			sourceTree = "<group>";
 		};
-		A125A50B1BCD009A006E06C7 /* ExecutionContext */ = {
-			isa = PBXGroup;
-			children = (
-				A125A50C1BCD009A006E06C7 /* ExecutionContext.swift */,
-				A125A50F1BCD00F6006E06C7 /* GCDExecutionContext.swift */,
-			);
-			path = ExecutionContext;
-			sourceTree = "<group>";
-		};
 		A187F60C1C29DE3900D79268 /* ExecutionContextTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -546,9 +600,9 @@
 				A1CD28141B46C04B00B408E4 /* LICENSE.md */,
 				A1DF3E271BC69B4D00136A45 /* README.md */,
 				A1E11FF81C07876C008EC456 /* Rakefile */,
-				A18FE0011B46AF8C0094CD2A /* FutureLib */,
-				A18FE00D1B46AF8C0094CD2A /* FutureLibTests */,
-				A108DFE01B73FFE900A34BFD /* FutureLibPerformanceTests */,
+				A10336FC1C3AD2B80014C866 /* Sources */,
+				A18FE00D1B46AF8C0094CD2A /* Tests */,
+				A108DFE01B73FFE900A34BFD /* PerformanceTests */,
 				A10740141BFE328E00E6EE83 /* Scripts */,
 				A18FE0001B46AF8C0094CD2A /* Products */,
 			);
@@ -558,7 +612,7 @@
 			isa = PBXGroup;
 			children = (
 				A18FDFFF1B46AF8C0094CD2A /* FutureLib.framework */,
-				A18FE0091B46AF8C0094CD2A /* FutureLibTests.xctest */,
+				A18FE0091B46AF8C0094CD2A /* FutureLib-MacOSTests.xctest */,
 				A18FE0691B46B3BF0094CD2A /* FutureLib.framework */,
 				A18FE0721B46B3C00094CD2A /* FutureLib-iOSTests.xctest */,
 				A108DFDF1B73FFE900A34BFD /* FutureLibPerformanceTests.xctest */,
@@ -569,17 +623,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A18FE0011B46AF8C0094CD2A /* FutureLib */ = {
-			isa = PBXGroup;
-			children = (
-				A18FE0021B46AF8C0094CD2A /* FutureLib.h */,
-				A18FE0041B46AF8C0094CD2A /* Info.plist */,
-				A18FE02E1B46B0820094CD2A /* Source */,
-			);
-			path = FutureLib;
-			sourceTree = "<group>";
-		};
-		A18FE00D1B46AF8C0094CD2A /* FutureLibTests */ = {
+		A18FE00D1B46AF8C0094CD2A /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				A18FE0101B46AF8C0094CD2A /* Info.plist */,
@@ -597,59 +641,7 @@
 				A10CB93F1C15EAFC0019060A /* TaskQueue */,
 				A18EB58A1B7BDA6200B74714 /* Frameworks */,
 			);
-			path = FutureLibTests;
-			sourceTree = "<group>";
-		};
-		A18FE02E1B46B0820094CD2A /* Source */ = {
-			isa = PBXGroup;
-			children = (
-				A125A50B1BCD009A006E06C7 /* ExecutionContext */,
-				A18FE02F1B46B0820094CD2A /* Cancellation */,
-				A1A0700D1BEBE111000061FC /* Utilities */,
-				A1421F521C2B38C600B8D9BF /* ClosureRegistry.swift */,
-				A18FE03A1B46B0820094CD2A /* Result.swift */,
-				A1A153B21C23424F00F1750F /* FutureBaseType.swift */,
-				A1BBF91D1C229FA00003B9C3 /* FutureType.swift */,
-				A18FE0361B46B0820094CD2A /* Future.swift */,
-				A108DFEB1B747F7E00A34BFD /* FutureTypeStaticExtension.swift */,
-				A1F1216A1B6D1EF90077ACF7 /* FutureTypeThenExtension.swift */,
-				A1EE63151C04C0E100FABA91 /* FutureTypeFinallyExtension.swift */,
-				A18FE0371B46B0820094CD2A /* FutureFreeFunc.swift */,
-				A18FE0391B46B0820094CD2A /* Promise.swift */,
-				A106F5E51B77902900676E87 /* PromiseExtensions.swift */,
-				A1A0700A1BEBE08F000061FC /* SequenceType+FutureType.swift */,
-				A1380E731BEBCC3E00ED91ED /* FutureTypeFoundationExtension.swift */,
-				A108D7AE1C2D97330099D772 /* TaskQueue+ExecutionContext.swift */,
-				A1B6AFD71C171C1F00E5E994 /* AggregateError.swift */,
-			);
-			path = Source;
-			sourceTree = "<group>";
-		};
-		A18FE02F1B46B0820094CD2A /* Cancellation */ = {
-			isa = PBXGroup;
-			children = (
-				A18FE0301B46B0820094CD2A /* Cancelable.swift */,
-				A18FE0321B46B0820094CD2A /* CancellationRequestType.swift */,
-				A18FE0341B46B0820094CD2A /* CancellationTokenType.swift */,
-				A16841291BAEEED4000F6C82 /* CancellationTokenNone.swift */,
-				A18FE0311B46B0820094CD2A /* CancellationRequest.swift */,
-				A18FE0331B46B0820094CD2A /* CancellationToken.swift */,
-				A1CE939E1B46F10400FB0C09 /* CancellationError.swift */,
-				A1A8E1811BF4A998003B0002 /* CancellationOperators.swift */,
-				A107400D1BFB668C00E6EE83 /* SharedCancellationState.swift */,
-				A10740101BFBA59000E6EE83 /* CancellationSequenceTypeExtension.swift */,
-			);
-			path = Cancellation;
-			sourceTree = "<group>";
-		};
-		A1A0700D1BEBE111000061FC /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				A1A0700E1BEBE12C000061FC /* TaskQueue.swift */,
-				A1A0700F1BEBE12C000061FC /* Timer.swift */,
-				A14BACBA1C0621D000DE447C /* Synchronize.swift */,
-			);
-			path = Utilities;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -659,7 +651,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A18FE0031B46AF8C0094CD2A /* FutureLib.h in Headers */,
+				A10337A21C3AD49E0014C866 /* FutureLib.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -667,7 +659,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A18FE0801B46B3D10094CD2A /* FutureLib.h in Headers */,
+				A10337A31C3AD4A70014C866 /* FutureLib.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -675,7 +667,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1BF1C021C32F94200C7A236 /* FutureLib.h in Headers */,
+				A103378E1C3AD2B80014C866 /* FutureLib.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -683,7 +675,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1BF1C031C32F94400C7A236 /* FutureLib.h in Headers */,
+				A103378F1C3AD2B80014C866 /* FutureLib.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -708,9 +700,9 @@
 			productReference = A108DFDF1B73FFE900A34BFD /* FutureLibPerformanceTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A18FDFFE1B46AF8C0094CD2A /* FutureLib-OSX */ = {
+		A18FDFFE1B46AF8C0094CD2A /* FutureLib-MacOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A18FE0131B46AF8C0094CD2A /* Build configuration list for PBXNativeTarget "FutureLib-OSX" */;
+			buildConfigurationList = A18FE0131B46AF8C0094CD2A /* Build configuration list for PBXNativeTarget "FutureLib-MacOS" */;
 			buildPhases = (
 				A18FDFFA1B46AF8C0094CD2A /* Sources */,
 				A18FDFFB1B46AF8C0094CD2A /* Frameworks */,
@@ -721,14 +713,14 @@
 			);
 			dependencies = (
 			);
-			name = "FutureLib-OSX";
+			name = "FutureLib-MacOS";
 			productName = FutureLib;
 			productReference = A18FDFFF1B46AF8C0094CD2A /* FutureLib.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		A18FE0081B46AF8C0094CD2A /* FutureLibTests */ = {
+		A18FE0081B46AF8C0094CD2A /* FutureLib-MacOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A18FE0161B46AF8C0094CD2A /* Build configuration list for PBXNativeTarget "FutureLibTests" */;
+			buildConfigurationList = A18FE0161B46AF8C0094CD2A /* Build configuration list for PBXNativeTarget "FutureLib-MacOSTests" */;
 			buildPhases = (
 				A18FE0051B46AF8C0094CD2A /* Sources */,
 				A18FE0061B46AF8C0094CD2A /* Frameworks */,
@@ -740,9 +732,9 @@
 			dependencies = (
 				A18FE00C1B46AF8C0094CD2A /* PBXTargetDependency */,
 			);
-			name = FutureLibTests;
+			name = "FutureLib-MacOSTests";
 			productName = FutureLibTests;
-			productReference = A18FE0091B46AF8C0094CD2A /* FutureLibTests.xctest */;
+			productReference = A18FE0091B46AF8C0094CD2A /* FutureLib-MacOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		A18FE0681B46B3BF0094CD2A /* FutureLib-iOS */ = {
@@ -884,14 +876,14 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A18FDFFE1B46AF8C0094CD2A /* FutureLib-OSX */,
-				A18FE0081B46AF8C0094CD2A /* FutureLibTests */,
+				A18FDFFE1B46AF8C0094CD2A /* FutureLib-MacOS */,
+				A18FE0081B46AF8C0094CD2A /* FutureLib-MacOSTests */,
 				A18FE0681B46B3BF0094CD2A /* FutureLib-iOS */,
 				A18FE0711B46B3C00094CD2A /* FutureLib-iOSTests */,
 				A1BF1B741C3297EC00C7A236 /* FutureLib-tvOS */,
 				A1BF1B7D1C3297EC00C7A236 /* FutureLib-tvOSTests */,
-				A108DFDE1B73FFE900A34BFD /* FutureLibPerformanceTests */,
 				A1BF1BE31C32A84600C7A236 /* FutureLib-watchOS */,
+				A108DFDE1B73FFE900A34BFD /* FutureLibPerformanceTests */,
 			);
 		};
 /* End PBXProject section */
@@ -969,36 +961,36 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A18FE0431B46B0820094CD2A /* FutureFreeFunc.swift in Sources */,
-				A1073FF81BFA7C0600E6EE83 /* CancellationOperators.swift in Sources */,
-				A1CE939F1B46F10400FB0C09 /* CancellationError.swift in Sources */,
-				A1F1216B1B6D1EF90077ACF7 /* FutureTypeThenExtension.swift in Sources */,
-				A1380E741BEBCC3E00ED91ED /* FutureTypeFoundationExtension.swift in Sources */,
-				A18FE0421B46B0820094CD2A /* Future.swift in Sources */,
-				A1B6AFD81C171C1F00E5E994 /* AggregateError.swift in Sources */,
-				A18FE03D1B46B0820094CD2A /* CancellationRequest.swift in Sources */,
-				A1F727E91B61595700FDAF19 /* CancellationRequestType.swift in Sources */,
-				A1F727EB1B61595A00FDAF19 /* CancellationTokenType.swift in Sources */,
-				A108D7AF1C2D97330099D772 /* TaskQueue+ExecutionContext.swift in Sources */,
-				A107400E1BFB668C00E6EE83 /* SharedCancellationState.swift in Sources */,
-				A1421F581C2B393D00B8D9BF /* ClosureRegistry.swift in Sources */,
-				A19516811C240E5400397963 /* SequenceType+FutureType.swift in Sources */,
-				A14BACBB1C0621D000DE447C /* Synchronize.swift in Sources */,
-				A168412A1BAEEED4000F6C82 /* CancellationTokenNone.swift in Sources */,
-				A106F5E61B77902900676E87 /* PromiseExtensions.swift in Sources */,
-				A18FE0451B46B0820094CD2A /* Promise.swift in Sources */,
-				A108DFEC1B747F7E00A34BFD /* FutureTypeStaticExtension.swift in Sources */,
-				A1BBF91E1C229FA00003B9C3 /* FutureType.swift in Sources */,
-				A1A070101BEBE12C000061FC /* TaskQueue.swift in Sources */,
-				A18FE03C1B46B0820094CD2A /* Cancelable.swift in Sources */,
-				A10740111BFBA59000E6EE83 /* CancellationSequenceTypeExtension.swift in Sources */,
-				A125A5101BCD00F6006E06C7 /* GCDExecutionContext.swift in Sources */,
-				A18FE0461B46B0820094CD2A /* Result.swift in Sources */,
-				A125A50D1BCD009A006E06C7 /* ExecutionContext.swift in Sources */,
-				A14893F91B557BF100930C41 /* CancellationToken.swift in Sources */,
-				A1EE63161C04C0E100FABA91 /* FutureTypeFinallyExtension.swift in Sources */,
-				A1A153B31C23424F00F1750F /* FutureBaseType.swift in Sources */,
-				A1A070121BEBE12C000061FC /* Timer.swift in Sources */,
+				A10337841C3AD2B80014C866 /* Synchronize.swift in Sources */,
+				A10337301C3AD2B80014C866 /* CancellationRequestType.swift in Sources */,
+				A103379C1C3AD2B80014C866 /* Timer.swift in Sources */,
+				A10337601C3AD2B80014C866 /* FutureFreeFunc.swift in Sources */,
+				A10337681C3AD2B80014C866 /* FutureTypeFinallyExtension.swift in Sources */,
+				A10337341C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift in Sources */,
+				A10337A51C3AD57E0014C866 /* AggregateError.swift in Sources */,
+				A10337441C3AD2B80014C866 /* SharedCancellationState.swift in Sources */,
+				A10337881C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift in Sources */,
+				A10337641C3AD2B80014C866 /* FutureType.swift in Sources */,
+				A10337981C3AD2B80014C866 /* TaskQueue.swift in Sources */,
+				A10337381C3AD2B80014C866 /* CancellationToken.swift in Sources */,
+				A103377C1C3AD2B80014C866 /* PromiseExtensions.swift in Sources */,
+				A10337781C3AD2B80014C866 /* Promise.swift in Sources */,
+				A103372C1C3AD2B80014C866 /* CancellationRequest.swift in Sources */,
+				A103373C1C3AD2B80014C866 /* CancellationTokenNone.swift in Sources */,
+				A10337541C3AD2B80014C866 /* ClosureRegistry.swift in Sources */,
+				A10337241C3AD2B80014C866 /* CancellationError.swift in Sources */,
+				A10337941C3AD2B80014C866 /* Result.swift in Sources */,
+				A10337741C3AD2B80014C866 /* FutureTypeThenExtension.swift in Sources */,
+				A103374C1C3AD2B80014C866 /* GCDExecutionContext.swift in Sources */,
+				A10337481C3AD2B80014C866 /* ExecutionContext.swift in Sources */,
+				A10337701C3AD2B80014C866 /* FutureTypeStaticExtension.swift in Sources */,
+				A103376C1C3AD2B80014C866 /* FutureTypeFoundationExtension.swift in Sources */,
+				A10337801C3AD2B80014C866 /* SequenceType+FutureType.swift in Sources */,
+				A10337201C3AD2B80014C866 /* Cancelable.swift in Sources */,
+				A103375C1C3AD2B80014C866 /* FutureBaseType.swift in Sources */,
+				A10337281C3AD2B80014C866 /* CancellationOperators.swift in Sources */,
+				A10337581C3AD2B80014C866 /* Future.swift in Sources */,
+				A10337401C3AD2B80014C866 /* CancellationTokenType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1039,36 +1031,36 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1CD280E1B46BDA300B408E4 /* FutureFreeFunc.swift in Sources */,
-				A1073FF91BFA7C0800E6EE83 /* CancellationOperators.swift in Sources */,
-				A1CE93A01B46F10400FB0C09 /* CancellationError.swift in Sources */,
-				A1F1216C1B6D1EF90077ACF7 /* FutureTypeThenExtension.swift in Sources */,
-				A1380E751BEBCC3E00ED91ED /* FutureTypeFoundationExtension.swift in Sources */,
-				A1CD280D1B46BDA300B408E4 /* Future.swift in Sources */,
-				A1B6AFD91C171C1F00E5E994 /* AggregateError.swift in Sources */,
-				A1CD28081B46BD9E00B408E4 /* CancellationRequest.swift in Sources */,
-				A1F727EA1B61595700FDAF19 /* CancellationRequestType.swift in Sources */,
-				A1F727EC1B61595A00FDAF19 /* CancellationTokenType.swift in Sources */,
-				A108D7B01C2D97330099D772 /* TaskQueue+ExecutionContext.swift in Sources */,
-				A107400F1BFB668C00E6EE83 /* SharedCancellationState.swift in Sources */,
-				A1421F591C2B393E00B8D9BF /* ClosureRegistry.swift in Sources */,
-				A19516821C240E5500397963 /* SequenceType+FutureType.swift in Sources */,
-				A14BACBC1C0621D000DE447C /* Synchronize.swift in Sources */,
-				A168412B1BAEEED4000F6C82 /* CancellationTokenNone.swift in Sources */,
-				A106F5E71B77902900676E87 /* PromiseExtensions.swift in Sources */,
-				A1CD28101B46BDA300B408E4 /* Promise.swift in Sources */,
-				A108DFED1B747F7E00A34BFD /* FutureTypeStaticExtension.swift in Sources */,
-				A1BBF91F1C229FA00003B9C3 /* FutureType.swift in Sources */,
-				A1A070111BEBE12C000061FC /* TaskQueue.swift in Sources */,
-				A1CD28071B46BD9E00B408E4 /* Cancelable.swift in Sources */,
-				A10740121BFBA59000E6EE83 /* CancellationSequenceTypeExtension.swift in Sources */,
-				A125A5111BCD00F6006E06C7 /* GCDExecutionContext.swift in Sources */,
-				A1CD28111B46BDA300B408E4 /* Result.swift in Sources */,
-				A125A50E1BCD009A006E06C7 /* ExecutionContext.swift in Sources */,
-				A14893FA1B557BF100930C41 /* CancellationToken.swift in Sources */,
-				A1EE63171C04C0E100FABA91 /* FutureTypeFinallyExtension.swift in Sources */,
-				A1A153B41C23424F00F1750F /* FutureBaseType.swift in Sources */,
-				A1A070131BEBE12C000061FC /* Timer.swift in Sources */,
+				A10337851C3AD2B80014C866 /* Synchronize.swift in Sources */,
+				A10337311C3AD2B80014C866 /* CancellationRequestType.swift in Sources */,
+				A103379D1C3AD2B80014C866 /* Timer.swift in Sources */,
+				A10337611C3AD2B80014C866 /* FutureFreeFunc.swift in Sources */,
+				A10337691C3AD2B80014C866 /* FutureTypeFinallyExtension.swift in Sources */,
+				A10337351C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift in Sources */,
+				A10337A61C3AD57E0014C866 /* AggregateError.swift in Sources */,
+				A10337451C3AD2B80014C866 /* SharedCancellationState.swift in Sources */,
+				A10337891C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift in Sources */,
+				A10337651C3AD2B80014C866 /* FutureType.swift in Sources */,
+				A10337991C3AD2B80014C866 /* TaskQueue.swift in Sources */,
+				A10337391C3AD2B80014C866 /* CancellationToken.swift in Sources */,
+				A103377D1C3AD2B80014C866 /* PromiseExtensions.swift in Sources */,
+				A10337791C3AD2B80014C866 /* Promise.swift in Sources */,
+				A103372D1C3AD2B80014C866 /* CancellationRequest.swift in Sources */,
+				A103373D1C3AD2B80014C866 /* CancellationTokenNone.swift in Sources */,
+				A10337551C3AD2B80014C866 /* ClosureRegistry.swift in Sources */,
+				A10337251C3AD2B80014C866 /* CancellationError.swift in Sources */,
+				A10337951C3AD2B80014C866 /* Result.swift in Sources */,
+				A10337751C3AD2B80014C866 /* FutureTypeThenExtension.swift in Sources */,
+				A103374D1C3AD2B80014C866 /* GCDExecutionContext.swift in Sources */,
+				A10337491C3AD2B80014C866 /* ExecutionContext.swift in Sources */,
+				A10337711C3AD2B80014C866 /* FutureTypeStaticExtension.swift in Sources */,
+				A103376D1C3AD2B80014C866 /* FutureTypeFoundationExtension.swift in Sources */,
+				A10337811C3AD2B80014C866 /* SequenceType+FutureType.swift in Sources */,
+				A10337211C3AD2B80014C866 /* Cancelable.swift in Sources */,
+				A103375D1C3AD2B80014C866 /* FutureBaseType.swift in Sources */,
+				A10337291C3AD2B80014C866 /* CancellationOperators.swift in Sources */,
+				A10337591C3AD2B80014C866 /* Future.swift in Sources */,
+				A10337411C3AD2B80014C866 /* CancellationTokenType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1109,36 +1101,36 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1BF1B9F1C329A3300C7A236 /* CancellationRequestType.swift in Sources */,
-				A1BF1B931C329A2700C7A236 /* FutureTypeFinallyExtension.swift in Sources */,
-				A1BF1BA61C329A3300C7A236 /* SharedCancellationState.swift in Sources */,
-				A1BF1B911C329A2700C7A236 /* FutureTypeStaticExtension.swift in Sources */,
-				A1BF1B9B1C329A2D00C7A236 /* TaskQueue.swift in Sources */,
-				A1BF1BA91C329A3900C7A236 /* GCDExecutionContext.swift in Sources */,
-				A1BF1B961C329A2700C7A236 /* PromiseExtensions.swift in Sources */,
-				A1BF1B8F1C329A2700C7A236 /* FutureType.swift in Sources */,
-				A1BF1BA11C329A3300C7A236 /* CancellationTokenNone.swift in Sources */,
-				A1BF1B921C329A2700C7A236 /* FutureTypeThenExtension.swift in Sources */,
-				A1BF1BA31C329A3300C7A236 /* CancellationToken.swift in Sources */,
-				A1BF1BA21C329A3300C7A236 /* CancellationRequest.swift in Sources */,
-				A1BF1BA81C329A3900C7A236 /* ExecutionContext.swift in Sources */,
-				A1BF1B9E1C329A3300C7A236 /* Cancelable.swift in Sources */,
-				A1BF1B8E1C329A2700C7A236 /* FutureBaseType.swift in Sources */,
-				A1BF1B9A1C329A2700C7A236 /* AggregateError.swift in Sources */,
-				A1BF1B981C329A2700C7A236 /* FutureTypeFoundationExtension.swift in Sources */,
-				A1BF1BA51C329A3300C7A236 /* CancellationOperators.swift in Sources */,
-				A1BF1B8D1C329A2700C7A236 /* Result.swift in Sources */,
-				A1BF1B941C329A2700C7A236 /* FutureFreeFunc.swift in Sources */,
-				A1BF1B951C329A2700C7A236 /* Promise.swift in Sources */,
-				A1BF1BA71C329A3300C7A236 /* CancellationSequenceTypeExtension.swift in Sources */,
-				A1BF1B901C329A2700C7A236 /* Future.swift in Sources */,
-				A1BF1B8C1C329A2700C7A236 /* ClosureRegistry.swift in Sources */,
-				A1BF1BA41C329A3300C7A236 /* CancellationError.swift in Sources */,
-				A1BF1B991C329A2700C7A236 /* TaskQueue+ExecutionContext.swift in Sources */,
-				A1BF1B971C329A2700C7A236 /* SequenceType+FutureType.swift in Sources */,
-				A1BF1B9D1C329A2D00C7A236 /* Synchronize.swift in Sources */,
-				A1BF1BA01C329A3300C7A236 /* CancellationTokenType.swift in Sources */,
-				A1BF1B9C1C329A2D00C7A236 /* Timer.swift in Sources */,
+				A10337861C3AD2B80014C866 /* Synchronize.swift in Sources */,
+				A10337321C3AD2B80014C866 /* CancellationRequestType.swift in Sources */,
+				A103379E1C3AD2B80014C866 /* Timer.swift in Sources */,
+				A10337621C3AD2B80014C866 /* FutureFreeFunc.swift in Sources */,
+				A103376A1C3AD2B80014C866 /* FutureTypeFinallyExtension.swift in Sources */,
+				A10337361C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift in Sources */,
+				A10337A71C3AD57E0014C866 /* AggregateError.swift in Sources */,
+				A10337461C3AD2B80014C866 /* SharedCancellationState.swift in Sources */,
+				A103378A1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift in Sources */,
+				A10337661C3AD2B80014C866 /* FutureType.swift in Sources */,
+				A103379A1C3AD2B80014C866 /* TaskQueue.swift in Sources */,
+				A103373A1C3AD2B80014C866 /* CancellationToken.swift in Sources */,
+				A103377E1C3AD2B80014C866 /* PromiseExtensions.swift in Sources */,
+				A103377A1C3AD2B80014C866 /* Promise.swift in Sources */,
+				A103372E1C3AD2B80014C866 /* CancellationRequest.swift in Sources */,
+				A103373E1C3AD2B80014C866 /* CancellationTokenNone.swift in Sources */,
+				A10337561C3AD2B80014C866 /* ClosureRegistry.swift in Sources */,
+				A10337261C3AD2B80014C866 /* CancellationError.swift in Sources */,
+				A10337961C3AD2B80014C866 /* Result.swift in Sources */,
+				A10337761C3AD2B80014C866 /* FutureTypeThenExtension.swift in Sources */,
+				A103374E1C3AD2B80014C866 /* GCDExecutionContext.swift in Sources */,
+				A103374A1C3AD2B80014C866 /* ExecutionContext.swift in Sources */,
+				A10337721C3AD2B80014C866 /* FutureTypeStaticExtension.swift in Sources */,
+				A103376E1C3AD2B80014C866 /* FutureTypeFoundationExtension.swift in Sources */,
+				A10337821C3AD2B80014C866 /* SequenceType+FutureType.swift in Sources */,
+				A10337221C3AD2B80014C866 /* Cancelable.swift in Sources */,
+				A103375E1C3AD2B80014C866 /* FutureBaseType.swift in Sources */,
+				A103372A1C3AD2B80014C866 /* CancellationOperators.swift in Sources */,
+				A103375A1C3AD2B80014C866 /* Future.swift in Sources */,
+				A10337421C3AD2B80014C866 /* CancellationTokenType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1179,36 +1171,36 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1BF1C1B1C32F9BD00C7A236 /* FutureFreeFunc.swift in Sources */,
-				A1BF1C0B1C32F9B000C7A236 /* CancellationToken.swift in Sources */,
-				A1BF1C1C1C32F9BD00C7A236 /* Promise.swift in Sources */,
-				A1BF1C191C32F9BD00C7A236 /* FutureTypeThenExtension.swift in Sources */,
-				A1BF1C121C32F9B600C7A236 /* Synchronize.swift in Sources */,
-				A1BF1C101C32F9B600C7A236 /* TaskQueue.swift in Sources */,
-				A1BF1C211C32F9BD00C7A236 /* AggregateError.swift in Sources */,
-				A1BF1C0A1C32F9B000C7A236 /* CancellationRequest.swift in Sources */,
-				A1BF1C161C32F9BD00C7A236 /* FutureType.swift in Sources */,
-				A1BF1C0C1C32F9B000C7A236 /* CancellationError.swift in Sources */,
-				A1BF1C181C32F9BD00C7A236 /* FutureTypeStaticExtension.swift in Sources */,
-				A1BF1C1A1C32F9BD00C7A236 /* FutureTypeFinallyExtension.swift in Sources */,
-				A1BF1C0F1C32F9B000C7A236 /* CancellationSequenceTypeExtension.swift in Sources */,
-				A1BF1C131C32F9BD00C7A236 /* ClosureRegistry.swift in Sources */,
-				A1BF1C1D1C32F9BD00C7A236 /* PromiseExtensions.swift in Sources */,
-				A1BF1C071C32F9B000C7A236 /* CancellationRequestType.swift in Sources */,
-				A1BF1C1F1C32F9BD00C7A236 /* FutureTypeFoundationExtension.swift in Sources */,
-				A1BF1C0E1C32F9B000C7A236 /* SharedCancellationState.swift in Sources */,
-				A1BF1C151C32F9BD00C7A236 /* FutureBaseType.swift in Sources */,
-				A1BF1C0D1C32F9B000C7A236 /* CancellationOperators.swift in Sources */,
-				A1BF1C041C32F9A500C7A236 /* ExecutionContext.swift in Sources */,
-				A1BF1C111C32F9B600C7A236 /* Timer.swift in Sources */,
-				A1BF1C091C32F9B000C7A236 /* CancellationTokenNone.swift in Sources */,
-				A1BF1C061C32F9B000C7A236 /* Cancelable.swift in Sources */,
-				A1BF1C141C32F9BD00C7A236 /* Result.swift in Sources */,
-				A1BF1C1E1C32F9BD00C7A236 /* SequenceType+FutureType.swift in Sources */,
-				A1BF1C081C32F9B000C7A236 /* CancellationTokenType.swift in Sources */,
-				A1BF1C171C32F9BD00C7A236 /* Future.swift in Sources */,
-				A1BF1C051C32F9AA00C7A236 /* GCDExecutionContext.swift in Sources */,
-				A1BF1C201C32F9BD00C7A236 /* TaskQueue+ExecutionContext.swift in Sources */,
+				A10337871C3AD2B80014C866 /* Synchronize.swift in Sources */,
+				A10337331C3AD2B80014C866 /* CancellationRequestType.swift in Sources */,
+				A103379F1C3AD2B80014C866 /* Timer.swift in Sources */,
+				A10337631C3AD2B80014C866 /* FutureFreeFunc.swift in Sources */,
+				A103376B1C3AD2B80014C866 /* FutureTypeFinallyExtension.swift in Sources */,
+				A10337371C3AD2B80014C866 /* CancellationSequenceTypeExtension.swift in Sources */,
+				A10337A81C3AD57E0014C866 /* AggregateError.swift in Sources */,
+				A10337471C3AD2B80014C866 /* SharedCancellationState.swift in Sources */,
+				A103378B1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift in Sources */,
+				A10337671C3AD2B80014C866 /* FutureType.swift in Sources */,
+				A103379B1C3AD2B80014C866 /* TaskQueue.swift in Sources */,
+				A103373B1C3AD2B80014C866 /* CancellationToken.swift in Sources */,
+				A103377F1C3AD2B80014C866 /* PromiseExtensions.swift in Sources */,
+				A103377B1C3AD2B80014C866 /* Promise.swift in Sources */,
+				A103372F1C3AD2B80014C866 /* CancellationRequest.swift in Sources */,
+				A103373F1C3AD2B80014C866 /* CancellationTokenNone.swift in Sources */,
+				A10337571C3AD2B80014C866 /* ClosureRegistry.swift in Sources */,
+				A10337271C3AD2B80014C866 /* CancellationError.swift in Sources */,
+				A10337971C3AD2B80014C866 /* Result.swift in Sources */,
+				A10337771C3AD2B80014C866 /* FutureTypeThenExtension.swift in Sources */,
+				A103374F1C3AD2B80014C866 /* GCDExecutionContext.swift in Sources */,
+				A103374B1C3AD2B80014C866 /* ExecutionContext.swift in Sources */,
+				A10337731C3AD2B80014C866 /* FutureTypeStaticExtension.swift in Sources */,
+				A103376F1C3AD2B80014C866 /* FutureTypeFoundationExtension.swift in Sources */,
+				A10337831C3AD2B80014C866 /* SequenceType+FutureType.swift in Sources */,
+				A10337231C3AD2B80014C866 /* Cancelable.swift in Sources */,
+				A103375F1C3AD2B80014C866 /* FutureBaseType.swift in Sources */,
+				A103372B1C3AD2B80014C866 /* CancellationOperators.swift in Sources */,
+				A103375B1C3AD2B80014C866 /* Future.swift in Sources */,
+				A10337431C3AD2B80014C866 /* CancellationTokenType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1217,12 +1209,12 @@
 /* Begin PBXTargetDependency section */
 		A108DFE61B73FFE900A34BFD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A18FDFFE1B46AF8C0094CD2A /* FutureLib-OSX */;
+			target = A18FDFFE1B46AF8C0094CD2A /* FutureLib-MacOS */;
 			targetProxy = A108DFE51B73FFE900A34BFD /* PBXContainerItemProxy */;
 		};
 		A18FE00C1B46AF8C0094CD2A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A18FDFFE1B46AF8C0094CD2A /* FutureLib-OSX */;
+			target = A18FDFFE1B46AF8C0094CD2A /* FutureLib-MacOS */;
 			targetProxy = A18FE00B1B46AF8C0094CD2A /* PBXContainerItemProxy */;
 		};
 		A18FE0751B46B3C00094CD2A /* PBXTargetDependency */ = {
@@ -1242,9 +1234,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = FutureLibPerformanceTests/Info.plist;
+				INFOPLIST_FILE = PerformanceTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = ag.FutureLibPerformanceTests;
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(TARGET_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1253,9 +1245,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = FutureLibPerformanceTests/Info.plist;
+				INFOPLIST_FILE = PerformanceTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = ag.FutureLibPerformanceTests;
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(TARGET_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -1357,11 +1349,12 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = FutureLib/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ag.FutureLib;
 				PRODUCT_NAME = FutureLib;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 			};
 			name = Debug;
 		};
@@ -1374,11 +1367,12 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = FutureLib/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ag.FutureLib;
 				PRODUCT_NAME = FutureLib;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
@@ -1388,11 +1382,11 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = FutureLibTests/Info.plist;
+				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = ag.FutureLibTests;
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(TARGET_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "FutureLibTests/FutureLibTests-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/FutureLibTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -1402,11 +1396,11 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = FutureLibTests/Info.plist;
+				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = ag.FutureLibTests;
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(TARGET_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "FutureLibTests/FutureLibTests-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/FutureLibTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
@@ -1419,7 +1413,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = FutureLib/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1427,6 +1421,7 @@
 				PRODUCT_NAME = FutureLib;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1439,7 +1434,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = FutureLib/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1447,6 +1442,7 @@
 				PRODUCT_NAME = FutureLib;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1458,13 +1454,13 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = FutureLibTests/Info.plist;
+				INFOPLIST_FILE = Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ag.FutureLib-iOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(TARGET_NAME)";
 				PRODUCT_NAME = "FutureLib-iOSTests";
 				SDKROOT = iphoneos;
-				SWIFT_OBJC_BRIDGING_HEADER = "FutureLibTests/FutureLibTests-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/FutureLibTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -1474,13 +1470,13 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = FutureLibTests/Info.plist;
+				INFOPLIST_FILE = Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ag.FutureLib-iOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(TARGET_NAME)";
 				PRODUCT_NAME = "FutureLib-iOSTests";
 				SDKROOT = iphoneos;
-				SWIFT_OBJC_BRIDGING_HEADER = "FutureLibTests/FutureLibTests-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/FutureLibTests-Bridging-Header.h";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1494,7 +1490,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = FutureLib/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ag.FutureLib-tvOS";
@@ -1502,6 +1498,7 @@
 				PROVISIONING_PROFILE = "";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.1;
 			};
@@ -1516,7 +1513,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = FutureLib/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ag.FutureLib-tvOS";
@@ -1524,6 +1521,7 @@
 				PROVISIONING_PROFILE = "";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.1;
 				VALIDATE_PRODUCT = YES;
@@ -1533,11 +1531,12 @@
 		A1BF1B881C3297EC00C7A236 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = FutureLib/Info.plist;
+				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ag.FutureLib-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(TARGET_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/FutureLibTests-Bridging-Header.h";
 				TVOS_DEPLOYMENT_TARGET = 9.1;
 			};
 			name = Debug;
@@ -1545,11 +1544,12 @@
 		A1BF1B891C3297EC00C7A236 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = FutureLib/Info.plist;
+				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ag.FutureLib-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "ag.$(TARGET_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/FutureLibTests-Bridging-Header.h";
 				TVOS_DEPLOYMENT_TARGET = 9.1;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1563,13 +1563,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = FutureLib/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ag.FutureLib-watchOS";
 				PRODUCT_NAME = FutureLib;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.1;
 			};
@@ -1583,13 +1584,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = FutureLib/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ag.FutureLib-watchOS";
 				PRODUCT_NAME = FutureLib;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
 				WATCHOS_DEPLOYMENT_TARGET = 2.1;
@@ -1617,7 +1619,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A18FE0131B46AF8C0094CD2A /* Build configuration list for PBXNativeTarget "FutureLib-OSX" */ = {
+		A18FE0131B46AF8C0094CD2A /* Build configuration list for PBXNativeTarget "FutureLib-MacOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A18FE0141B46AF8C0094CD2A /* Debug */,
@@ -1626,7 +1628,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A18FE0161B46AF8C0094CD2A /* Build configuration list for PBXNativeTarget "FutureLibTests" */ = {
+		A18FE0161B46AF8C0094CD2A /* Build configuration list for PBXNativeTarget "FutureLib-MacOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A18FE0171B46AF8C0094CD2A /* Debug */,

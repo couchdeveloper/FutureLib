@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A18FDFFE1B46AF8C0094CD2A"
                BuildableName = "FutureLib.framework"
-               BlueprintName = "FutureLib-OSX"
+               BlueprintName = "FutureLib-MacOS"
                ReferencedContainer = "container:FutureLib.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -34,8 +34,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A18FE0081B46AF8C0094CD2A"
-               BuildableName = "FutureLibTests.xctest"
-               BlueprintName = "FutureLibTests"
+               BuildableName = "FutureLib-MacOSTests.xctest"
+               BlueprintName = "FutureLib-MacOSTests"
                ReferencedContainer = "container:FutureLib.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -45,7 +45,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A18FDFFE1B46AF8C0094CD2A"
             BuildableName = "FutureLib.framework"
-            BlueprintName = "FutureLib-OSX"
+            BlueprintName = "FutureLib-MacOS"
             ReferencedContainer = "container:FutureLib.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -67,7 +67,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A18FDFFE1B46AF8C0094CD2A"
             BuildableName = "FutureLib.framework"
-            BlueprintName = "FutureLib-OSX"
+            BlueprintName = "FutureLib-MacOS"
             ReferencedContainer = "container:FutureLib.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -85,7 +85,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A18FDFFE1B46AF8C0094CD2A"
             BuildableName = "FutureLib.framework"
-            BlueprintName = "FutureLib-OSX"
+            BlueprintName = "FutureLib-MacOS"
             ReferencedContainer = "container:FutureLib.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
