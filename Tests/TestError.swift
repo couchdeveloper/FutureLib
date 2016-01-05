@@ -5,8 +5,6 @@
 //  Copyright © 2015 Andreas Grosam. All rights reserved.
 //
 
-import Foundation
-
 
 // Error type
 

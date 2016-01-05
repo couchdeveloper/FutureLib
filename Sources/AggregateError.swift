@@ -6,19 +6,31 @@
 //
 
 
-import Foundation
 
 /**
- An error which encapsulates a sequence of errors.
+ An error encapsulating a sequence of errors.
  */
 public struct AggregateError: ErrorType {
 
-    let errors: AnySequence<ErrorType>
+    public var errors: [ErrorType]
 
-    init(_ errors: AnySequence<ErrorType>) {
-        self.errors = errors
+    public init() {
+        self.errors = [ErrorType]()
     }
-
+    
+    public init(error: ErrorType) {
+        self.errors = [error]
+    }
+    
+    public init(_ errors: AnySequence<ErrorType>) {
+        self.errors = [ErrorType](errors)
+    }
+    
+    public mutating func add(error: ErrorType) {
+        errors.append(error)
+    }
+    
+    
 }
 
 
@@ -32,7 +44,24 @@ extension AggregateError: CustomStringConvertible {
     public var description: String {
         var s = "AggregateError with errors:"
         errors.forEach {
-            s.appendContentsOf("\n\t\($0 as NSError)")
+            s.appendContentsOf("\n\t\(String($0))")
+        }
+        return s
+    }
+}
+
+
+// MARK: Extension CustomDebugStringConvertible
+
+extension AggregateError: CustomDebugStringConvertible {
+    
+    /**
+     - returns: A description of `self`.
+     */
+    public var debugDescription: String {
+        var s = "AggregateError with errors:"
+        errors.forEach {
+            s.appendContentsOf("\n\t\(String(reflecting: $0))")
         }
         return s
     }
