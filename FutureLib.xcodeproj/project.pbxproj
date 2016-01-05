@@ -217,6 +217,9 @@
 		A10E9E721C3BBD9500CD5B07 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
 		A10E9E731C3BBD9500CD5B07 /* schedule_after.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93C1C15EAFC0019060A /* schedule_after.swift */; };
 		A10E9E741C3BBD9500CD5B07 /* TestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9411C15EAFC0019060A /* TestError.swift */; };
+		A12FC0FB1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
+		A12FC0FC1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
+		A12FC0FD1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -310,6 +313,7 @@
 		A10E9D911C3BBA3400CD5B07 /* FutureLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FutureLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10E9D9A1C3BBA3500CD5B07 /* FutureLib-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FutureLib-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1221F501C2AAEF8004F3F68 /* FutureMiscCombinatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureMiscCombinatorTests.swift; sourceTree = "<group>"; };
+		A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		A1421F4F1C2B384E00B8D9BF /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		A187F60D1C29DE5B00D79268 /* ExecutionContextTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionContextTests.swift; sourceTree = "<group>"; };
 		A18EB58D1B7BDBED00B74714 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/Mac/Nimble.framework; sourceTree = "<group>"; };
@@ -634,6 +638,7 @@
 				A1421F4F1C2B384E00B8D9BF /* Logger.swift */,
 				A10CB93C1C15EAFC0019060A /* schedule_after.swift */,
 				A10CB9411C15EAFC0019060A /* TestError.swift */,
+				A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -997,6 +1002,7 @@
 				A10E9E5F1C3BBD7200CD5B07 /* SharedCancellationStateTests.swift in Sources */,
 				A10E9E311C3BBD5D00CD5B07 /* FutureBaseTests.swift in Sources */,
 				A10E9E5D1C3BBD7200CD5B07 /* CancellationOperatorsTests.swift in Sources */,
+				A12FC0FB1C3BD9D900C83057 /* StringExtension.swift in Sources */,
 				A10E9E3C1C3BBD5D00CD5B07 /* FutureTypeThenExtensionTests.swift in Sources */,
 				A10E9E3D1C3BBD5D00CD5B07 /* SequenceType+FutureTypeTests.swift in Sources */,
 				A10E9E321C3BBD5D00CD5B07 /* FutureBaseContinueWithTests.swift in Sources */,
@@ -1068,6 +1074,7 @@
 				A10E9E621C3BBD7300CD5B07 /* SharedCancellationStateTests.swift in Sources */,
 				A10E9E3F1C3BBD5E00CD5B07 /* FutureBaseTests.swift in Sources */,
 				A10E9E601C3BBD7300CD5B07 /* CancellationOperatorsTests.swift in Sources */,
+				A12FC0FC1C3BD9D900C83057 /* StringExtension.swift in Sources */,
 				A10E9E4A1C3BBD5E00CD5B07 /* FutureTypeThenExtensionTests.swift in Sources */,
 				A10E9E4B1C3BBD5E00CD5B07 /* SequenceType+FutureTypeTests.swift in Sources */,
 				A10E9E401C3BBD5E00CD5B07 /* FutureBaseContinueWithTests.swift in Sources */,
@@ -1176,6 +1183,7 @@
 				A10E9E651C3BBD7500CD5B07 /* SharedCancellationStateTests.swift in Sources */,
 				A10E9E4D1C3BBD6000CD5B07 /* FutureBaseTests.swift in Sources */,
 				A10E9E631C3BBD7500CD5B07 /* CancellationOperatorsTests.swift in Sources */,
+				A12FC0FD1C3BD9D900C83057 /* StringExtension.swift in Sources */,
 				A10E9E581C3BBD6000CD5B07 /* FutureTypeThenExtensionTests.swift in Sources */,
 				A10E9E591C3BBD6000CD5B07 /* SequenceType+FutureTypeTests.swift in Sources */,
 				A10E9E4E1C3BBD6000CD5B07 /* FutureBaseContinueWithTests.swift in Sources */,
@@ -1591,6 +1599,7 @@
 				A10E9D521C3BB98800CD5B07 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A10E9D531C3BB98800CD5B07 /* Build configuration list for PBXNativeTarget "FutureLib-MacOSTests" */ = {
 			isa = XCConfigurationList;
@@ -1599,6 +1608,7 @@
 				A10E9D551C3BB98800CD5B07 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A10E9D6C1C3BB9AE00CD5B07 /* Build configuration list for PBXNativeTarget "FutureLib-iOS" */ = {
 			isa = XCConfigurationList;
@@ -1607,6 +1617,7 @@
 				A10E9D6E1C3BB9AE00CD5B07 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A10E9D6F1C3BB9AE00CD5B07 /* Build configuration list for PBXNativeTarget "FutureLib-iOSTests" */ = {
 			isa = XCConfigurationList;
@@ -1615,6 +1626,7 @@
 				A10E9D711C3BB9AE00CD5B07 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A10E9D891C3BBA1500CD5B07 /* Build configuration list for PBXNativeTarget "FutureLib-watchOS" */ = {
 			isa = XCConfigurationList;
@@ -1623,6 +1635,7 @@
 				A10E9D8B1C3BBA1500CD5B07 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A10E9DA21C3BBA3500CD5B07 /* Build configuration list for PBXNativeTarget "FutureLib-tvOS" */ = {
 			isa = XCConfigurationList;
@@ -1631,6 +1644,7 @@
 				A10E9DA41C3BBA3500CD5B07 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A10E9DA51C3BBA3500CD5B07 /* Build configuration list for PBXNativeTarget "FutureLib-tvOSTests" */ = {
 			isa = XCConfigurationList;
@@ -1639,6 +1653,7 @@
 				A10E9DA71C3BBA3500CD5B07 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A18FDFF91B46AF8C0094CD2A /* Build configuration list for PBXProject "FutureLib" */ = {
 			isa = XCConfigurationList;

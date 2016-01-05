@@ -37,23 +37,14 @@ class AggregateErrorTests: XCTestCase {
 
     func testExample() {
         
-        let error = AggregateError(error: TestErrorA.Error)
+        var error = AggregateError(error: TestErrorA.Error)
+        error.add(TestErrorB.Error)
+        error.add(TestErrorC.Error)
     
-        let errA = TestErrorA.Error
-        let errB = TestErrorB.Error
-        
-        if errA == errA {
-        }
-        
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
-        }
+        XCTAssertTrue(error.description.contains("TestErrorA"))
+        XCTAssertTrue(error.description.contains("Error"))
+        XCTAssertTrue(error.description.contains("TestErrorB"))
+        XCTAssertTrue(error.description.contains("TestErrorC"))
     }
 
 }

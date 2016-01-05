@@ -44,7 +44,7 @@ extension AggregateError: CustomStringConvertible {
     public var description: String {
         var s = "AggregateError with errors:"
         errors.forEach {
-            s.appendContentsOf("\n\t\(String($0))")
+            s.appendContentsOf("\n\t\(String($0.dynamicType)).\(String($0))")
         }
         return s
     }
