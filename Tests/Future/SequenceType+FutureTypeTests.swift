@@ -83,11 +83,11 @@ class SequenceTypeFutureTypeTests: XCTestCase {
 
     func testTraverseCompletesWithErrorFromTask() {
         let expect1 = self.expectationWithDescription("future should be completed")
-        let inputs = [0.1, 0.3, 0.01, 0.3]
+        let inputs = [0.05, 0.08, 0.01, 0.3]
 
         let task: (Double) -> Future<Double> = { d in
             return Promise.resolveAfter(d) {
-                if d >= 0.1 { return d }
+                if d > 0.02 { return d }
                 throw TestError.Failed
 
             }.future!
@@ -136,7 +136,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         // The tasks confirms that it is the only one executing concurrently:
         let sem = dispatch_semaphore_create(1)
         let task: (String) -> Future<String> = { s in
-            return Promise<String>.resolveAfter(0.1, f: {
+            return Promise<String>.resolveAfter(0.01, f: {
                 let avail = dispatch_semaphore_wait(sem, DISPATCH_TIME_NOW) == 0
                 XCTAssertTrue(avail)
                 dispatch_semaphore_signal(sem)
@@ -162,7 +162,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         // The task confirms that there are only two executing concurrently:
         let sem = dispatch_semaphore_create(2)
         let task: (String) -> Future<String> = { s in
-            return Promise<String>.resolveAfter(0.1, f: {
+            return Promise<String>.resolveAfter(0.01, f: {
                 let avail = dispatch_semaphore_wait(sem, DISPATCH_TIME_NOW) == 0
                 XCTAssertTrue(avail)
                 dispatch_semaphore_signal(sem)

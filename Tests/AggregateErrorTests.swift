@@ -35,7 +35,7 @@ class AggregateErrorTests: XCTestCase {
         super.tearDown()
     }
 
-    func testExample() {
+    func testAggregateErrorDescriptionShouldListErrors() {
         
         var error = AggregateError(error: TestErrorA.Error)
         error.add(TestErrorB.Error)

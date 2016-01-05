@@ -420,22 +420,27 @@ class FutureTests: XCTestCase {
         XCTAssertNil(future)
     }
 
-    func testPromiseShouldNotDeallocatePrematurely() {
+    func testFutureShouldCompleteWithBrokenPromiseIfPromiseDeallocatesPrematurely() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
             let promise = Promise<String>()
-            let future = promise.future!
-            future.then {  str in
+            promise.future!.onFailure { error in
+                if case PromiseError.BrokenPromise = error where error is PromiseError {
+                } else {
+                    XCTFail("Invalid kind of error: \(String(reflecting: error)))")
+                }
                 expect.fulfill()
             }
-            let delay = dispatch_time(DISPATCH_TIME_NOW, Int64(0.2 * Double(NSEC_PER_SEC)))
+            let delay = dispatch_time(DISPATCH_TIME_NOW, Int64(0.05 * Double(NSEC_PER_SEC)))
             dispatch_after(delay, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
-                promise.fulfill("OK")
+                promise
             }
         }
         waitForExpectationsWithTimeout(0.4, handler: nil)
     }
+    
 
+    
     func testPromiseChainShouldNotDeallocatePrematurely() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let delay = dispatch_time(DISPATCH_TIME_NOW, Int64(0.2 * Double(NSEC_PER_SEC)))
@@ -494,7 +499,7 @@ class FutureTests: XCTestCase {
         let future = promise.future!
         let expect = self.expectationWithDescription("future should be fulfilled")
         future.then { result -> String in
-            if true {
+            if result == "OK" {
                 return "OK"
             }
             else {
