@@ -611,9 +611,9 @@ session.get(url, cr.token)
 > **Note:** Carthage only supports dynamic frameworks which are supported in Mac OS X and iOS 8 and later.
 
 1. Follow the instruction [Installing Carthage](https://github.com/Carthage/Carthage) to install Carthage on your system.
-2. Follow the instructions [Adding frameworks to an application](https://github.com/Carthage/Carthage), while adding
-    `github couchdeveloper/FutureLib`
-    to the file `Cartfile.private`.		
+2. Follow the instructions [Adding frameworks to an application](https://github.com/Carthage/Carthage). Then add    
+    `github "couchdeveloper/FutureLib"`    
+ to your Cartfile.		
 
 
 ### CocoaPods
