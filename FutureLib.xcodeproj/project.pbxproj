@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		A10CB91C1C15EA060019060A /* FuturePerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB91B1C15EA060019060A /* FuturePerformanceTests.swift */; };
-		A10CB97D1C15EE1A0019060A /* SharedCancellationStatePerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB97C1C15EE1A0019060A /* SharedCancellationStatePerformanceTests.swift */; };
 		A10E9D491C3BB98800CD5B07 /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10E9D3F1C3BB98700CD5B07 /* FutureLib.framework */; };
 		A10E9D651C3BB9AE00CD5B07 /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10E9D5B1C3BB9AE00CD5B07 /* FutureLib.framework */; };
 		A10E9D9B1C3BBA3500CD5B07 /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10E9D911C3BBA3400CD5B07 /* FutureLib.framework */; };
@@ -220,6 +219,7 @@
 		A12FC0FB1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
 		A12FC0FC1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
 		A12FC0FD1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
+		A16435541C4A693A0084DAD1 /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10E9D3F1C3BB98700CD5B07 /* FutureLib.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -336,6 +336,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A16435541C4A693A0084DAD1 /* FutureLib.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -948,7 +949,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10CB97D1C15EE1A0019060A /* SharedCancellationStatePerformanceTests.swift in Sources */,
 				A10CB91C1C15EA060019060A /* FuturePerformanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
