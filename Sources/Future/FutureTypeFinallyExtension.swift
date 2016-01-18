@@ -60,13 +60,13 @@ extension FutureType {
     public final func finally<U>(
         ec: ExecutionContext = GCDAsyncExecutionContext(),
         _ ct: CancellationTokenType = CancellationTokenNone(),
-        f: ResultType -> Future<U>)
+        f: ResultType throws -> Future<U>)
         -> Future<U> {
         let returnedFuture = Future<U>()
         onComplete(ec: SynchronousCurrent(), ct: ct) { [weak returnedFuture] result -> () in
             // Caution: the mapping function must be called even when the returned
             // future has been deinitialized prematurely!
-            ec.schedule({ return f(result) }) { future in
+            ec.schedule({ return try f(result) }) { future in
                 returnedFuture?.completeWith(future)
             }
         }

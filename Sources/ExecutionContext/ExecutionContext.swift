@@ -54,35 +54,32 @@ import Dispatch
 public protocol ExecutionContext {
 
     /**
-     Schedules the closure `f` for execution on the Execution Context.
+     Submits the closure `f` for execution on the Execution Context. If the 
+     execution context is _synchronous_, the calling thread will be blocked until 
+     after the cosure finished. If the exectution context is asynchronous, the
+     closure will be enqueued by the execution context and function `execute` 
+     immediateley returns.
 
-     - parameter f: A closure which is being scheduled.
+     - parameter f: A closure which is being submitted.
     */
     func execute(f: () -> ())
 
 
     /**
-     Submits a task `task` for execution on the execution context. When the task has been
-     started and a future has been returned, the closure `start` will be called
-     with the task's future as the argument.
+     Schedules an asynchronous task `task` for execution on the execution context. 
+     The task will be enqueued and the function `schedule` immediately returns.
+     When the task has been started and a future has been returned, the  execution 
+     context calls the callback `start` with the returned future as its argument.
+     If the task throws an error before returning a future, the start method will
+     be called with a future completed with that error.
 
-     - parameter task: A closure which is being scheduled.
+     - parameter task: A closure which is being scheduled. The closure may throw
+     an error prior to returning the future.
 
-     - parameter start: A closure that is called when the `task` is being scheduled.
+     - parameter start: A callback that is called when the task has been started
+     whose parameter is the future returned from the task.
      */
-    func schedule<FT: FutureType>(task: () -> FT, start: FT -> ())
-
-
-    /**
-     Submits a task `task` for exection on the execution context and returns a
-     new future which will be completed with the future returned from the given task
-     when it has been started.
-
-     - parameter task: A closure which is being scheduled.
-
-     - parameter start: A closure that is called when the `task` is being scheduled.
-     */
-    func schedule<FT: FutureType>(task: () -> FT) -> Future<FT>
+    func schedule<T>(task: () throws -> Future<T>, start: Future<T> -> ())
 
 }
 
@@ -102,16 +99,35 @@ public extension ExecutionContext {
      - parameter task: A closure which is being scheduled.
      - parameter start: A closure that is called when the `task` is being scheduled.
      */
-    final func schedule<FT: FutureType>(task: () -> FT, start: FT -> ()) {
+    public func schedule<T>(task: () throws -> Future<T>, start: Future<T> -> ()) {
         execute {
-            start(task())
+            do {
+                start(try task())
+            }
+            catch let error {
+                start(Future<T>.failed(error))
+            }
         }
     }
 
 
-    final func schedule<FT: FutureType>(task: () -> FT) -> Future<FT> {
-        let returnedFuture = Future<FT>()
-        schedule(task) { returnedFuture.complete(Result<FT>($0)) }
+    /**
+     Schedules an asynchronous task `task` for execution on the execution context.
+     The task will be enqueued and the function `schedule` immediately returns
+     a pending future. The returned future will be eventually completed with the
+     result of the future returned from the task. If the task function fails, the
+     returned future will be completed with this error.
+     
+     - parameter task: A closure which is being scheduled.
+     
+     - return: A future which will be completed with the returned future,
+     e.g. `Future<Future<T>>`
+     */
+    public func schedule<T>(task: () throws -> Future<T>) -> Future<Future<T>> {
+        let returnedFuture = Future<Future<T>>()
+        schedule(task) { future in
+            returnedFuture.complete(future)
+        }
         return returnedFuture
     }
 
@@ -168,9 +184,6 @@ internal struct SynchronousCurrent: ExecutionContext {
         f()
     }
 
-    internal func schedule<FT: FutureType>(task: () -> FT, start: FT -> ()) {
-        start(task())
-    }
 
 
 }

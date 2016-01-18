@@ -45,13 +45,13 @@ extension SequenceType {
     public func traverse<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        task: Generator.Element -> Future<U>)
+        task: Generator.Element throws -> Future<U>)
         -> Future<[U]> {
         typealias FutureArrayFuture = Future<[Future<U>]>
         let initial: FutureArrayFuture = FutureArrayFuture(value: [Future<U>]())
         let ffutures = self.reduce(initial) {(combined, element) -> FutureArrayFuture in
             combined.flatMap(ct: ct) { combinedValue in
-                ec.schedule { task(element) }.map { future  in
+                ec.schedule { try task(element) }.map { future  in
                     combinedValue + [future]
                 }
             }

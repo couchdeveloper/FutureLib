@@ -15,11 +15,20 @@ extension TaskQueue: ExecutionContext {
         GCDAsyncExecutionContext(self.queue).execute(f)
     }
 
-    public func schedule<U, F: FutureType where F.ValueType == U>(task: () -> F, start: (F)->()) {
+    public func schedule<T>(task: () throws -> Future<T>, start: Future<T> -> ()) {
         self.enqueue {
-            let f = task()
-            start(f)
-            return f
+            var future: Future<T>?
+            do {
+                future = try task()
+            }
+            catch let error {
+                future = Future<T>.failed(error)
+            }
+            start(future!)
+            return future!
         }
     }
+    
+    
+
 }

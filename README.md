@@ -237,7 +237,7 @@ Note, that the mapping function will be called asynchronously with respect to th
 
 #### flatMap
 
-`func flatMap<U>(f: T -> Future<U>) -> Future<U>`
+`func flatMap<U>(f: T throws -> Future<U>) -> Future<U>`
 
 Method `flatMap` returns a new future which is completed with the _eventual_ result of the function `f` which is applied to the success value of `self`. If `self` has been completed with an error the returned future will be  completed with the same error. The continuation will not be called when `self` fails.
 
@@ -267,7 +267,7 @@ Returns a new future which will be completed with `self`'s success value or with
 
 #### recoverWith
 
-`func recoverWith(f: ErrorType -> Future<T>) -> Future<T>`
+`func recoverWith(f: ErrorType throws -> Future<T>) -> Future<T>`
 
 Returns a new future which will be completed with `self`'s success value or with the deferred result of the mapping function `f` when `self` fails.
 
@@ -315,7 +315,7 @@ An extension method which can be applied to any sequence type is `traverse`:
 
 #### traverse
 
-`func traverse<U>(task: T -> Future<U>) -> Future<[U]>`
+`func traverse<U>(task: T throws -> Future<U>) -> Future<[U]>`
 
 For any sequence of `T`, the asynchronous method `traverse` applies the function `task` to each value of the sequence (thus, getting a sequence of tasks) and then completes the returned future with an array of `U`s once all tasks have been completed successfully.
 

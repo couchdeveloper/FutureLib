@@ -357,7 +357,7 @@ public extension FutureType where ResultType == Result<ValueType> {
     public final func flatMap<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: ValueType -> Future<U>)
+        f: ValueType throws -> Future<U>)
         -> Future<U> {
         // Caution: the mapping function must be called even when the returned
         // future has been deinitialized prematurely!
@@ -365,7 +365,7 @@ public extension FutureType where ResultType == Result<ValueType> {
         onComplete(ec: SynchronousCurrent(), ct: ct) { [weak returnedFuture] result in
             switch result {
             case .Success(let value):
-                ec.schedule({ return f(value) }, start: { future in
+                ec.schedule({ return try f(value) }, start: { future in
                     returnedFuture?.completeWith(future)
                 })
             case .Failure(let error):
@@ -462,7 +462,7 @@ public extension FutureType where ResultType == Result<ValueType> {
     public final func recoverWith(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: ErrorType -> Future<ValueType>)
+        f: ErrorType throws -> Future<ValueType>)
         -> Future<ValueType> {
         let returnedFuture = Future<ValueType>()
         onComplete(ec: SynchronousCurrent(), ct: ct) { [weak returnedFuture] result in
@@ -472,7 +472,7 @@ public extension FutureType where ResultType == Result<ValueType> {
             case .Success(let value):
                 returnedFuture?._complete(value)
             case .Failure(let error):
-                ec.schedule({ return f(error) }, start: { future in
+                ec.schedule({ return try f(error) }, start: { future in
                     returnedFuture?.completeWith(future)
                 })
             }

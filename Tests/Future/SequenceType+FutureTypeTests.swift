@@ -7,6 +7,7 @@
 
 import XCTest
 import FutureLib
+import Darwin
 
 
 
@@ -128,18 +129,17 @@ class SequenceTypeFutureTypeTests: XCTestCase {
 
 
 
-    func testTraverseWithTaskQueueExecutionContext1() {
+    func testTraverseWithTaskQueueExecutionContextWith1MaxConcurrentTask() {
         let expect1 = self.expectationWithDescription("future should be completed")
-        let ec = TaskQueue(maxConcurrentTasks: 1)
-        let inputs = ["a", "b", "c", "d"]
-
-        // The tasks confirms that it is the only one executing concurrently:
-        let sem = dispatch_semaphore_create(1)
+        let maxConcurrentTasks: Int32 = 1
+        let ec = TaskQueue(maxConcurrentTasks: UInt(maxConcurrentTasks))
+        let inputs = ["a", "b", "c", "d", "e"]
+        var i: Int32 = 0
+        // The tasks confirms that only maxConcurrentTasks executing concurrently:
         let task: (String) -> Future<String> = { s in
-            return Promise<String>.resolveAfter(0.01, f: {
-                let avail = dispatch_semaphore_wait(sem, DISPATCH_TIME_NOW) == 0
-                XCTAssertTrue(avail)
-                dispatch_semaphore_signal(sem)
+            XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
+            return Promise<String>.resolveAfter(0.02, f: {
+                OSAtomicDecrement32(&i)
                 return s.uppercaseString
             }).future!
         }
@@ -147,34 +147,33 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         inputs.traverse(ec: ec) { s in
             return task(s)
         }.onSuccess { value in
-            XCTAssertEqual(["A", "B", "C", "D"], value)
+            XCTAssertEqual(["A", "B", "C", "D", "E"], value)
             expect1.fulfill()
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
 
 
-    func testTraverseWithTaskQueueExecutionContext2() {
+    func testTraverseWithTaskQueueExecutionContextWith2MaxConcurrentTask() {
         let expect1 = self.expectationWithDescription("future should be completed")
-        let ec = TaskQueue(maxConcurrentTasks: 2)
-        let inputs = ["a", "b", "c", "d"]
-
-        // The task confirms that there are only two executing concurrently:
-        let sem = dispatch_semaphore_create(2)
+        let maxConcurrentTasks: Int32 = 2
+        let ec = TaskQueue(maxConcurrentTasks: UInt(maxConcurrentTasks))
+        let inputs = ["a", "b", "c", "d", "e"]
+        var i: Int32 = 0
+        // The tasks confirms that only maxConcurrentTasks executing concurrently:
         let task: (String) -> Future<String> = { s in
-            return Promise<String>.resolveAfter(0.01, f: {
-                let avail = dispatch_semaphore_wait(sem, DISPATCH_TIME_NOW) == 0
-                XCTAssertTrue(avail)
-                dispatch_semaphore_signal(sem)
+            XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
+            return Promise<String>.resolveAfter(0.02, f: {
+                OSAtomicDecrement32(&i)
                 return s.uppercaseString
             }).future!
         }
-
+        
         inputs.traverse(ec: ec) { s in
             return task(s)
-        }.onSuccess { value in
-            XCTAssertEqual(["A", "B", "C", "D"], value)
-            expect1.fulfill()
+            }.onSuccess { value in
+                XCTAssertEqual(["A", "B", "C", "D", "E"], value)
+                expect1.fulfill()
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
