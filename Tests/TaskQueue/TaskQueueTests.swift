@@ -28,7 +28,7 @@ class TaskQueueTests: XCTestCase {
         var i: Int32 = 0
         let task: () -> Future<Void> = {
             XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
-            return Promise<Void>.resolveAfter(0.1, f: {
+            return Promise<Void>.resolveAfter(0.02, f: {
                 OSAtomicDecrement32(&i)
                 dispatch_group_leave(g)
             }).future!
@@ -52,7 +52,7 @@ class TaskQueueTests: XCTestCase {
         var i: Int32 = 0
         let task: () -> Future<Void> = {
             XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
-            return Promise<Void>.resolveAfter(0.1, f: {
+            return Promise<Void>.resolveAfter(0.02, f: {
                 OSAtomicDecrement32(&i)
                 dispatch_group_leave(g)
             }).future!
@@ -76,7 +76,7 @@ class TaskQueueTests: XCTestCase {
         var i: Int32 = 0
         let task: () -> Future<Void> = {
             XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
-            return Promise<Void>.resolveAfter(0.1, f: {
+            return Promise<Void>.resolveAfter(0.02, f: {
                 OSAtomicDecrement32(&i)
                 dispatch_group_leave(g)
             }).future!
@@ -100,7 +100,7 @@ class TaskQueueTests: XCTestCase {
         var i: Int32 = 0
         let task: () -> Future<Void> = {
             XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
-            return Promise<Void>.resolveAfter(0.1, f: {
+            return Promise<Void>.resolveAfter(0.02, f: {
                 OSAtomicDecrement32(&i)
                 dispatch_group_leave(g)
             }).future!
