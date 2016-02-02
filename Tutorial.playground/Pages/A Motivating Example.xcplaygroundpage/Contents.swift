@@ -1,7 +1,7 @@
 //: [Previous](@previous)
 //: ## Why do we need futures?
 //:
-//: ### A motivating exmample
+//: ### A motivating example
 //:
 //: Suppose, there is an image hosting site which stores images made by registered users. A user can be "followed by" one or more other users. Each user can upload a large amout of imgages. 
 //:
@@ -13,27 +13,29 @@
 //: 4. Find a robust and correct implementation.
 //: 5. Should be implemented in less than 15 lines of code. Yep - less than 15! (network code and support code does not count)
 //:   
-//: Given:
+//: **Already given:**
 //: 1. An API call which returns the ids of your friends as an array of ids:   
-//: `func fetchFriends() -> Future<[Int]>`    
+//:    `func fetchFriends() -> Future<[Int]>`    
 //:
-//: 2. An API call which fetches an image from the server and stores it locally in a file and returns the file path:
-//: `func fetchImage(url: String) -> Future<String>`
+//: 2. An API call which fetches an image from the server and stores it locally in a file and returns the file path:   
+//:    `func fetchImage(url: String) -> Future<String>`
 //:
-//: 3. An API call to fetch a user:    
-//: `func fetchUser(id: Int) -> Future<User>`   
+//: 3. An API call to fetch a user:   
+//:    `func fetchUser(id: Int) -> Future<User>`   
 //:
-//: > Note: The above network functions just simulate a network request - they are just "mocks". It's not the purpose of this demo to implement these method as real network requests.   
+//: > The above network functions just simulate a network request - they are just "mocks". It's not the purpose of this demo to implement these method as real network requests.
 //:   
-//: If we had just the system frameworks available, we would implement this challenge utilizing `NSOperation` and `NSOperationQueue`. When doing this, however, we will very quickly face a few problems, which turnes out, are hard to solve: first, in order to implement cancellation, we require to create three subclasses of `NSOperation`, namely `FetchFollowersOperation`, `FetchUserOperation` and `FetchImageOperation`. We have to find a correct implementation of a "thread-safe" subclass of `NSOperation` - which is actually surprisingly elaborated and difficult. The next problem we encounter is, that we need a way to pass the result of the first to the second, and the second to the third operation. To be honest, I actually have no idea how this can be accomplished in an elegant, reusable approach. I estimate, a robust and correct implementation will require at least two hundred lines of code. 
+//: #### We could solve this challenge using `NSOperationQueue` and `NSOperation` but ...
+//: If we had just the system frameworks available, we would implement this challenge utilizing `NSOperation` and `NSOperationQueue`. When doing this, however, we will very quickly face a few problems, which turnes out, are hard to solve: first, in order to implement cancellation, we require to create three subclasses of `NSOperation`, namely `FetchFollowersOperation`, `FetchUserOperation` and `FetchImageOperation`. We have to find a correct implementation of a "thread-safe" subclass of `NSOperation` - which is actually surprisingly elaborated and difficult. The next problem we encounter is, that we need a way to pass the result of the first to the second, and the second to the third operation. To be honest, I actually have no idea how this can be accomplished in an _elegant_ and _concise_ approach. A robust and correct implementation may require at least two hundred lines of code.
 //:
 
+//: #### Utilzing FutureLib
 import FutureLib
 import Foundation
 import XCPlayground
 XCPlaygroundPage.currentPage.needsIndefiniteExecution = true
 
-
+//: The model classes `User`and `Image` are already given:
 struct User {
     let id: Int
     let recentImageUrls: [String]
