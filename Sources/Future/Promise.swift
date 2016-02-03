@@ -106,7 +106,11 @@ public class Promise<T> {
      */
     deinit {
         if let future = _weakFuture {
-            future.tryComplete(Result(error: PromiseError.BrokenPromise))
+            if future.sync().isSynchronized() {
+                future._tryComplete(Result(error: PromiseError.BrokenPromise))
+            } else {
+                future.tryComplete(Result(error: PromiseError.BrokenPromise))
+            }
         }
     }
 

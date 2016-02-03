@@ -227,7 +227,7 @@ extension Future: CompletableFutureType {
     }
 
 
-    private final func _tryComplete(result: ResultType) -> Bool {
+    internal final func _tryComplete(result: ResultType) -> Bool {
         assert(_sync.isSynchronized())
         if _result == nil {
             _complete(result)
