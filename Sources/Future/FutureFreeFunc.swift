@@ -16,18 +16,18 @@ import Dispatch
  complete.
 
  - parameter ec: An execution context where the function `f` will be executed.
- - parameter f: A function takes no parameters and returns a value of type `Result<T>`.
+ - parameter f: A function takes no parameters and returns a value of type `Try<T>`.
  - returns: A `Future` whose `ValueType` equals `T`.
  */
 @available(*, deprecated=1.0)
 public func future<T>(ec: ExecutionContext = GCDAsyncExecutionContext(),
-    f: ()->Result<T>)
+    f: ()->Try<T>)
     -> Future<T> {
     let returnedFuture: Future<T> = Future<T>()
     ec.execute() {
         switch f() {
-        case .Success(let value): returnedFuture.complete(Result(value))
-        case .Failure(let error): returnedFuture.complete(Result(error: error))
+        case .Success(let value): returnedFuture.complete(Try(value))
+        case .Failure(let error): returnedFuture.complete(Try(error: error))
         }
     }
     return returnedFuture
@@ -53,9 +53,9 @@ public func future<T>(ec: ExecutionContext = GCDAsyncExecutionContext(),
     ec.execute() {
         do {
             let value = try f()
-            returnedFuture.complete(Result(value))
+            returnedFuture.complete(Try(value))
         } catch let error {
-            returnedFuture.complete(Result(error: error))
+            returnedFuture.complete(Try(error: error))
         }
     }
     return returnedFuture
@@ -81,7 +81,7 @@ public func future<T>(ec: ExecutionContext = GCDAsyncExecutionContext(), f: () -
     -> Future<T> {
     let returnedFuture: Future<T> = Future<T>()
     ec.execute {
-        returnedFuture.complete(Result(f()))
+        returnedFuture.complete(Try(f()))
     }
     return returnedFuture
 }
@@ -108,7 +108,7 @@ public func future<T>(
 -> Future<T> {
     let returnedFuture = Future<T>()
     ec.execute() {
-        returnedFuture.complete(Result(f()))
+        returnedFuture.complete(Try(f()))
     }
     return returnedFuture
 }

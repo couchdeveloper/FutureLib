@@ -50,11 +50,11 @@ extension FutureType {
         -> Future<ValueType> {
         let returnedFuture = Future<ValueType>()
         let cid = cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
-            returnedFuture.complete(Result<ValueType>(error: CancellationError.Cancelled))
+            returnedFuture.complete(Try<ValueType>(error: CancellationError.Cancelled))
         }
         // Perhaps, we should capture returnedFuture weakly?!
         let timer = Timer(delay: delay, tolerance: 0, cancellationToken: cancellationToken) { _ in
-            returnedFuture.complete(Result<ValueType>(error: error))
+            returnedFuture.complete(Try<ValueType>(error: error))
             cancellationToken.unregister(cid)
         }
         timer.resume()
@@ -78,11 +78,11 @@ extension FutureType {
         -> Future<ValueType> {
         let returnedFuture = Future<ValueType>()
         let cid = cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
-            returnedFuture.complete(Result<ValueType>(error: CancellationError.Cancelled))
+            returnedFuture.complete(Try<ValueType>(error: CancellationError.Cancelled))
         }
         // Perhaps, we should capture returnedFuture weakly?!
         let timer = Timer(delay: delay, tolerance: 0, cancellationToken: cancellationToken) { _ in
-            returnedFuture.complete(Result<ValueType>(value))
+            returnedFuture.complete(Try<ValueType>(value))
             cancellationToken.unregister(cid)
         }
         timer.resume()

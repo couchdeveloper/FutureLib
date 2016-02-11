@@ -1,5 +1,5 @@
 //
-//  Result.swift
+//  Try.swift
 //  FutureLib
 //
 //  Copyright © 2015 Andreas Grosam. All rights reserved.
@@ -8,10 +8,10 @@
 
 
 /**
- The generic type `Result` represents the result of a computation which
+ The generic type `Try` represents the result of a computation which
  either yields a value of type `T` or an error of type `NSError`.
  */
-public enum Result<T> {
+public enum Try<T> {
 
     public typealias ValueType = T
 
@@ -37,7 +37,7 @@ public enum Result<T> {
     }
 
     /**
-     Creates and initializes a Result with the return value of the given
+     Creates and initializes a `Try` with the return value of the given
      closure. When the closure fails and throws and error, the result will be
      initialized with the error thrown from the closure.
 
@@ -73,34 +73,34 @@ public enum Result<T> {
      value of `Failure`.
 
      - parameter f: The maping function.
-     - returns: A Result<U>.
+     - returns: A Try<U>.
      */
     @warn_unused_result
-    public func map<U>(@noescape f: T throws -> U) -> Result<U> {
+    public func map<U>(@noescape f: T throws -> U) -> Try<U> {
         switch self {
         case .Success(let value):
-            return Result<U>({ try f(value) })
+            return Try<U>({ try f(value) })
         case .Failure(let error):
-            return Result<U>(error: error)
+            return Try<U>(error: error)
         }
     }
 
 
     /**
      If `self` is `Success` returns the mapping function `f` applied to the
-     value of `Success`. Otherwise, returns a new Result with the value of
+     value of `Success`. Otherwise, returns a new `Try` with the value of
      `Failure`.
 
      - parameter f: The maping function.
-     - returns: A Result<U>.
+     - returns: A `Try<U>`.
      */
     @warn_unused_result
-    public func flatMap<U>(@noescape f: T -> Result<U>) -> Result<U> {
+    public func flatMap<U>(@noescape f: T -> Try<U>) -> Try<U> {
         switch self {
         case .Success(let value):
             return f(value)
         case .Failure(let error):
-            return Result<U>(error: error)
+            return Try<U>(error: error)
         }
     }
 
@@ -112,7 +112,7 @@ public enum Result<T> {
      - returns: `self`'s success value.
      - throws: `self`'s error value.
      */
-    public func value() throws -> T {
+    public func get() throws -> T {
         switch self {
             case .Success(let value): return value
             case .Failure(let error):
@@ -129,7 +129,7 @@ public enum Result<T> {
 /**
  Implements the CustomStringConvertible and CustomDebugStringConvertible protocol.
  */
-extension Result : CustomStringConvertible, CustomDebugStringConvertible {
+extension Try : CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         switch self {
             case .Success(let s): return "Success with \(s)"

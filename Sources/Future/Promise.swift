@@ -107,9 +107,9 @@ public class Promise<T> {
     deinit {
         if let future = _weakFuture {
             if future.sync().isSynchronized() {
-                future._tryComplete(Result(error: PromiseError.BrokenPromise))
+                future._tryComplete(Try(error: PromiseError.BrokenPromise))
             } else {
-                future.tryComplete(Result(error: PromiseError.BrokenPromise))
+                future.tryComplete(Try(error: PromiseError.BrokenPromise))
             }
         }
     }
@@ -168,7 +168,7 @@ public class Promise<T> {
      */
     public final func fulfill(value: T) {
         if let future = _weakFuture {
-            future.complete(Result(value))
+            future.complete(Try(value))
         }
     }
 
@@ -183,7 +183,7 @@ public class Promise<T> {
     */
     public final func reject(error: ErrorType) {
         if let future = _weakFuture {
-            future.complete(Result(error: error))
+            future.complete(Try(error: error))
         }
     }
 
@@ -196,7 +196,7 @@ public class Promise<T> {
 
      - parameter result: The result which the promise will be bound to.
      */
-    public final func resolve(result: Result<T>) {
+    public final func resolve(result: Try<T>) {
         if let future = _weakFuture {
             future.complete(result)
         }

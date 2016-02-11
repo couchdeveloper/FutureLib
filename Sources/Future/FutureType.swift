@@ -52,7 +52,7 @@ and by the common requirements for a future.
 The type `ValueType` will be provided by the call-site and does not need to adhere
 to particular constraints. The type `ResultType` is the internal representation
 of the value of a future. Usually, it is some instance of an `Either` type. In
-FutureLib this will be implemented by the generic enum `Result<T>` where `T` is
+FutureLib this will be implemented by the generic enum `Try<T>` where `T` is
 `ValueType`. In order to define the required functions in the `FutureType` protocol
 extension we require the _concrete_ type of `ResultType` (later this may be
 changed that it requires a type contraint - e.g. a protocol - only).
@@ -71,7 +71,7 @@ public protocol FutureType: FutureBaseType {
     /**
      If `self` is completed returns its result, otherwise it returns `nil`.
 
-     - returns: An optional Result
+     - returns: An optional `Try`
      */
     var result: ResultType? { get }
 
@@ -173,7 +173,7 @@ internal extension CompletableFutureType {
  Implements the bulk of operations defining a Future in terms of `ResultType`,
  `ValueType` and the protocols defined above.
  */
-public extension FutureType where ResultType == Result<ValueType> {
+public extension FutureType where ResultType == Try<ValueType> {
 
     /**
      - returns `true` if `self` has been completed, otherwise `false`.
@@ -208,8 +208,8 @@ public extension FutureType where ResultType == Result<ValueType> {
      - returns:  the success value of its result.
      - throws:   the error value of its result.
      */
-    public final func value() throws -> ValueType {
-        return try value(CancellationTokenNone())
+    public final func get() throws -> ValueType {
+        return try get(CancellationTokenNone())
     }
 
 
@@ -228,9 +228,7 @@ public extension FutureType where ResultType == Result<ValueType> {
      - returns:  the success value of its result.
      - throws:   the error value of its result or a `CancellationError.Cancelled` error.
      */
-    public final func value(
-        ct: CancellationTokenType)
-        throws -> ValueType {
+    public final func get(ct: CancellationTokenType) throws -> ValueType {
         while !ct.isCancellationRequested {
             if let r = self.result {
                 switch r {
@@ -319,7 +317,7 @@ public extension FutureType where ResultType == Result<ValueType> {
         ct: CancellationTokenType = CancellationTokenNone(),
         f: ValueType throws -> U)
         -> Future<U> {
-        typealias RU = Result<U>
+        typealias RU = Try<U>
         // Caution: the mapping function must be called even when the returned
         // future has been deinitialized prematurely!
         let returnedFuture = Future<U>()

@@ -12,7 +12,7 @@ import Dispatch
 
 public func promiseWithTimeout(timeout: Double) -> Promise<Void> {
     let promise = Promise<Void>.resolveAfter(timeout,
-        result: Result<Void>(error: PromiseError.Timeout))
+        result: Try<Void>(error: PromiseError.Timeout))
     return promise
 }
 
@@ -39,7 +39,7 @@ extension Promise {
         f: () throws -> T) -> Future<T> {
         let promise = Promise<T>()
         ec.execute() {
-            promise.resolve(Result<T>(f))
+            promise.resolve(Try<T>(f))
         }
         return promise.future!
     }
@@ -53,7 +53,7 @@ extension Promise {
      - parameter result: The result with which the promise will be resolved.
      - returns: A new promise.
      */
-    public static func resolveAfter(delay: Double, result: Result<T>) -> Promise {
+    public static func resolveAfter(delay: Double, result: Try<T>) -> Promise {
         let promise = Promise<T>()
         let cr = CancellationRequest()
         let timer = Timer(delay: delay, tolerance: 0, cancellationToken: cr.token) { timer in
@@ -83,7 +83,7 @@ extension Promise {
         let promise = Promise<T>()
         let cr = CancellationRequest()
         let timer = Timer(delay: delay, tolerance: 0, cancellationToken: cr.token) { _ in
-            promise.resolve(Result(f))
+            promise.resolve(Try(f))
         }
         timer.resume()
         promise.onRevocation {

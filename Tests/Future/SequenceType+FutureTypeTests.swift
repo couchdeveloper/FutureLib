@@ -297,9 +297,9 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             task(0.03) { "C"},
             task(0.05) { "D"}
         ]
-        typealias ResultT = Result<String>
+        typealias ResultT = Try<String>
         futures.results().map { results in
-            return try results.map { try $0.value() }
+            return try results.map { try $0.get() }
         }.onSuccess { values in
             XCTAssertEqual(["A", "B", "C", "D"], values)
             expect1.fulfill()

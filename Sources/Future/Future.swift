@@ -30,7 +30,7 @@ internal extension Future {
  The generic class `Future`.
 
  A _future_ represents the _eventual result_ of an asynchronous task. In FutureLib
- a _result_ is commonly represented by the generic class `Result<T>`, which can
+ a _result_ is commonly represented by the generic class `Try<T>`, which can
  hold either a value of type `T` or an error conforming to protocol `ErrorType`.
 
  Initially, the future does not have a result at all, that means the future is in
@@ -48,10 +48,10 @@ internal extension Future {
 public class Future<T> : FutureType {
 
     public typealias ValueType = T
-    public typealias ResultType = Result<ValueType>
-    private typealias ClosureRegistryType = ClosureRegistry<Result<ValueType>>
+    public typealias ResultType = Try<ValueType>
+    private typealias ClosureRegistryType = ClosureRegistry<Try<ValueType>>
 
-    private var _result: Result<ValueType>?
+    private var _result: Try<ValueType>?
     private var _cr = ClosureRegistryType.Empty
 
 
@@ -66,7 +66,7 @@ public class Future<T> : FutureType {
      - parameter value: The value which is bound to the completed `self`.
      */
     internal init(value: T) {
-        _result = Result<ValueType>(value)
+        _result = Try<ValueType>(value)
     }
 
     /**
@@ -74,7 +74,7 @@ public class Future<T> : FutureType {
      - parameter error: The error which is bound to the completed `self`.
     */
     internal init(error: ErrorType) {
-        _result = Result<ValueType>(error: error)
+        _result = Try<ValueType>(error: error)
     }
 
     // deinit { }
@@ -91,10 +91,10 @@ public class Future<T> : FutureType {
     /**
      If `self` is completed returns its result, otherwise it returns `nil`.
 
-     - returns: an optional Result<T>
+     - returns: an optional Try<T>
      */
-    public final var result: Result<ValueType>? {
-        var result: Result<ValueType>? = nil
+    public final var result: Try<ValueType>? {
+        var result: Try<ValueType>? = nil
         _sync.readSync() {
             result = self._result
         }
@@ -126,10 +126,10 @@ public class Future<T> : FutureType {
     public final func onComplete<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: Result<ValueType> -> U) {
+        f: Try<ValueType> -> U) {
         if ct.isCancellationRequested {
             ec.execute {
-                _ = f(Result<ValueType>(error: CancellationError.Cancelled))
+                _ = f(Try<ValueType>(error: CancellationError.Cancelled))
             }
             return
         }
@@ -157,7 +157,7 @@ public class Future<T> : FutureType {
                     let callback = self._cr.unregister(id)
                     assert(callback != nil)
                     ec.execute {
-                        callback!.continuation(Result<ValueType>(error: CancellationError.Cancelled))
+                        callback!.continuation(Try<ValueType>(error: CancellationError.Cancelled))
                     }
                 }
             }
@@ -358,7 +358,7 @@ public extension Future {
                     ec.execute {
                         // Note: the error argument will be ignored in the
                         // registered function.
-                        callback!.continuation(Result<ValueType>(error: CancellationError.Cancelled))
+                        callback!.continuation(Try<ValueType>(error: CancellationError.Cancelled))
                     }
                 }
             }
@@ -375,7 +375,7 @@ public extension Future {
         // future has been deinitialized prematurely!
         let returnedFuture = Future<U>()
         _continueWith(on: ec, cancellationToken: ct) { [weak returnedFuture] (future) in
-            let result = Result<U>({try f(future)})
+            let result = Try<U>({try f(future)})
             returnedFuture?.complete(result)
         }
         return returnedFuture

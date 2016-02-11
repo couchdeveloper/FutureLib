@@ -1,6 +1,5 @@
 //
-//  ResultTests.swift
-//  Future
+//  TryTests.swift
 //
 //  Copyright © 2015 Andreas Grosam. All rights reserved.
 //
@@ -9,7 +8,7 @@ import XCTest
 import FutureLib
 
 
-class ResultTests: XCTestCase {
+class TryTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
@@ -22,10 +21,10 @@ class ResultTests: XCTestCase {
     }
 
 
-    // MARK: Create a Result
+    // MARK: Create a Try
 
     func testResultVoidDefaultCtorYieldsSucceeded() {
-        let result = Result()
+        let result = Try()
         XCTAssertTrue(result.isSuccess)
         XCTAssertFalse(result.isFailure)
     }
@@ -33,7 +32,7 @@ class ResultTests: XCTestCase {
 
 
     func testCreateResultWithSuccess() {
-        let r1 = Result("OK")
+        let r1 = Try("OK")
         switch r1 {
         case .Success (let value):
             XCTAssertEqual("OK", value)
@@ -43,7 +42,7 @@ class ResultTests: XCTestCase {
         XCTAssertTrue(r1.isSuccess)
         XCTAssertFalse(r1.isFailure)
 
-        let r2 = Result(2)
+        let r2 = Try(2)
         switch r2 {
         case .Success (let value):
             XCTAssertEqual(2, value)
@@ -56,7 +55,7 @@ class ResultTests: XCTestCase {
 
 
     func testCreateResultWithFailure() {
-        let r1 = Result<Int>(error: TestError.Failed)
+        let r1 = Try<Int>(error: TestError.Failed)
         switch r1 {
         case .Success:
             XCTFail("unexpected success")
@@ -71,7 +70,7 @@ class ResultTests: XCTestCase {
 
     func testCreateResultWithThrowingFunction() {
         let f: () throws -> Int = { return 0 }
-        let r1 = Result<Int>(f)
+        let r1 = Try<Int>(f)
         switch r1 {
         case .Success (let value):
             XCTAssertEqual(0, value)
@@ -82,7 +81,7 @@ class ResultTests: XCTestCase {
 
     func testCreateResultWithThrowingFunctionWhichThrows() {
         let f: () throws -> Int = { throw TestError.Failed }
-        let r1 = Result<Int>(f)
+        let r1 = Try<Int>(f)
         switch r1 {
         case .Success:
             XCTFail("unexpected success")
@@ -94,7 +93,7 @@ class ResultTests: XCTestCase {
 
 
     func testResultWithNSError() {
-        let r = Result<Int>(error: NSError(domain: "Test", code: -1, userInfo: nil))
+        let r = Try<Int>(error: NSError(domain: "Test", code: -1, userInfo: nil))
 
         switch r {
         case .Success:
@@ -112,10 +111,10 @@ class ResultTests: XCTestCase {
 
 
 
-    // MARK: method map(f:) -> Result<U>
+    // MARK: method map(f:) -> Try<U>
 
     func testSuccessfulResultMapsToNewResult() {
-         let r = Result<Int>(3).map { value -> String in
+         let r = Try<Int>(3).map { value -> String in
             XCTAssertEqual(3, value)
             return "OK"
         }
@@ -128,7 +127,7 @@ class ResultTests: XCTestCase {
     }
 
     func testFailedResultMapsToSameResult() {
-        let r0 = Result<Int>({ throw TestError.Failed })
+        let r0 = Try<Int>({ throw TestError.Failed })
         let r = r0.map { value -> String in
             XCTAssertEqual(3, value)
             return "OK"
@@ -143,7 +142,7 @@ class ResultTests: XCTestCase {
 
 
     func testSuccessfulResultWithTrowingMappingFunctionMapsToNewResult() {
-        let r = Result<Int>(3).map { value -> String in
+        let r = Try<Int>(3).map { value -> String in
             XCTAssertEqual(3, value)
             throw TestError.Failed
         }
@@ -156,12 +155,12 @@ class ResultTests: XCTestCase {
     }
 
 
-    // MARK: method flatMap(f:) -> Result<U>
+    // MARK: method flatMap(f:) -> Try<U>
 
     func testSuccessfulResultFlatMapsToNewResult() {
-        let r = Result<Int>(3).flatMap { value -> Result<String> in
+        let r = Try<Int>(3).flatMap { value -> Try<String> in
             XCTAssertEqual(3, value)
-            return Result("OK")
+            return Try("OK")
         }
         switch r {
         case .Success (let value):
@@ -172,10 +171,10 @@ class ResultTests: XCTestCase {
     }
 
     func testFailedResultFlatMapsToSameResult() {
-        let r0 = Result<Int>({ throw TestError.Failed })
-        let r = r0.flatMap { value -> Result<String> in
+        let r0 = Try<Int>({ throw TestError.Failed })
+        let r = r0.flatMap { value -> Try<String> in
             XCTAssertEqual(3, value)
-            return Result("OK")
+            return Try("OK")
         }
         switch r {
         case .Success:
@@ -187,14 +186,14 @@ class ResultTests: XCTestCase {
 
 
 
-    // MARK: value()
+    // MARK: get()
 
 
 
     func testValueForSuccessfulResultReturnsSuccessValue() {
-        let r = Result<Int>(3)
+        let r = Try<Int>(3)
         do {
-            let value = try r.value()
+            let value = try r.get()
             XCTAssertEqual(3, value)
         }
         catch {
@@ -203,9 +202,9 @@ class ResultTests: XCTestCase {
     }
 
     func testValueForFailedResultReturnsErrorValue() {
-        let r = Result<Int>({ throw TestError.Failed })
+        let r = Try<Int>({ throw TestError.Failed })
         do {
-            _ = try r.value()
+            _ = try r.get()
             XCTFail("unexpected success")
         }
         catch let error {
@@ -215,8 +214,8 @@ class ResultTests: XCTestCase {
 
 
 //    func testEqualityOperator() {
-//        let r1 = Result<Int>(3)
-//        let r2 = Result<Int>(3)
+//        let r1 = Try<Int>(3)
+//        let r2 = Try<Int>(3)
 //        XCTAssertTrue(r1 == r2)
 //    }
 

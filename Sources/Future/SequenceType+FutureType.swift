@@ -7,11 +7,6 @@
 
 import Dispatch
 
-
-
-
-
-
 extension SequenceType {
 
     /**
@@ -66,12 +61,12 @@ extension SequenceType {
 
 
 // Note: specialize SequenceType whose Generator.Element is FutureType and where
-// FutureType.ResultType is Result<Generator.Element.ValueType>
+// FutureType.ResultType is Try<Generator.Element.ValueType>
 // This "imports" specializations defined in protocol extension FutureType where
-// ResultType == Result<ValueType>
+// ResultType == Try<ValueType>
 extension SequenceType
     where Generator.Element: FutureType,
-    Generator.Element.ResultType == Result<Generator.Element.ValueType> {
+    Generator.Element.ResultType == Try<Generator.Element.ValueType> {
 
     /**
      For a sequence of futures `Future<T>` returns a new future `Future<U>`
@@ -151,7 +146,7 @@ extension SequenceType
 
     /**
      Given a sequence of `Future<T>`s, the method `result` returns a new future
-     which is completed with an array of `Result<T>`, where each element in the
+     which is completed with an array of `Try<T>`, where each element in the
      array corresponds to the result of the future in `self` in the same order.
 
      - parameter ct: A cancellation token.

@@ -15,19 +15,19 @@
 		A10E9DA91C3BBC3C00CD5B07 /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A103371B1C3AD2B80014C866 /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A10E9DAA1C3BBC4800CD5B07 /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A103371B1C3AD2B80014C866 /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A10E9DAB1C3BBC5300CD5B07 /* FutureLib.h in Headers */ = {isa = PBXBuildFile; fileRef = A103371B1C3AD2B80014C866 /* FutureLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A10E9DAC1C3BBD0C00CD5B07 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Result.swift */; };
+		A10E9DAC1C3BBD0C00CD5B07 /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Try.swift */; };
 		A10E9DAD1C3BBD0C00CD5B07 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337A41C3AD57E0014C866 /* AggregateError.swift */; };
 		A10E9DAE1C3BBD0C00CD5B07 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371E1C3AD2B80014C866 /* TaskQueue.swift */; };
 		A10E9DAF1C3BBD0C00CD5B07 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371F1C3AD2B80014C866 /* Timer.swift */; };
-		A10E9DB01C3BBD0D00CD5B07 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Result.swift */; };
+		A10E9DB01C3BBD0D00CD5B07 /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Try.swift */; };
 		A10E9DB11C3BBD0D00CD5B07 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337A41C3AD57E0014C866 /* AggregateError.swift */; };
 		A10E9DB21C3BBD0D00CD5B07 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371E1C3AD2B80014C866 /* TaskQueue.swift */; };
 		A10E9DB31C3BBD0D00CD5B07 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371F1C3AD2B80014C866 /* Timer.swift */; };
-		A10E9DB41C3BBD0D00CD5B07 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Result.swift */; };
+		A10E9DB41C3BBD0D00CD5B07 /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Try.swift */; };
 		A10E9DB51C3BBD0D00CD5B07 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337A41C3AD57E0014C866 /* AggregateError.swift */; };
 		A10E9DB61C3BBD0D00CD5B07 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371E1C3AD2B80014C866 /* TaskQueue.swift */; };
 		A10E9DB71C3BBD0D00CD5B07 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371F1C3AD2B80014C866 /* Timer.swift */; };
-		A10E9DB81C3BBD0E00CD5B07 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Result.swift */; };
+		A10E9DB81C3BBD0E00CD5B07 /* Try.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371D1C3AD2B80014C866 /* Try.swift */; };
 		A10E9DB91C3BBD0E00CD5B07 /* AggregateError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10337A41C3AD57E0014C866 /* AggregateError.swift */; };
 		A10E9DBA1C3BBD0E00CD5B07 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371E1C3AD2B80014C866 /* TaskQueue.swift */; };
 		A10E9DBB1C3BBD0E00CD5B07 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A103371F1C3AD2B80014C866 /* Timer.swift */; };
@@ -138,9 +138,9 @@
 		A10E9E241C3BBD3600CD5B07 /* TaskQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9401C15EAFC0019060A /* TaskQueueTests.swift */; };
 		A10E9E251C3BBD3800CD5B07 /* TaskQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9401C15EAFC0019060A /* TaskQueueTests.swift */; };
 		A10E9E261C3BBD3C00CD5B07 /* TaskQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9401C15EAFC0019060A /* TaskQueueTests.swift */; };
-		A10E9E271C3BBD4200CD5B07 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93B1C15EAFC0019060A /* ResultTests.swift */; };
-		A10E9E281C3BBD4300CD5B07 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93B1C15EAFC0019060A /* ResultTests.swift */; };
-		A10E9E291C3BBD4500CD5B07 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93B1C15EAFC0019060A /* ResultTests.swift */; };
+		A10E9E271C3BBD4200CD5B07 /* TryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93B1C15EAFC0019060A /* TryTests.swift */; };
+		A10E9E281C3BBD4300CD5B07 /* TryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93B1C15EAFC0019060A /* TryTests.swift */; };
+		A10E9E291C3BBD4500CD5B07 /* TryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93B1C15EAFC0019060A /* TryTests.swift */; };
 		A10E9E2A1C3BBD4A00CD5B07 /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9391C15EAFC0019060A /* PromiseTests.swift */; };
 		A10E9E2B1C3BBD4C00CD5B07 /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9391C15EAFC0019060A /* PromiseTests.swift */; };
 		A10E9E2C1C3BBD4D00CD5B07 /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9391C15EAFC0019060A /* PromiseTests.swift */; };
@@ -275,7 +275,7 @@
 		A103371A1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TaskQueue+ExecutionContext.swift"; sourceTree = "<group>"; };
 		A103371B1C3AD2B80014C866 /* FutureLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FutureLib.h; sourceTree = "<group>"; };
 		A103371C1C3AD2B80014C866 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A103371D1C3AD2B80014C866 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		A103371D1C3AD2B80014C866 /* Try.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Try.swift; sourceTree = "<group>"; };
 		A103371E1C3AD2B80014C866 /* TaskQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskQueue.swift; sourceTree = "<group>"; };
 		A103371F1C3AD2B80014C866 /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		A10337A41C3AD57E0014C866 /* AggregateError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AggregateError.swift; sourceTree = "<group>"; };
@@ -300,7 +300,7 @@
 		A10CB9351C15EAFC0019060A /* FutureLibTests-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FutureLibTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		A10CB9371C15EAFC0019060A /* LoggerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggerTests.swift; sourceTree = "<group>"; };
 		A10CB9391C15EAFC0019060A /* PromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseTests.swift; sourceTree = "<group>"; };
-		A10CB93B1C15EAFC0019060A /* ResultTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultTests.swift; sourceTree = "<group>"; };
+		A10CB93B1C15EAFC0019060A /* TryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TryTests.swift; sourceTree = "<group>"; };
 		A10CB93C1C15EAFC0019060A /* schedule_after.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = schedule_after.swift; sourceTree = "<group>"; };
 		A10CB9401C15EAFC0019060A /* TaskQueueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskQueueTests.swift; sourceTree = "<group>"; };
 		A10CB9411C15EAFC0019060A /* TestError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestError.swift; sourceTree = "<group>"; };
@@ -403,7 +403,7 @@
 				A10336FD1C3AD2B80014C866 /* Cancellation */,
 				A10337081C3AD2B80014C866 /* ExecutionContext */,
 				A103370B1C3AD2B80014C866 /* Future */,
-				A103371D1C3AD2B80014C866 /* Result.swift */,
+				A103371D1C3AD2B80014C866 /* Try.swift */,
 				A10337A41C3AD57E0014C866 /* AggregateError.swift */,
 				A103371E1C3AD2B80014C866 /* TaskQueue.swift */,
 				A103371F1C3AD2B80014C866 /* Timer.swift */,
@@ -530,12 +530,12 @@
 			path = Promise;
 			sourceTree = "<group>";
 		};
-		A10CB93A1C15EAFC0019060A /* Result */ = {
+		A10CB93A1C15EAFC0019060A /* Try */ = {
 			isa = PBXGroup;
 			children = (
-				A10CB93B1C15EAFC0019060A /* ResultTests.swift */,
+				A10CB93B1C15EAFC0019060A /* TryTests.swift */,
 			);
-			path = Result;
+			path = Try;
 			sourceTree = "<group>";
 		};
 		A10CB93F1C15EAFC0019060A /* TaskQueue */ = {
@@ -626,7 +626,7 @@
 				A10CB9241C15EAFC0019060A /* Future */,
 				A10CB9361C15EAFC0019060A /* Logger */,
 				A10CB9381C15EAFC0019060A /* Promise */,
-				A10CB93A1C15EAFC0019060A /* Result */,
+				A10CB93A1C15EAFC0019060A /* Try */,
 				A10CB93F1C15EAFC0019060A /* TaskQueue */,
 				A18EB58A1B7BDA6200B74714 /* Frameworks */,
 			);
@@ -983,7 +983,7 @@
 				A10E9DFE1C3BBD2300CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DC61C3BBD1400CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DAE1C3BBD0C00CD5B07 /* TaskQueue.swift in Sources */,
-				A10E9DAC1C3BBD0C00CD5B07 /* Result.swift in Sources */,
+				A10E9DAC1C3BBD0C00CD5B07 /* Try.swift in Sources */,
 				A10E9E041C3BBD2300CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DAF1C3BBD0C00CD5B07 /* Timer.swift in Sources */,
 				A10E9E011C3BBD2300CD5B07 /* CancellationSequenceTypeExtension.swift in Sources */,
@@ -1008,7 +1008,7 @@
 				A10E9E321C3BBD5D00CD5B07 /* FutureBaseContinueWithTests.swift in Sources */,
 				A10E9E6D1C3BBD9100CD5B07 /* schedule_after.swift in Sources */,
 				A10E9E6E1C3BBD9100CD5B07 /* TestError.swift in Sources */,
-				A10E9E271C3BBD4200CD5B07 /* ResultTests.swift in Sources */,
+				A10E9E271C3BBD4200CD5B07 /* TryTests.swift in Sources */,
 				A10E9E3A1C3BBD5D00CD5B07 /* FutureTests.swift in Sources */,
 				A10E9E341C3BBD5D00CD5B07 /* FutureBasicContinuationsTests.swift in Sources */,
 				A10E9E241C3BBD3600CD5B07 /* TaskQueueTests.swift in Sources */,
@@ -1055,7 +1055,7 @@
 				A10E9E081C3BBD2300CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DD41C3BBD1500CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DB21C3BBD0D00CD5B07 /* TaskQueue.swift in Sources */,
-				A10E9DB01C3BBD0D00CD5B07 /* Result.swift in Sources */,
+				A10E9DB01C3BBD0D00CD5B07 /* Try.swift in Sources */,
 				A10E9E0E1C3BBD2300CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DB31C3BBD0D00CD5B07 /* Timer.swift in Sources */,
 				A10E9E0B1C3BBD2300CD5B07 /* CancellationSequenceTypeExtension.swift in Sources */,
@@ -1080,7 +1080,7 @@
 				A10E9E401C3BBD5E00CD5B07 /* FutureBaseContinueWithTests.swift in Sources */,
 				A10E9E701C3BBD9300CD5B07 /* schedule_after.swift in Sources */,
 				A10E9E711C3BBD9300CD5B07 /* TestError.swift in Sources */,
-				A10E9E281C3BBD4300CD5B07 /* ResultTests.swift in Sources */,
+				A10E9E281C3BBD4300CD5B07 /* TryTests.swift in Sources */,
 				A10E9E481C3BBD5E00CD5B07 /* FutureTests.swift in Sources */,
 				A10E9E421C3BBD5E00CD5B07 /* FutureBasicContinuationsTests.swift in Sources */,
 				A10E9E251C3BBD3800CD5B07 /* TaskQueueTests.swift in Sources */,
@@ -1127,7 +1127,7 @@
 				A10E9E121C3BBD2400CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DE21C3BBD1500CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DB61C3BBD0D00CD5B07 /* TaskQueue.swift in Sources */,
-				A10E9DB41C3BBD0D00CD5B07 /* Result.swift in Sources */,
+				A10E9DB41C3BBD0D00CD5B07 /* Try.swift in Sources */,
 				A10E9E181C3BBD2400CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DB71C3BBD0D00CD5B07 /* Timer.swift in Sources */,
 				A10E9E151C3BBD2400CD5B07 /* CancellationSequenceTypeExtension.swift in Sources */,
@@ -1164,7 +1164,7 @@
 				A10E9E1C1C3BBD2500CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DF01C3BBD1600CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DBA1C3BBD0E00CD5B07 /* TaskQueue.swift in Sources */,
-				A10E9DB81C3BBD0E00CD5B07 /* Result.swift in Sources */,
+				A10E9DB81C3BBD0E00CD5B07 /* Try.swift in Sources */,
 				A10E9E221C3BBD2500CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DBB1C3BBD0E00CD5B07 /* Timer.swift in Sources */,
 				A10E9E1F1C3BBD2500CD5B07 /* CancellationSequenceTypeExtension.swift in Sources */,
@@ -1189,7 +1189,7 @@
 				A10E9E4E1C3BBD6000CD5B07 /* FutureBaseContinueWithTests.swift in Sources */,
 				A10E9E731C3BBD9500CD5B07 /* schedule_after.swift in Sources */,
 				A10E9E741C3BBD9500CD5B07 /* TestError.swift in Sources */,
-				A10E9E291C3BBD4500CD5B07 /* ResultTests.swift in Sources */,
+				A10E9E291C3BBD4500CD5B07 /* TryTests.swift in Sources */,
 				A10E9E561C3BBD6000CD5B07 /* FutureTests.swift in Sources */,
 				A10E9E501C3BBD6000CD5B07 /* FutureBasicContinuationsTests.swift in Sources */,
 				A10E9E261C3BBD3C00CD5B07 /* TaskQueueTests.swift in Sources */,

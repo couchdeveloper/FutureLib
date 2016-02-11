@@ -9,7 +9,7 @@
 
 // MARK: then
 
-extension FutureType where ResultType == Result<ValueType> {
+extension FutureType where ResultType == Try<ValueType> {
 
 
     /**

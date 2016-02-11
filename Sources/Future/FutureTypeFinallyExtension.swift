@@ -29,7 +29,7 @@ extension FutureType {
             // Caution: the mapping function must be called even when the returned
             // future has been deinitialized prematurely!
             let v = f(result)
-            returnedFuture?.complete(Result(v))
+            returnedFuture?.complete(Try(v))
         }
         return returnedFuture
     }
@@ -47,9 +47,9 @@ extension FutureType {
             // future has been deinitialized prematurely!
             do {
                 let v = try f(result)
-                returnedFuture?.complete(Result<U>(v))
+                returnedFuture?.complete(Try<U>(v))
             } catch let error {
-                returnedFuture?.complete(Result<U>(error: error))
+                returnedFuture?.complete(Try<U>(error: error))
             }
         }
         return returnedFuture

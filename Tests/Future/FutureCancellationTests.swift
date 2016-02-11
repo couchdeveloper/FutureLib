@@ -219,7 +219,7 @@ class FutureCancellationTests: XCTestCase {
 
         future.onComplete { result in
             do {
-                _ = try result.value()
+                _ = try result.get()
                 XCTFail("unexpected")
             }
             catch PromiseError.BrokenPromise {

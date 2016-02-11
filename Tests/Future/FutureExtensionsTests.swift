@@ -32,7 +32,7 @@ class FutureExtensionsTests: XCTestCase {
         if let r = future.result {
             XCTAssertTrue(r.isFailure)
             do {
-                let v = try r.value()
+                let v = try r.get()
                 print("\(v)")
             }
             catch TestError.Failed {
@@ -55,7 +55,7 @@ class FutureExtensionsTests: XCTestCase {
         if let r = future.result {
             XCTAssertTrue(r.isSuccess)
             do {
-                let v = try r.value()
+                let v = try r.get()
                 XCTAssertEqual(1, v)
             }
             catch {
@@ -74,7 +74,7 @@ class FutureExtensionsTests: XCTestCase {
         if let r = future.result {
             XCTAssertTrue(r.isSuccess)
             do {
-                let v = try r.value()
+                let v = try r.get()
                 XCTAssertEqual(a, v)
             }
             catch {
@@ -93,7 +93,7 @@ class FutureExtensionsTests: XCTestCase {
             if let r = future.result {
                 XCTAssertTrue(r.isFailure)
                 do {
-                    let v = try r.value()
+                    let v = try r.get()
                     print("\(v)")
                 }
                 catch TestError.Failed {
@@ -117,7 +117,7 @@ class FutureExtensionsTests: XCTestCase {
             if let r = future.result {
                 XCTAssertTrue(r.isSuccess)
                 do {
-                    let v = try r.value()
+                    let v = try r.get()
                     XCTAssertEqual(1, v)
                 }
                 catch {
@@ -140,7 +140,7 @@ class FutureExtensionsTests: XCTestCase {
             if let r = future.result {
                 XCTAssertTrue(r.isFailure)
                 do {
-                    let _ = try r.value()
+                    let _ = try r.get()
                     XCTFail("unexpected success")
                 }
                 catch CancellationError.Cancelled {
@@ -166,7 +166,7 @@ class FutureExtensionsTests: XCTestCase {
             if let r = future.result {
                 XCTAssertTrue(r.isFailure)
                 do {
-                    let _ = try r.value()
+                    let _ = try r.get()
                     XCTFail("unexpected success")
                 }
                 catch CancellationError.Cancelled {

@@ -131,7 +131,7 @@ There are blocking and non-blocking variants to obtain the result of the future.
 
 #### Blocking Access
 
-`func value() throws -> T `
+`func get() throws -> T `
 
 Method `value ` blocks the current thread until the future is completed. If the future has been completed with success it returns the success value of its result, otherwise it throws the error value.
 The use of this method is discouraged however since it blocks the current tread. It might be merely be useful in Unit tests or other testing code.

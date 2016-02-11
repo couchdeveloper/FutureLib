@@ -185,7 +185,7 @@ class FutureBaseContinueWithTests: XCTestCase {
                 XCTAssertTrue(f.isSuccess)
                 XCTAssertNotNil((f as? Future<String>)?.result)
                 let result = (f as! Future<String>).result!
-                let value = try! result.value()
+                let value = try! result.get()
                 XCTAssertEqual("OK", value)
                 expect.fulfill()
             }
