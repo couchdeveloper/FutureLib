@@ -8,6 +8,8 @@
 import Dispatch
 
 extension SequenceType {
+    
+    
 
     /**
      Transforms a Sequence of T's into a `Future<[U]>` using the provided task
@@ -68,6 +70,39 @@ extension SequenceType
     where Generator.Element: FutureType,
     Generator.Element.ResultType == Try<Generator.Element.ValueType> {
 
+    typealias T = Generator.Element.ValueType
+    
+    /** 
+     Returns a `Future` that will be completed with the optional result of the 
+     first `Future` whose result matches the predicate. Failed `Future`s will be 
+     ignored. If no match has been found, returns a future which is completed
+     with `.None`.
+    
+     - parameter pred: The predicate which indicates if it's a match.
+     - returns: A `Future` holding the optional result of the search.
+    */
+    public func find(
+        ec: ExecutionContext = ConcurrentAsync(), 
+        ct: CancellationTokenType = CancellationTokenNone(),
+        pred: T -> Bool) -> Future<T?> 
+    {
+        func searchNext(var gen: Generator) -> Future<T?> {
+            if let elem = gen.next() {
+                return elem.transformWith(ec: ec, ct: ct) { result in 
+                    switch result {
+                    case .Success(let value) where pred(value): return Future<T?>.succeeded(.Some(value)) 
+                    default: return searchNext(gen)
+                    }
+                }
+            } else {
+                return Future.succeeded(.None)
+            }
+        }
+        return searchNext(self.generate())
+    }
+    
+    
+    
     /**
      For a sequence of futures `Future<T>` returns a new future `Future<U>`
      completed with the result of the function `combine` repeatedly applied to

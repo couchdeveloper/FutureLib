@@ -339,7 +339,7 @@ class FutureBasicCombinatorsTests: XCTestCase {
         promise.future!.flatMap { value -> Future<Int> in
             XCTAssertEqual("OK", value)
             expect1.fulfill()
-            return future {1}
+            return Future.succeeded(1)
         }
         .onSuccess { value -> () in
             XCTAssertEqual(1, value)
@@ -355,7 +355,7 @@ class FutureBasicCombinatorsTests: XCTestCase {
         let promise = Promise<String>()
         promise.future!.flatMap { value -> Future<Int> in
             XCTFail("unexpected success")
-            return future {1}
+            return Future.succeeded(1)
         }
         .onFailure { error -> () in
             XCTAssertTrue(TestError.Failed == error)
@@ -374,7 +374,7 @@ class FutureBasicCombinatorsTests: XCTestCase {
         promise.future!.flatMap(ct: cr.token) { value -> Future<Int> in
             XCTAssertEqual("OK", value)
             expect1.fulfill()
-            return future {1}
+            return Future.succeeded(1)
         }
         .onSuccess { value -> () in
             XCTAssertEqual(1, value)
@@ -391,7 +391,7 @@ class FutureBasicCombinatorsTests: XCTestCase {
         let cr = CancellationRequest()
         promise.future!.flatMap(ct: cr.token) { value -> Future<Int> in
             XCTFail("unexpected success")
-            return future {1}
+            return Future.succeeded(1)
         }
         .onFailure { error -> () in
             XCTAssertTrue(TestError.Failed == error)
@@ -410,7 +410,7 @@ class FutureBasicCombinatorsTests: XCTestCase {
         promise.future!.flatMap { value -> Future<Int> in
             XCTAssertEqual("OK", value)
             expect1.fulfill()
-            return future {1}
+            return Future.succeeded(1)
         }
         .onSuccess { value -> () in
             XCTAssertEqual(1, value)
@@ -425,7 +425,7 @@ class FutureBasicCombinatorsTests: XCTestCase {
         let promise = Promise<String>(error: TestError.Failed)
         promise.future!.flatMap { value -> Future<Int> in
             XCTFail("unexpected success")
-            return future {1}
+            return Future.succeeded(1)
         }
         .onFailure { error -> () in
             XCTAssertTrue(TestError.Failed == error)
@@ -443,7 +443,7 @@ class FutureBasicCombinatorsTests: XCTestCase {
         promise.future!.flatMap(ct: cr.token) { value -> Future<Int> in
             XCTAssertEqual("OK", value)
             expect1.fulfill()
-            return future {1}
+            return Future.succeeded(1)
         }
         .onSuccess { value -> () in
             XCTAssertEqual(1, value)
@@ -459,7 +459,7 @@ class FutureBasicCombinatorsTests: XCTestCase {
         let cr = CancellationRequest()
         promise.future!.flatMap(ct: cr.token) { value -> Future<Int> in
             XCTFail("unexpected success")
-            return future {1}
+            return Future.succeeded(1)
         }
         .onFailure { error -> () in
             XCTAssertTrue(TestError.Failed == error)

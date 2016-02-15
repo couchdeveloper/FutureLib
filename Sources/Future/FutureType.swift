@@ -498,7 +498,8 @@ public extension FutureType where ResultType == Try<ValueType> {
         ct: CancellationTokenType = CancellationTokenNone(),
         s: ValueType throws -> U,
         f: ErrorType -> ErrorType)
-        -> Future<U> {
+        -> Future<U> 
+    {
         let returnedFuture = Future<U>()
         onComplete(ec: ec, ct: ct) { [weak returnedFuture] result in
             // Caution: the mapping function must be called even when the returned
@@ -520,6 +521,66 @@ public extension FutureType where ResultType == Try<ValueType> {
     }
 
 
+    /** 
+     Creates a new Future by applying the specified function to the result of `self`. 
+     If 'f' throws an error, the returned future will be completed with the same
+     error.
+     
+     - parameter ec: An asynchronous execution context for function `f`.
+     - parameter ct: A cancellation token.
+     - parameter f: A function that transforms the result of this future
+     - returns: A new `Future` that will be completed with the transformed value.
+    */
+    public func transform<U>(
+        ec ec: ExecutionContext = ConcurrentAsync(), 
+        ct: CancellationTokenType = CancellationTokenNone(),
+        f: Try<ValueType> throws -> Try<U>) -> Future<U> 
+    {
+        let returnedFuture = Future<U>()
+        onComplete(ec: ec, ct: ct) { [weak returnedFuture] result in
+            // Caution: the mapping function must be called even when the returned
+            // future has been deinitialized prematurely!
+            do {
+                let r = try f(result)
+                returnedFuture?.complete(r)
+            } catch {
+                returnedFuture?.complete(error)
+            }
+        }
+        return returnedFuture
+    }
+    
+    /** 
+     Creates a new Future by applying the specified function, which produces a Future, 
+     to the result of this Future. If 'f' throws an error, the returned future will 
+     be completed with the same error.
+
+     - parameter ec: An asynchronous execution context for function `f`.
+     - parameter ct: A cancellation token.
+     - parameter f: A function that transforms the result of this future.
+     - returns: A new `Future` that will be completed with the transformed value.
+    */
+    public func transformWith<U>(
+        ec ec: ExecutionContext = ConcurrentAsync(), 
+        ct: CancellationTokenType = CancellationTokenNone(),
+        f: Try<ValueType> throws -> Future<U>) 
+        -> Future<U> 
+    {
+        let returnedFuture = Future<U>()
+        onComplete(ec: ec, ct: ct) { [weak returnedFuture] result in
+            // Caution: the mapping function must be called even when the returned
+            // future has been deinitialized prematurely!
+            do {
+                let future: Future<U> = try f(result)
+                returnedFuture?.completeWith(future)
+            } catch {
+                returnedFuture?.complete(error)
+            }
+        }
+        return returnedFuture
+    }
+    
+    
     /**
      Returns a new future which is completed with the success value of `self` if
      the function `predicate` applied to the value returns `true`. Otherwise, the
@@ -537,7 +598,8 @@ public extension FutureType where ResultType == Try<ValueType> {
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         predicate: ValueType throws -> Bool)
-        -> Future<ValueType> {
+        -> Future<ValueType>
+    {
         return map(ec: ec, ct: ct) { value in
             if try predicate(value) {
                 return value

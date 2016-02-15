@@ -13,6 +13,30 @@
  requiring a promise object.
  */
 extension FutureType {
+    
+    /**
+     Returns a future which will be completed with the result of function `f`.
+     Function `f` will be asynchronously executed on the given execution context. 
+     
+     If the function `f` throws an error, the returned future will be completed
+     with the same error.
+     
+     - parameter ec: An execution context where the function `f` will be executed.
+     - parameter f: A function with signature `() throws -> T`.
+     - returns: A `Future` whose `ValueType` equals the return type of the function 
+     `f`.
+     */
+    public func apply<T>(ec: ExecutionContext = GCDAsyncExecutionContext(),
+        f: () throws -> T)
+        -> Future<T> 
+    {
+        let returnedFuture: Future<T> = Future<T>()
+        ec.execute() { 
+            returnedFuture.complete(Try(f))
+        }
+        return returnedFuture
+    }
+    
 
     /**
      Creates a future which is completed with `error`.

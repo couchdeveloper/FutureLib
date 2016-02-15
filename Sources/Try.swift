@@ -7,11 +7,32 @@
 
 
 
+public protocol TryType {
+    typealias ValueType
+    
+    init(_ v: ValueType)
+    init(error: ErrorType)
+    init(@noescape _ f: Void throws -> ValueType)
+    var isSuccess: Bool { get }
+    var isFailure: Bool { get }
+    func get() throws -> ValueType
+    func toOption() -> ValueType?
+    
+    //func map<U>(@noescape f: ValueType throws -> U) -> TryType<U>    
+    //func flatMap<U>(@noescape f: ValueType -> TryType<U>) -> TryType<U>
+    //func recoverWith(@noescape f: ErrorType throws -> TryType) -> TryType
+    //func recover(f: ErrorType throws -> ValueType) -> TryType
+}
+
+
+
+
+
 /**
- The generic type `Try` represents the result of a computation which
- either yields a value of type `T` or an error of type `NSError`.
+ The generic type `Try` represents the result of a computation which either 
+ yields a value of type `T` or an error value whose type conforms to `ErrorType`.
  */
-public enum Try<T> {
+public enum Try<T>: TryType {
 
     public typealias ValueType = T
 
@@ -52,6 +73,17 @@ public enum Try<T> {
     }
 
     /**
+     Creates and initializes a `Try` with the return value of the given
+     closure. 
+     
+     - parameter f: A closure whose result will initialize `self`.
+     */
+    public init(@noescape _ f: Void -> T) {
+        self = Success(f())
+    }
+    
+
+    /**
      - returns: `true` if self is a `Success`, other wise `false`.
     */
     public var isSuccess: Bool {
@@ -66,6 +98,22 @@ public enum Try<T> {
         return !isSuccess
     }
 
+    
+    /**
+     If `self` is `Success` returns the value of `Success`. Otherwise throws
+     the value of `Failure`.
+     
+     - returns: `self`'s success value.
+     - throws: `self`'s error value.
+     */
+    public func get() throws -> T {
+        switch self {
+        case .Success(let value): return value
+        case .Failure(let error):
+            throw error
+        }
+    }
+    
     /**
      If `self` is `Success` returns a new result with the throwing mapping function
      `f` applied to the value of `Success`. If `f` throws an error, the new result
@@ -104,25 +152,70 @@ public enum Try<T> {
         }
     }
 
-
+    
     /**
-     If `self` is `Success` returns the value of `Success`. Otherwise throws
-     the value of `Failure`.
-
-     - returns: `self`'s success value.
-     - throws: `self`'s error value.
-     */
-    public func get() throws -> T {
+     Applies the given function `f` if this is a `Failure`, otherwise returns `self`
+     if this is a `Success`.
+     This is like `flatMap` for the exception.
+    */
+    public func recoverWith(@noescape f: ErrorType throws -> Try) -> Try {
         switch self {
-            case .Success(let value): return value
-            case .Failure(let error):
-                throw error
+        case .Success: return self
+        case .Failure(let error): 
+            do {
+                return try f(error)            
+            } catch {
+                return Try(error: error)
+            }
         }
     }
+    
+    /**
+     Applies the given function `f` if this is a `Failure`, otherwise returns `self`
+     if this is a `Success`.
+     This is like map for the exception.
+    */
+    public func recover(@noescape f: ErrorType throws -> T) -> Try {
+        switch self {
+        case .Success: return self
+        case .Failure(let error): 
+            do {
+                return try Try(f(error))
+            } catch {
+                return Try(error: error)
+            }
+        }
+    }
+    
+
+    
+    /**
+    Returns `None` if this is a `Failure` or a `Some` containing the value if `self` 
+    is a `Success`.
+    */
+    public func toOption() -> T?  {
+        switch self {
+        case .Success(let value): return .Some(value)
+        case .Failure: return .None
+        }
+    }
+    
 }
 
 
-
+extension Try where T: TryType {
+    /**
+     Transforms a nested `Try`, ie, a `Try` of type `Try<Try<T>>`,
+     into an un-nested `Try`, ie, a `Try` of type `Try<T>`.
+     */
+    public func flatten() -> T {
+        switch self {
+        case .Success(let value): return value
+        case .Failure(let error): return T(error: error)
+        }
+    }
+    
+}
 
 
 

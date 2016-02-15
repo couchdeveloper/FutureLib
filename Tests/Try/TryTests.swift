@@ -212,6 +212,98 @@ class TryTests: XCTestCase {
         }
     }
 
+    // MARK: flatten()
+    
+    func testFlattenWithSuccess() {
+        let r: Try<Try<Int>> = Try<Try<Int>>(Try<Int>(1))
+        
+        let r0 = r.flatten()
+        switch r0 {
+        case .Success(let value):
+            XCTAssertEqual(1, value)
+        case .Failure(let error):
+            XCTFail("unexpected error: \(error)")
+        }
+    }
+    
+    func testFlattenWithFailure() {
+        let r: Try<Try<Int>> = Try<Try<Int>>(error: TestError.Failed)
+        
+        let r0 = r.flatten()
+        switch r0 {
+        case .Success(let value):
+            XCTFail("unexpected success: \(value)")
+        case .Failure(let error):
+            XCTAssertTrue(TestError.Failed == error)
+        }
+    }
+    
+    
+    // MARK: recover()
+    
+    func testRecoverWhenSuccess() {
+        let r = Try<Int>(0)
+        
+        let r0 = r.recover { (error) -> Int in
+            return -1
+        }
+        switch r0 {
+        case .Success(let value):
+            XCTAssertEqual(0, value)
+        case .Failure(let error):
+            XCTFail("unexpected error: \(error)")
+        }
+    }
+    
+    func testRecoverWhenFailure() {
+        let r = Try<Int>(error: TestError.Failed)
+        
+        let r0 = r.recover { error in
+            return -1
+        }
+        switch r0 {
+        case .Success(let value):
+            XCTAssertEqual(-1, value)
+        
+        case .Failure(let error):
+            XCTFail("unexpected error: \(error)")
+        }
+    }
+    
+    
+    
+    // MARK: recoverWith()
+    
+    func testRecoverWithWhenSuccess() {
+        let r = Try<Int>(0)
+        
+        let r0 = r.recoverWith { error in
+            return Try(1)
+        }
+        switch r0 {
+        case .Success(let value):
+            XCTAssertEqual(0, value)
+        case .Failure(let error):
+            XCTFail("unexpected error: \(error)")
+        }
+    }
+    
+    func testRecoverWithWhenFailure() {
+        let r = Try<Int>(error: TestError.Failed)
+        
+        let r0 = r.recoverWith { error in
+            return Try(-1)
+        }
+        switch r0 {
+        case .Success(let value):
+            XCTAssertEqual(-1, value)
+            
+        case .Failure(let error):
+            XCTFail("unexpected error: \(error)")
+        }
+    }
+
+    
 
 //    func testEqualityOperator() {
 //        let r1 = Try<Int>(3)

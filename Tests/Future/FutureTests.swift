@@ -326,7 +326,7 @@ class FutureTests: XCTestCase {
 
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(100 * NSEC_PER_MSEC)),dispatch_get_global_queue(0,0)) {
             cr.cancel()
-        };
+        }
         waitForExpectationsWithTimeout(1, handler: nil)
     }
 
@@ -355,7 +355,7 @@ class FutureTests: XCTestCase {
         }
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(10 * NSEC_PER_MSEC)),dispatch_get_global_queue(0,0)) {
             cr.cancel()
-        };
+        }
         waitForExpectationsWithTimeout(1, handler: nil)
     }
 

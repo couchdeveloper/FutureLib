@@ -300,7 +300,7 @@ extension Future {
 
 
 
-// MARK: Extension Future
+// MARK: Extension Future continueWith
 public extension Future {
 
     /**
