@@ -60,10 +60,10 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         let expect1 = self.expectationWithDescription("future should be completed")
         let futures = [
             Promise.resolveAfter(0.10) {1}.future!,
-            Promise.resolveAfter(0.12) {2}.future!,
-            Promise.resolveAfter(0.08) {3}.future!,
+            Promise.resolveAfter(0.10) {2}.future!,
+            Promise.resolveAfter(0.10) {3}.future!,
             Promise.resolveAfter(0.01) {4}.future!,
-            Promise.resolveAfter(0.12) {5}.future!
+            Promise.resolveAfter(0.10) {5}.future!
         ]
         let cr = CancellationRequest()
         futures.firstCompleted(cr.token).map { value in
@@ -76,6 +76,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             expect1.fulfill()
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
+        sleep(1)
     }
     
 

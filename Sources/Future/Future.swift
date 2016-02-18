@@ -224,13 +224,8 @@ extension Future: CompletableFutureType {
 
     internal final func tryComplete(result: ResultType) -> Bool {
         var ret = false
-        _sync.readSync {
-            ret = self._result != nil
-        }
-        if !ret {
-            _sync.writeSync {
-                ret = self._tryComplete(result)
-            }
+        _sync.writeSync {
+            ret = self._tryComplete(result)
         }
         return ret
     }
