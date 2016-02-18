@@ -189,10 +189,13 @@ public class Promise<T> {
 
 
     /**
-     Resolve the promise with the given result.
-     Subsequently completes `self`'s associated future with the same result.
-     If the promise is already resolved or if its associated future has been
-     prematurely deinitialized, the method has no effect.
+     Resolve the promise with the given result and subsequently completes `self`'s 
+     associated future with the same result. 
+     
+     If the promise is already resolved an assertion is triggered.
+     
+     If its associated future has been prematurely deinitialized, the method has 
+     no effect.  
 
      - parameter result: The result which the promise will be bound to.
      */
@@ -202,6 +205,21 @@ public class Promise<T> {
         }
     }
 
+    /**
+     Attempt to resolve the promise with the given result. If the associated 
+     future is not yet completed, subsequently completes `self`'s associated 
+     future with the same result.
+     If the promise is already resolved or if its associated future has been
+     prematurely deinitialized, the method has no effect.
+     
+     - parameter result: The result which the promise will be bound to.
+     */
+    public final func tryResolve(result: Try<T>) {
+        if let future = _weakFuture {
+            future.tryComplete(result)
+        }
+    }
+    
 
     /**
      Resolve the promise with a deferred result represented by a future.

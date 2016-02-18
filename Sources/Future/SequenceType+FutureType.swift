@@ -8,8 +8,6 @@
 import Dispatch
 
 extension SequenceType {
-    
-    
 
     /**
      Transforms a Sequence of T's into a `Future<[U]>` using the provided task
@@ -99,6 +97,26 @@ extension SequenceType
             }
         }
         return searchNext(self.generate())
+    }
+    
+    
+    /** 
+     Returns a new `Future` which will be completed with the result of the 
+     first completed future in `self`.
+
+     - parameter ct: A cancellation token.
+     - returns: A `Future` holding the optional result of the search.
+     */
+    public func firstCompleted(
+        ct: CancellationTokenType = CancellationTokenNone())
+        -> Future<T> 
+    {
+        let promise = Promise<T>()
+        let tryCompletePromise: (Try<T>) -> Void = { promise.tryResolve($0) }
+        self.forEach { 
+            $0.onComplete(ec: ConcurrentAsync(), ct: ct, f: tryCompletePromise) 
+        }
+        return promise.future!
     }
     
     

@@ -57,6 +57,17 @@ extension FutureType {
         return Future<ValueType>(value: value)
     }
 
+    /**
+     Creates a future which is completed with the given `Try`.
+     - parameter result: The result of type `Try<T>` with which the future will be completed.
+     - returns: A completed future.
+     */
+    static public func completed(result: Try<ValueType>) -> Future<ValueType> {
+        return Future<ValueType>(result: result)
+    }
+    
+    
+    
 
     /**
      Creates a pending future which will be completed with the given error after

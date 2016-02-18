@@ -33,7 +33,50 @@ class SequenceTypeFutureTypeTests: XCTestCase {
     
     // MARK: find
     
+    func testFind() {
+        let expect1 = self.expectationWithDescription("future should be completed")
+        let futures = [
+            Promise.resolveAfter(0.10) {1}.future!,
+            Promise.resolveAfter(0.12) {2}.future!,
+            Promise.resolveAfter(0.08) {3}.future!,
+            Promise.resolveAfter(0.01) {4}.future!,
+            Promise.resolveAfter(0.02) {5}.future!
+        ]
+        
+        futures.find { $0 == 3 }.map { value in
+            XCTAssertNotNil(value)
+            XCTAssertEqual(3, value!)
+            expect1.fulfill()
+        }.onFailure { error in
+            XCTFail("unexpected error: \(error)")
+            expect1.fulfill()
+        }
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
     
+    // Mark: firstCompleted
+    
+    func testFirstCompleted() {
+        let expect1 = self.expectationWithDescription("future should be completed")
+        let futures = [
+            Promise.resolveAfter(0.10) {1}.future!,
+            Promise.resolveAfter(0.12) {2}.future!,
+            Promise.resolveAfter(0.08) {3}.future!,
+            Promise.resolveAfter(0.01) {4}.future!,
+            Promise.resolveAfter(0.12) {5}.future!
+        ]
+        let cr = CancellationRequest()
+        futures.firstCompleted(cr.token).map { value in
+            XCTAssertNotNil(value)
+            XCTAssertEqual(4, value)
+            cr.cancel()
+            expect1.fulfill()
+        }.onFailure { error in
+            XCTFail("unexpected error: \(error)")
+            expect1.fulfill()
+        }
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
     
 
     // MARK: traverse

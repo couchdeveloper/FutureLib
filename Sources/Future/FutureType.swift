@@ -531,7 +531,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A function that transforms the result of this future
      - returns: A new `Future` that will be completed with the transformed value.
     */
-    public func transform<U>(
+    public final func transform<U>(
         ec ec: ExecutionContext = ConcurrentAsync(), 
         ct: CancellationTokenType = CancellationTokenNone(),
         f: Try<ValueType> throws -> Try<U>) -> Future<U> 
@@ -560,7 +560,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A function that transforms the result of this future.
      - returns: A new `Future` that will be completed with the transformed value.
     */
-    public func transformWith<U>(
+    public final func transformWith<U>(
         ec ec: ExecutionContext = ConcurrentAsync(), 
         ct: CancellationTokenType = CancellationTokenNone(),
         f: Try<ValueType> throws -> Future<U>) 

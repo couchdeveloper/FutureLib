@@ -70,6 +70,15 @@ public class Future<T> : FutureType {
     }
 
     /**
+     Designated initializer which creates a future completed with the given result.
+     - parameter result: The result which is bound to the completed `self`.
+     */
+    internal init(result: ResultType) {
+        _result = result
+    }
+    
+
+    /**
      Designated initializer which creates a future completed with the given error.
      - parameter error: The error which is bound to the completed `self`.
     */
@@ -127,13 +136,13 @@ public class Future<T> : FutureType {
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: Try<ValueType> -> U) {
-        if ct.isCancellationRequested {
-            ec.execute {
-                _ = f(Try<ValueType>(error: CancellationError.Cancelled))
-            }
-            return
-        }
         _sync.writeAsync {
+            if ct.isCancellationRequested {
+                ec.execute {
+                    _ = f(Try<ValueType>(error: CancellationError.Cancelled))
+                }
+                return
+            }
             if let r = self._result {
                 ec.execute {
                     _ = f(r)
@@ -274,7 +283,7 @@ extension Future {
 
         // wait until completed or a cancellation has been requested
         let sem: dispatch_semaphore_t = dispatch_semaphore_create(0)
-        onComplete(ec: SynchronousCurrent(), ct: cancellationToken) { _ in
+        onComplete(ec: ConcurrentAsync(), ct: cancellationToken) { _ in
             dispatch_semaphore_signal(sem)
         }
         dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
@@ -289,7 +298,7 @@ extension Future {
     public final func wait() -> Self {
         // wait until completed or a cancellation has been requested
         let sem: dispatch_semaphore_t = dispatch_semaphore_create(0)
-        onComplete(ec: SynchronousCurrent(), ct: CancellationTokenNone()) { _ in
+        onComplete(ec: ConcurrentAsync(), ct: CancellationTokenNone()) { _ in
             dispatch_semaphore_signal(sem)
         }
         dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
