@@ -8,19 +8,6 @@
 import Dispatch
 
 
-// MARK: Global synchronization object
-// A single object is used to provide synchronization for any future created
-// in a program. For a rationale not using a dedicated synchronization object
-// for each future, see (TBD).
-private let _sync = Synchronize(name: "FutureLib.sync_queue")
-
-internal extension Future {
-    internal func sync() -> Synchronize {
-        return _sync
-    }
-}
-
-
 
 
 
@@ -53,6 +40,7 @@ public class Future<T> : FutureType {
 
     private var _result: Try<ValueType>?
     private var _cr = ClosureRegistryType.Empty
+    internal let sync = Synchronize(name: "future-sync-queue")
 
 
     /**
@@ -104,7 +92,7 @@ public class Future<T> : FutureType {
      */
     public final var result: Try<ValueType>? {
         var result: Try<ValueType>? = nil
-        _sync.readSync() {
+        sync.readSync() {
             result = self._result
         }
         return result
@@ -136,7 +124,7 @@ public class Future<T> : FutureType {
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: Try<ValueType> -> U) {
-        _sync.writeAsync {
+        sync.writeAsync {
             if ct.isCancellationRequested {
                 ec.execute {
                     _ = f(Try<ValueType>(error: CancellationError.Cancelled))
@@ -158,7 +146,7 @@ public class Future<T> : FutureType {
                 // reference to self until after self will be completed.
                 ct.unregister(cid)
             }
-            cid = ct.onCancel(on: GCDBarrierAsyncExecutionContext(_sync.syncQueue)) {
+            cid = ct.onCancel(on: GCDBarrierAsyncExecutionContext(self.sync.syncQueue)) {
                 switch self._cr {
                 case .Empty: break
                 case .Single, .Multiple:
@@ -190,7 +178,7 @@ public class Future<T> : FutureType {
         -> Future<S> {
         let returnedFuture = Future<S>()
         self.onComplete(ec: SynchronousCurrent(), ct: ct) { [weak returnedFuture] result in
-            returnedFuture?._complete(result.map {
+            returnedFuture?.complete(result.map {
                 guard case let mappedValue as S = $0 else { throw FutureError.InvalidCast }
                 return mappedValue
             })
@@ -209,7 +197,7 @@ extension Future: CompletableFutureType {
 
 
     internal final func complete(result: ResultType) {
-        _sync.writeAsync {
+        sync.writeAsync {
             self._complete(result)
         }
     }
@@ -224,7 +212,7 @@ extension Future: CompletableFutureType {
 
     internal final func tryComplete(result: ResultType) -> Bool {
         var ret = false
-        _sync.writeSync {
+        sync.writeSync {
             ret = self._tryComplete(result)
         }
         return ret
@@ -232,7 +220,7 @@ extension Future: CompletableFutureType {
 
 
     internal final func _tryComplete(result: ResultType) -> Bool {
-        assert(_sync.isSynchronized())
+        assert(sync.isSynchronized())
         if _result == nil {
             _complete(result)
             return true
@@ -241,7 +229,7 @@ extension Future: CompletableFutureType {
     }
 
     internal final func _complete(result: ResultType) {
-        assert(_sync.isSynchronized())
+        assert(sync.isSynchronized())
         assert(self._result == nil)
         self._result = result
         _cr.resume(result)
@@ -332,13 +320,13 @@ public extension Future {
         on ec: ExecutionContext,
         cancellationToken ct: CancellationTokenType,
         f: FutureBaseType -> U) {
-        if ct.isCancellationRequested {
-            ec.execute {
-                _ = f(self)
+        sync.writeAsync {
+            if ct.isCancellationRequested {
+                ec.execute {
+                    _ = f(self)
+                }
+                return
             }
-            return
-        }
-        _sync.writeAsync {
             if let _ = self._result {
                 ec.execute {
                     _ = f(self)
@@ -353,7 +341,7 @@ public extension Future {
                 // reference to self until after self will be completed.
                 ct.unregister(cid)
             }
-            cid = ct.onCancel(on: GCDBarrierAsyncExecutionContext(_sync.syncQueue)) {
+            cid = ct.onCancel(on: GCDBarrierAsyncExecutionContext(self.sync.syncQueue)) {
                 switch self._cr {
                 case .Empty: break
                 case .Single, .Multiple:
@@ -414,7 +402,7 @@ extension Future : CustomStringConvertible {
      */
     public var description: String {
         var s: String = ""
-        _sync.readSyncSafe { /*[unowned(unsafe) self] in */
+        sync.readSyncSafe { /*[unowned(unsafe) self] in */
             var stateString: String
             if let res = self._result {
                 switch res {
@@ -442,7 +430,7 @@ extension Future : CustomDebugStringConvertible {
     */
     public var debugDescription: String {
         var s: String = ""
-        _sync.readSyncSafe { /*[unowned(unsafe) self] in */
+        sync.readSyncSafe { /*[unowned(unsafe) self] in */
             var stateString: String
             if let res = self._result {
                 switch res {

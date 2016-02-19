@@ -27,7 +27,7 @@ class FuturePerformanceTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
         #if !NDEBUG
-            XCTFail("Performance tests should be run in Release configuration.")
+            //XCTFail("Performance tests should be run in Release configuration.")
         #endif
     }
 
@@ -40,7 +40,7 @@ class FuturePerformanceTests: XCTestCase {
     func testResult() {
         self.measureBlock() {
             for _ in 0..<100000 {
-                let r = Result<Int>(1)
+                let r = Try<Int>(1)
                 r.map{
                     UInt($0)
                 }
@@ -518,7 +518,7 @@ class FuturePerformanceTests: XCTestCase {
             }
             self.startMeasuring()
             for _ in 0..<count {
-                f1.zip(f2).onComplete(ec: SyncEC()) { _ in
+                f1.zip(f2).onComplete { _ in
                     dispatch_group_leave(dg)
                 }
             }

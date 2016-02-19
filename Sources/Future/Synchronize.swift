@@ -8,6 +8,7 @@
 import Dispatch
 
 
+private var g_id: Int32 = 0 
 private var queueIDKey = 0
 
 
@@ -18,6 +19,7 @@ private var queueIDKey = 0
 struct Synchronize {
 
     let syncQueue: dispatch_queue_t
+    static let name: StaticString = "sync-queue"
 
     /**
         Initialize a Synchronize struct with a given name.
@@ -31,7 +33,10 @@ struct Synchronize {
         // method will be executed. If this `execute()` method schedules its closure
         // - given as an argument - synchronously, it may unintentionally and unexpectedly
         // block or even dead-lock.
-        syncQueue = dispatch_queue_create(name,
+//        syncQueue = dispatch_queue_create("\(name)-\(OSAtomicIncrement32(&g_id))",
+//            dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT,
+//                QOS_CLASS_USER_INTERACTIVE, 0))
+        syncQueue = dispatch_queue_create(UnsafePointer<Int8>(Synchronize.name.utf8Start),
             dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT,
                 QOS_CLASS_USER_INTERACTIVE, 0))
 
@@ -47,7 +52,12 @@ struct Synchronize {
     */
     func isSynchronized() -> Bool {
         let context = UnsafeMutablePointer<Void>(Unmanaged<dispatch_queue_t>.passUnretained(syncQueue).toOpaque())
-        return dispatch_get_specific(&queueIDKey) == context
+        if dispatch_get_specific(&queueIDKey) == context {
+            return true
+        } else {
+            //print("\(dispatch_get_specific(&queueIDKey)), \(context)")
+            return false
+        }
     }
 
 

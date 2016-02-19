@@ -159,7 +159,7 @@ internal extension CompletableFutureType {
     internal final func completeWith<FT: FutureType where FT.ResultType == ResultType>(other: FT) {
         other.onComplete(ec: SynchronousCurrent(),
             ct: CancellationTokenNone()) { [weak self] otherResult in
-            self?._complete(otherResult as ResultType)
+            self?.complete(otherResult as ResultType)
         }
     }
 
@@ -367,7 +367,7 @@ public extension FutureType where ResultType == Try<ValueType> {
                     returnedFuture?.completeWith(future)
                 })
             case .Failure(let error):
-                returnedFuture?._complete(error)
+                returnedFuture?.complete(error)
             }
         }
         return returnedFuture
@@ -387,8 +387,8 @@ public extension FutureType where ResultType == Try<ValueType> {
         other: Future<U>,
         ct: CancellationTokenType = CancellationTokenNone())
         -> Future<(ValueType, U)> {
-        return flatMap(ec: SynchronousCurrent(), ct: ct) { selfValue -> Future<(ValueType, U)> in
-            return other.map(ec: SynchronousCurrent(), ct: ct) { otherValue in
+            return flatMap(ct: ct) { selfValue -> Future<(ValueType, U)> in
+            return other.map(ct: ct) { otherValue in
                 return (selfValue, otherValue)
             }
         }
@@ -424,7 +424,7 @@ public extension FutureType where ResultType == Try<ValueType> {
             // future has been deinitialized prematurely!
             switch result {
             case .Success(let value):
-                returnedFuture?._complete(value)
+                returnedFuture?.complete(value)
             case .Failure(let error):
                 ec.execute {
                     do {
@@ -468,7 +468,7 @@ public extension FutureType where ResultType == Try<ValueType> {
             // future has been deinitialized prematurely!
             switch result {
             case .Success(let value):
-                returnedFuture?._complete(value)
+                returnedFuture?.complete(value)
             case .Failure(let error):
                 ec.schedule({ return try f(error) }, start: { future in
                     returnedFuture?.completeWith(future)

@@ -43,7 +43,7 @@ class FutureInternalTests: XCTestCase {
         let test:()->() = {
             let future = promise.future!
             future.onComplete(ec: SyncCurrent()) { r -> () in
-                XCTAssertTrue(future.sync().isSynchronized())
+                XCTAssertTrue(future.sync.isSynchronized())
                 expect.fulfill()
             }
         }
@@ -51,8 +51,6 @@ class FutureInternalTests: XCTestCase {
         promise.fulfill("OK")
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
-
-
 
 
     func testFutureInternalsExecuteOnTheSynchronizationQueue2() {
@@ -62,13 +60,31 @@ class FutureInternalTests: XCTestCase {
         let test:()->() = {
             let future = promise.future!
             future.onComplete(ec: SyncCurrent(), ct: cr.token) { r -> () in
-                XCTAssertTrue(future.sync().isSynchronized())
+                XCTAssertTrue(future.sync.isSynchronized())
                 expect.fulfill()
             }
         }
         test()
-        promise.fulfill("OK")
+        cr.cancel()
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
+
+
+    func testFutureInternalsExecuteOnTheSynchronizationQueue3() {
+        let expect = self.expectationWithDescription("future should be fulfilled")
+        let promise = Promise<String>()
+        let cr = CancellationRequest()
+        cr.cancel()
+        let test:()->() = {
+            let future = promise.future!
+            future.onComplete(ec: SyncCurrent(), ct: cr.token) { r -> () in
+                XCTAssertTrue(future.sync.isSynchronized())
+                expect.fulfill()
+            }
+        }
+        test()
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
 
 }
