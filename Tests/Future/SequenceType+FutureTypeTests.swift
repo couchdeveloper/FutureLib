@@ -59,16 +59,25 @@ class SequenceTypeFutureTypeTests: XCTestCase {
     func testFirstCompleted() {
         let expect1 = self.expectationWithDescription("future should be completed")
         let futures = [
-            Promise.resolveAfter(0.10) {1}.future!,
-            Promise.resolveAfter(0.10) {2}.future!,
-            Promise.resolveAfter(0.10) {3}.future!,
-            Promise.resolveAfter(0.01) {4}.future!,
-            Promise.resolveAfter(0.10) {5}.future!
+            Promise<Int>.resolveAfter(0.30) {Log.Info("1"); return 1}.future!,
+            Promise<Int>.resolveAfter(0.40) {Log.Info("3"); return 3}.future!,
+            Promise<Int>.resolveAfter(0.20) {Log.Info("3"); return 3}.future!,
+            Promise<Int>.resolveAfter(0.30) {Log.Info("4"); return 4}.future!,
+            Promise<Int>.resolveAfter(0.40) {Log.Info("5"); return 5}.future!,
+            Promise<Int>.resolveAfter(0.50) {Log.Info("6"); return 6}.future!,
+            Promise<Int>.resolveAfter(0.60) {Log.Info("7"); return 7}.future!,
+            Promise<Int>.resolveAfter(0.70) {Log.Info("8"); return 8}.future!,
+            Promise<Int>.resolveAfter(0.80) {Log.Info("9"); return 9}.future!,
+            Promise<Int>.resolveAfter(0.20) {Log.Info("10"); return 10}.future!,
+            Promise<Int>.resolveAfter(0.30) {Log.Info("11"); return 11}.future!,
+            Promise<Int>.resolveAfter(0.40) {Log.Info("12"); return 12}.future!,
+            Promise<Int>.resolveAfter(0.01) {Log.Info("13"); return 13}.future!,
+            Promise<Int>.resolveAfter(0.50) {Log.Info("14"); return 14}.future!
         ]
         let cr = CancellationRequest()
         futures.firstCompleted(cr.token).map { value in
             XCTAssertNotNil(value)
-            XCTAssertEqual(4, value)
+            XCTAssertEqual(13, value)
             cr.cancel()
             expect1.fulfill()
         }.onFailure { error in
@@ -76,7 +85,6 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             expect1.fulfill()
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
-        sleep(1)
     }
     
 
