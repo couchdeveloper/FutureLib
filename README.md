@@ -42,6 +42,7 @@ FutureLib helps you to write concise and comprehensible code to implement correc
     - [transform](#transform)
     - [zip](#zip)
   - [Sequences of Futures and Extensions to Sequences](#sequences-of-futures-and-extensions-to-sequences)
+    - [firstCompleted](#firstcompleted)
     - [traverse](#traverse)
     - [sequence](#sequence)
     - [results](#results)
@@ -79,9 +80,9 @@ The underlying task may fail. In this case the future will be completed with an 
 
 > A Future is a placeholder for the result of a computation which is not yet finished. Eventually it will be completed with _either_ the _value_ or an _error_.
 
-In order to represent that kind of result, a future uses an enum type `Result<T>` internally. `Result` is a kind of variant, or _discriminated union_ which contains _either_ a value _or_ an error.
+In order to represent that kind of result, a future uses an enum type `Try<T>` internally. `Try` is a kind of variant, or _discriminated union_ which contains _either_ a value _or_ an error. Note, that there are other Swift libaries with a similar type which is usually named `Try`. The name `Try` is borrowed from Scala.
 
-> In FutureLib, `Result<T>` can contain either a value of type `T` or a value conforming to the Swift protocol `ErrorType`.
+> In FutureLib, `Try<T>` can contain either a value of type `T` or a value conforming to the Swift protocol `ErrorType`.
 
 Usually, we obtain a future from an asynchronous function like `doSomethingAsync()` above. In order to retrieve the result, we register a _continuation_ which gets called when the future completes. However, as a client we cannot complete a future ourself - it's some kind of read-only.
 
@@ -93,7 +94,7 @@ So, how does the underlying task complete the future? Well, this will be accompl
 
 ### What is a Promise?
 
-With a Promise we can complete a future. Usually, a Promise will be created and eventually resolved by the underlying task. A promise has one and only one _associated_ future. A promise can be _resolved_ with either the computed value or an error. Resolving a promise with a `Result` immediately completes its associated future with the same value.
+With a Promise we can complete a future. Usually, a Promise will be created and eventually resolved by the underlying task. A promise has one and only one _associated_ future. A promise can be _resolved_ with either the computed value or an error. Resolving a promise with a `Try` immediately completes its associated future with the same value.
 
 > A Promise will be created and resolved by the underlying task. Resolving a Promise immediately completes its Future accordingly.
 
@@ -138,7 +139,7 @@ The use of this method is discouraged however since it blocks the current tread.
 
 #### Non-Blocking Access
 
-`var result: Result<ValueType>?`
+`var result: Try<ValueType>?`
 
 If the future is completed returns its result, otherwise it returns `nil`. The property is sometimes useful when it's known that the future is already completed.
 
@@ -148,7 +149,7 @@ The most flexible and useful approach to retrieve the result in a non-blocking m
 
 In order to retrieve the result from a future in a non-blocking manner we can use a _Continuation_. A continuation is a closure which will be _registered_ with certain methods defined for that future. The continuation will be called when the future has been completed.
 
-There are several variants of continuations, including those that are registered with _combinators_ which differ in their signature. Most continuations have a parameter _result_ as `Result<T>`,  _value_ as `T` or _error_ as `ErrorType` which will be set accordingly from the future's result and passed as an argument.
+There are several variants of continuations, including those that are registered with _combinators_ which differ in their signature. Most continuations have a parameter _result_ as `Try<T>`,  _value_ as `T` or _error_ as `ErrorType` which will be set accordingly from the future's result and passed as an argument.
 
 ### Basic Methods Registering Continuations
 
@@ -156,23 +157,23 @@ The most basic method which registers a continuation is `onComplete`:
 
 #### onComplete
 
-`func onComplete<U>(f: Result<T> -> U)`
+`func onComplete<U>(f: Try<T> -> U)`
 
-Method `onComplete` registers a continuation which will be called when the future has been completed. It gets passed the _result_ as a `Result<T>` of the future as its argument:
+Method `onComplete` registers a continuation which will be called when the future has been completed. It gets passed the _result_ as a `Try<T>` of the future as its argument:
 
 ```swift
 future.onComplete { result in
-    // result is of type Result<T>
+    // result is of type Try<T>
 }
 ```
-where `result` is of type `Result<T>` where `T` is the type of the computed value of the function `doSomethingAsync`. _result_ may contain either a value of type `T` or an error, conforming to protocol `ErrorType`.
+where `result` is of type `Try<T>` where `T` is the type of the computed value of the function `doSomethingAsync`. _result_ may contain either a value of type `T` or an error, conforming to protocol `ErrorType`.
 
 > Almost all methods which register a continuation are implemented in terms of `onComplete`.
 
 There a few approaches to get the actual value of a result:
 
 ```swift
-	let result:Result<Int> = ...
+	let result:Try<Int> = ...
 	switch result {
 	case .Success(let value):
 	    print("Value: \(value)")
@@ -302,6 +303,14 @@ computeString().filter { str in
 Returns a new Future which is completed with the result of function `s` applied to the successful result of `self` or with the result of function `f` applied to the error value of `self`. If `s` throws an error, the returned future will be completed with the same error.
 
 
+`func transform<U>(f: Try<T> throws -> Try<U>) -> Future<U>` 
+
+Returns a new Future by applying the specified function to the result of `self`. If 'f' throws an error, the returned future will be completed with the same error.
+
+
+`func transformWith<U>(f: Try<T> throws -> Future<U>) -> Future<U>`
+Returns a new Future by applying the specified function, which produces a Future, to the result of this Future. If 'f' throws an error, the returned future will be completed with the same error.
+
 #### zip
 
 `func zip(other: Future<U>) -> Future<(T, U)>`
@@ -312,6 +321,14 @@ Returns a new future which is completed with a tuple of the success value of `se
 ### Sequences of Futures and Extensions to Sequences
 
 An extension method which can be applied to any sequence type is `traverse`:
+
+
+#### firstCompleted
+
+
+`func firstCompleted() -> Future<T> 
+
+Returns a new `Future` which will be completed with the result of the  first completed future in `self`.
 
 #### traverse
 
@@ -351,9 +368,9 @@ For a sequence of futures `Future<T>` the method `sequence` returns a new future
 
 #### results
 
-`func results() -> Future<Result<T>>`
+`func results() -> Future<Try<T>>`
 
-For a sequence of futures `Future<T>`, the method `result` returns a new future which is completed with an array of `Result<T>`, where each element in the array corresponds to the result of the future in `self` in the same order.
+For a sequence of futures `Future<T>`, the method `result` returns a new future which is completed with an array of `Try<T>`, where each element in the array corresponds to the result of the future in `self` in the same order.
 
 ```swift
 [
@@ -361,7 +378,7 @@ For a sequence of futures `Future<T>`, the method `result` returns a new future 
     fetchUser(34),
     fetchUser(28)
 ].results { results in
-    // results is of type [Result<User>]
+    // results is of type [Try<User>]
 }
 ```
 
@@ -511,7 +528,7 @@ future.onFailure(ct: ct) { error in
 }
 ```
 
-Internally, the future will register a "cancellation handler" with the cancellation token for each continuation will be registered with a cancellation token. The cancellation handler will be called when there is a cancellation requested. A cancellation handler simply "unregisters" the previously registered continuation. If this happens and if the continuation takes a `Result<T>` or an `ErrorType` as parameter, the continuation will also be called with a corresponding error, namely a `CancellationError.Cancelled` error.
+Internally, the future will register a "cancellation handler" with the cancellation token for each continuation will be registered with a cancellation token. The cancellation handler will be called when there is a cancellation requested. A cancellation handler simply "unregisters" the previously registered continuation. If this happens and if the continuation takes a `Try<T>` or an `ErrorType` as parameter, the continuation will also be called with a corresponding error, namely a `CancellationError.Cancelled` error.
 
 We may later request a cancellation with:
 ```swift
@@ -520,7 +537,7 @@ cr.cancel()
 
 When a cancellation has been requested and the future is not yet completed, a continuation which takes a success value as parameter, e.g. a closure registered with`onSuccess`, will be unregistered and subsequently deallocated.
 
-On the other hand, a continuation which takes a `Result` or an error value as parameter, e.g. continuations registered with`onComplete` and `onFailure`, will be first unregistered and then called with a corresponding argument, that is with an error set to `CancellationError.Cancelled`.  If the future is not yet completed, it won't be completed due to the cancellation request, though. That is, when the completion handler executes, the corresponding future may not yet be completed:
+On the other hand, a continuation which takes a `Try` or an error value as parameter, e.g. continuations registered with`onComplete` and `onFailure`, will be first unregistered and then called with a corresponding argument, that is with an error set to `CancellationError.Cancelled`.  If the future is not yet completed, it won't be completed due to the cancellation request, though. That is, when the completion handler executes, the corresponding future may not yet be completed:
 
 ```swift
 future.onFailure(ct: ct) { error in

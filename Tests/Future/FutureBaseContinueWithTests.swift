@@ -26,15 +26,15 @@ class FutureBaseContinueWithTests: XCTestCase {
         let ec = ConcurrentAsync()
         let ct = CancellationRequest().token
 
-        future.continueWith { f in
+        let _ = future.continueWith { f in
         }
-        future.continueWith() { f in
+        let _ = future.continueWith() { f in
         }
-        future.continueWith(ec: ec, ct: ct) { f in
+        let _ = future.continueWith(ec: ec, ct: ct) { f in
         }
-        future.continueWith(ct: ct) { f in
+        let _ = future.continueWith(ct: ct) { f in
         }
-        future.continueWith(ec: ec) { f in
+        let _ = future.continueWith(ec: ec) { f in
         }
 
 
@@ -64,7 +64,7 @@ class FutureBaseContinueWithTests: XCTestCase {
 
         let future = task()
 
-        future.continueWith { futureBase in
+        let _ = future.continueWith { futureBase in
             XCTAssertTrue(futureBase.isCompleted)
             expect.fulfill()
         }
@@ -84,7 +84,7 @@ class FutureBaseContinueWithTests: XCTestCase {
 
         let future = task()
 
-        future.continueWith { futureBase in
+        let _ = future.continueWith { futureBase in
             XCTAssertTrue(futureBase.isFailure)
             expect.fulfill()
         }
@@ -104,7 +104,7 @@ class FutureBaseContinueWithTests: XCTestCase {
         }
 
         let future = task()
-        future.continueWith(ct: cr.token) { (futureBase) -> () in
+        let _ = future.continueWith(ct: cr.token) { (futureBase) -> () in
             XCTAssertTrue(cr.token.isCancellationRequested)
             XCTAssertFalse(futureBase.isCompleted)
             expect.fulfill()
@@ -127,7 +127,7 @@ class FutureBaseContinueWithTests: XCTestCase {
 
         let future = task()
 
-        future.continueWith { futureBase in
+        let _ = future.continueWith { futureBase in
             XCTAssertTrue(futureBase.isCompleted)
             expect.fulfill()
         }
@@ -144,7 +144,7 @@ class FutureBaseContinueWithTests: XCTestCase {
 
         let future = task()
 
-        future.continueWith { futureBase in
+        let _ = future.continueWith { futureBase in
             XCTAssertTrue(futureBase.isFailure)
             expect.fulfill()
         }
@@ -162,7 +162,7 @@ class FutureBaseContinueWithTests: XCTestCase {
         }
 
         let future = task()
-        future.continueWith(ct: cr.token) { (futureBase) -> () in
+        let _ = future.continueWith(ct: cr.token) { (futureBase) -> () in
             XCTAssertTrue(cr.token.isCancellationRequested)
             XCTAssertTrue(futureBase.isCompleted)
             expect.fulfill()
@@ -368,7 +368,7 @@ class FutureBaseContinueWithTests: XCTestCase {
             let future = promise.future!
             promise.fulfill("OK")
             let ec = GCDAsyncExecutionContext()
-            future.continueWith(ec: ec) { f in
+            let _ = future.continueWith(ec: ec) { f in
                 expect.fulfill()
             }
 

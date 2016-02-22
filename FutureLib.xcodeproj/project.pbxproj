@@ -450,8 +450,8 @@
 				A10337191C3AD2B80014C866 /* Synchronize.swift */,
 				A103371A1C3AD2B80014C866 /* TaskQueue+ExecutionContext.swift */,
 				A10337121C3AD2B80014C866 /* FutureTypeFinallyExtension.swift */,
-				A10337131C3AD2B80014C866 /* FutureTypeFoundationExtension.swift */,
 				A10337151C3AD2B80014C866 /* FutureTypeThenExtension.swift */,
+				A10337131C3AD2B80014C866 /* FutureTypeFoundationExtension.swift */,
 			);
 			path = Future;
 			sourceTree = "<group>";

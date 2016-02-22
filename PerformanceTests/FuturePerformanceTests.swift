@@ -27,7 +27,7 @@ class FuturePerformanceTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
         #if !NDEBUG
-            //XCTFail("Performance tests should be run in Release configuration.")
+            XCTFail("Performance tests should be run in Release configuration.")
         #endif
     }
 
@@ -41,7 +41,7 @@ class FuturePerformanceTests: XCTestCase {
         self.measureBlock() {
             for _ in 0..<100000 {
                 let r = Try<Int>(1)
-                r.map{
+                let _ = r.map{
                     UInt($0)
                 }
             }
@@ -53,8 +53,8 @@ class FuturePerformanceTests: XCTestCase {
         self.measureBlock() {
             for _ in 0..<100000 {
                 let promise = Promise<Int>()
-                var future: Future<Int>? = promise.future!
-                future = nil
+                let future: Future<Int>? = promise.future!
+                //future = nil
             }
         }
     }
@@ -154,7 +154,7 @@ class FuturePerformanceTests: XCTestCase {
                 let future = p.future!
                 for _ in 0..<1 {
                     dispatch_group_enter(dg)
-                    future.map { i -> Void in
+                    let _ = future.map { i -> Void in
                         dispatch_group_leave(dg)
                     }
                 }
@@ -181,7 +181,7 @@ class FuturePerformanceTests: XCTestCase {
                 let future = p.future!
                 for _ in 0..<2 {
                     dispatch_group_enter(dg)
-                    future.map { i -> Void in
+                    let _ = future.map { i -> Void in
                         dispatch_group_leave(dg)
                     }
                 }
@@ -211,7 +211,7 @@ class FuturePerformanceTests: XCTestCase {
                 let future = p.future!
                 for _ in 0..<2 {
                     dispatch_group_enter(dg)
-                    future.map { i -> Void in
+                    let _ = future.map { i -> Void in
                         dispatch_group_leave(dg)
                     }
                 }
@@ -240,7 +240,7 @@ class FuturePerformanceTests: XCTestCase {
                 let future = p.future!
                 for _ in 0..<2 {
                     dispatch_group_enter(dg)
-                    future.map { i -> Void in
+                    let _ = future.map { i -> Void in
                         dispatch_group_leave(dg)
                     }
                 }
@@ -271,7 +271,7 @@ class FuturePerformanceTests: XCTestCase {
                 let future = p.future!
                 for _ in 0..<4 {
                     dispatch_group_enter(dg)
-                    future.map { i -> Void in
+                    let _ = future.map { i -> Void in
                         dispatch_group_leave(dg)
                     }
                 }
@@ -296,7 +296,7 @@ class FuturePerformanceTests: XCTestCase {
                 let future = p.future!
                 for _ in 0..<8 {
                     dispatch_group_enter(dg)
-                    future.map { i -> Void in
+                    let _ = future.map { i -> Void in
                         dispatch_group_leave(dg)
                     }
                 }
@@ -321,7 +321,7 @@ class FuturePerformanceTests: XCTestCase {
                 for _ in 0..<1 {
                     dispatch_group_enter(dg)
                     dispatch_group_enter(dg)
-                    future.map { i -> Int in
+                    let _ = future.map { i -> Int in
                         dispatch_group_leave(dg)
                         return i
                     }
@@ -351,7 +351,7 @@ class FuturePerformanceTests: XCTestCase {
                     dispatch_group_enter(dg)
                     dispatch_group_enter(dg)
                     dispatch_group_enter(dg)
-                    future.map { i -> Int in
+                    let _ = future.map { i -> Int in
                         dispatch_group_leave(dg)
                         return i
                     }.map { i -> Int in
@@ -385,7 +385,7 @@ class FuturePerformanceTests: XCTestCase {
                     dispatch_group_enter(dg)
                     dispatch_group_enter(dg)
                     dispatch_group_enter(dg)
-                    future.map { i -> Int in
+                    let _ = future.map { i -> Int in
                         dispatch_group_leave(dg)
                         return i
                     }.map { i -> Int in
@@ -426,7 +426,7 @@ class FuturePerformanceTests: XCTestCase {
                     dispatch_group_enter(dg)
                     dispatch_group_enter(dg)
                     dispatch_group_enter(dg)
-                    future.map { i -> Int in
+                    let _ = future.map { i -> Int in
                         dispatch_group_leave(dg)
                         return i
                     }.map { i -> Int in
@@ -474,7 +474,7 @@ class FuturePerformanceTests: XCTestCase {
             self.startMeasuring()
             for i in 0..<count {
                 for _ in 0..<1 {
-                    a[i].future!.map { _ in
+                    let _ = a[i].future!.map { _ in
                         return 0
                     }
                 }
@@ -497,7 +497,7 @@ class FuturePerformanceTests: XCTestCase {
             self.startMeasuring()
             for i in 0..<count {
                 for _ in 0..<1 {
-                    a[i].future!.flatMap { _ in
+                    let _ = a[i].future!.flatMap { _ in
                         return future
                     }
                 }
@@ -524,6 +524,46 @@ class FuturePerformanceTests: XCTestCase {
             }
             dispatch_group_wait(dg, DISPATCH_TIME_FOREVER)
             self.stopMeasuring()
+        }
+    }
+    
+    
+    func testBenchmark() {
+        self.measureBlock() {
+            var fut: Future<Int> = Future.succeeded(0)
+            let numberOfFutureCompositions = 1000
+            for i in 0..<numberOfFutureCompositions {
+                let futBegin = Future<Int>.apply { 1 } 
+                let futEnd: Future<Int> = futBegin.flatMap { e0 in
+                    
+                    let futIn0 = Future.succeeded(i).flatMap { e1 in
+                        Future<Int>.apply {i}.flatMap { e2 in
+                            //Log.Info("=1=")
+                            return Future.succeeded(e1 + e2)
+                        }
+                    }
+                    //Log.Info("futIn0: \(futIn0)")
+                    let futIn1 = Future<Int>.apply {i}.flatMap { e1 in
+                        Future.succeeded(i).flatMap { e2 -> Future<Int> in
+                            //Log.Info("=2=")
+                            return Future<Int>.apply {e1 + e2}
+                        }
+                    }
+                    //Log.Info("futIn1: \(futIn1)")
+                    return futIn0.flatMap { e1 in
+                        //Log.Info("=+1=")
+                        return futIn1.flatMap { e2 -> Future<Int> in
+                            //Log.Info("=+2=")
+                            return Future.succeeded(e0 + e1 + e2)
+                        }
+                    }
+                }
+                
+                fut = fut.flatMap { _ in 
+                    futEnd 
+                }
+            }
+            fut.wait()
         }
     }
 

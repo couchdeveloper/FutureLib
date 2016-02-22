@@ -8,8 +8,9 @@
 import Dispatch
 
 
-
-
+private let _sync = (0..<8).map { Synchronize(name: "future-sync-queue-\($0)") } 
+private var _sync_id: Int32 = 0
+    
 
 // MARK: - Class Future
 
@@ -40,7 +41,7 @@ public class Future<T> : FutureType {
 
     private var _result: Try<ValueType>?
     private var _cr = ClosureRegistryType.Empty
-    internal let sync = Synchronize(name: "future-sync-queue")
+    internal let sync = _sync[Int(OSAtomicIncrement32(&_sync_id) % 7)]
 
 
     /**
@@ -174,6 +175,7 @@ public class Future<T> : FutureType {
      - parameter ct: A cancellation token which will be monitored.
      - returns: A new future.
      */
+    @warn_unused_result
     public final func mapTo<S>(ct: CancellationTokenType = CancellationTokenNone())
         -> Future<S> {
         let returnedFuture = Future<S>()
@@ -358,6 +360,7 @@ public extension Future {
     }
 
 
+    @warn_unused_result
     public final func continueWith<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
@@ -374,6 +377,7 @@ public extension Future {
     }
 
 
+    @warn_unused_result
     public final func continueWith<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),

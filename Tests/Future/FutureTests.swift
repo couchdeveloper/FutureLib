@@ -498,7 +498,7 @@ class FutureTests: XCTestCase {
         let promise = Promise<String>()
         let future = promise.future!
         let expect = self.expectationWithDescription("future should be fulfilled")
-        future.then { result -> String in
+        let _ = future.then { result -> String in
             if result == "OK" {
                 return "OK"
             }

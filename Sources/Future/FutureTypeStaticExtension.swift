@@ -26,11 +26,11 @@ extension FutureType {
      - returns: A `Future` whose `ValueType` equals the return type of the function 
      `f`.
      */
-    public func apply<T>(ec: ExecutionContext = GCDAsyncExecutionContext(),
-        f: () throws -> T)
-        -> Future<T> 
+    static public func apply<ValueType>(ec: ExecutionContext = ConcurrentAsync(),
+        f: () throws -> ValueType)
+        -> Future<ValueType> 
     {
-        let returnedFuture: Future<T> = Future<T>()
+        let returnedFuture: Future<ValueType> = Future<ValueType>()
         ec.execute() { 
             returnedFuture.complete(Try(f))
         }

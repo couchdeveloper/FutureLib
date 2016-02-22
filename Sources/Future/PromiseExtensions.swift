@@ -35,8 +35,11 @@ extension Promise {
      - parameter f: A function with signature `() throws -> T`.
      - returns: A `Future` whose `ValueType` equals `T`.
      */
+    @warn_unused_result
     public static func future<T>(ec: ExecutionContext = GCDAsyncExecutionContext(),
-        f: () throws -> T) -> Future<T> {
+        f: () throws -> T) 
+        -> Future<T> 
+    {
         let promise = Promise<T>()
         ec.execute() {
             promise.resolve(Try<T>(f))
