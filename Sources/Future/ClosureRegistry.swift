@@ -106,10 +106,10 @@ internal final class ClosureRegistryMultiple<T> {
     }
 
     final func register(f: T->()) -> Int {
-        let id = ++_id
-        let callback = Callback<T>(id: id, f: f)
+        _id += 1
+        let callback = Callback<T>(id: _id, f: f)
         _callbacks.append(callback)
-        return id
+        return _id
     }
 
     final func unregister(id: Int) -> CallbackType? {

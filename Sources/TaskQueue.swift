@@ -62,15 +62,17 @@ public class TaskQueue {
 
     private final func _enqueue(task: TaskType) {
         dispatch_group_enter(self._group)
-        if ++self._concurrentTasks >= self._maxConcurrentTasks && !self._suspended {
-            self._suspended = true
-            dispatch_suspend(self.queue)
+        _concurrentTasks += 1
+        if _concurrentTasks >= _maxConcurrentTasks && !_suspended {
+            _suspended = true
+            dispatch_suspend(queue)
         }
-        assert(self._concurrentTasks <= self._maxConcurrentTasks)
+        assert(_concurrentTasks <= _maxConcurrentTasks)
         let future = task()
         future.continueWith(ec: GCDAsyncExecutionContext(self._syncQueue),
             ct: CancellationTokenNone()) { _ in
-            if --self._concurrentTasks < self._maxConcurrentTasks && self._suspended {
+            self._concurrentTasks -= 1    
+            if self._concurrentTasks < self._maxConcurrentTasks && self._suspended {
                 self._suspended = false
                 dispatch_resume(self.queue)
             }

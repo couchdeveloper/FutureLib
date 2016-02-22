@@ -33,9 +33,9 @@ extension SequenceType where Generator.Element: CancellationTokenType {
             var ids = [Int]()
             var allCancelled = true
             for token in self {
-                ++count
+                count += 1
                 let id = token.register(on: private_ec) { cancelled in
-                    --count
+                    count -= 1
                     allCancelled = allCancelled && cancelled
                     if !cancelled {
                         scs.complete()
@@ -75,9 +75,9 @@ extension SequenceType where Generator.Element: CancellationTokenType {
             var count = 0
             var ids = [Int]()
             for token in self {
-                ++count
+                count += 1
                 let id = token.register(on: private_ec) { cancelled in
-                    --count
+                    count  -= 1
                     if cancelled {
                         scs.cancel()
                         for (i, ct) in self.enumerate() {
