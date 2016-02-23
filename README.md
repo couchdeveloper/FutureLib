@@ -132,14 +132,18 @@ There are blocking and non-blocking variants to obtain the result of the future.
 
 #### Blocking Access
 
-`func get() throws -> T `
+```swift
+func get() throws -> T
+```
 
 Method `value ` blocks the current thread until the future is completed. If the future has been completed with success it returns the success value of its result, otherwise it throws the error value.
 The use of this method is discouraged however since it blocks the current tread. It might be merely be useful in Unit tests or other testing code.
 
 #### Non-Blocking Access
 
-`var result: Try<ValueType>?`
+```swift
+var result: Try<ValueType>?
+```
 
 If the future is completed returns its result, otherwise it returns `nil`. The property is sometimes useful when it's known that the future is already completed.
 
@@ -157,7 +161,9 @@ The most basic method which registers a continuation is `onComplete`:
 
 #### onComplete
 
-`func onComplete<U>(f: Try<T> -> U)`
+```swift
+func onComplete<U>(f: Try<T> -> U)
+```
 
 Method `onComplete` registers a continuation which will be called when the future has been completed. It gets passed the _result_ as a `Try<T>` of the future as its argument:
 
@@ -187,9 +193,12 @@ The next basic methods are `onSuccess` and `onFailure`, which get called when th
 
 #### onSuccess
 
-`func onSuccess<U>(f: T -> throws U)`
+```swift
+func onSuccess<U>(f: T -> throws U)
+```
 
 With method `onSuccess` we register a continuation which gets called when the future has been completed with success:
+
 ```swift
 future.onSuccess { value in
 	// value is of type T
@@ -198,9 +207,12 @@ future.onSuccess { value in
 
 #### onFailure
 
-`func onFailure<U>(f: T -> U)`
+```swift
+func onFailure<U>(f: T -> U)
+```
 
 With `onFailure` we register a continuation which gets called when the future has been completed with an error:
+
 ```swift
 future.onFailure { error in
 	// error conforms to protocol `ErrorType`
@@ -216,7 +228,9 @@ With combinators we can combine two or more futures and build more complex async
 
 ####  map
 
-`func map<U>(f: T throws -> U) -> Future<U>`
+```swift
+func map<U>(f: T throws -> U) -> Future<U>
+```
 
 Method `map` returns a new future which is completed with the result of the function `f` which is applied to the success value of `self`. If `self` has been completed with an error, or if the function `f` throws and error, the returned future will be  completed with the same error. The continuation will not be called when `self` fails.
 
@@ -238,7 +252,9 @@ Note, that the mapping function will be called asynchronously with respect to th
 
 #### flatMap
 
-`func flatMap<U>(f: T throws -> Future<U>) -> Future<U>`
+```swift
+func flatMap<U>(f: T throws -> Future<U>) -> Future<U>
+```
 
 Method `flatMap` returns a new future which is completed with the _eventual_ result of the function `f` which is applied to the success value of `self`. If `self` has been completed with an error the returned future will be  completed with the same error. The continuation will not be called when `self` fails.
 
@@ -262,13 +278,17 @@ Note: there are simpler ways to specify the execution environment (here the main
 
 #### recover
 
-`func recover(f: ErrorType throws -> T) -> Future<T>`
+```swift
+func recover(f: ErrorType throws -> T) -> Future<T>`
+```
 
 Returns a new future which will be completed with `self`'s success value or with the return value of the mapping function `f` when `self` fails.
 
 #### recoverWith
 
-`func recoverWith(f: ErrorType throws -> Future<T>) -> Future<T>`
+```swift
+func recoverWith(f: ErrorType throws -> Future<T>) -> Future<T>
+```
 
 Returns a new future which will be completed with `self`'s success value or with the deferred result of the mapping function `f` when `self` fails.
 
@@ -286,7 +306,9 @@ let future = computeString().recover { error in
 
 #### filter
 
-`func filter(predicate: T throws -> Bool) -> Future<T>`
+```swift
+func filter(predicate: T throws -> Bool) -> Future<T>
+```
 
 Method `filter` returns a new future which is completed with the success value of `self` if the function `predicate` applied to the value returns `true`. Otherwise, the returned future will be completed with the error `FutureError.NoSuchElement`. If `self` will be completed with an error or if the predicate throws an error, the returned future will be completed with the same error.
 
@@ -298,22 +320,32 @@ computeString().filter { str in
 
 #### transform
 
-`func transform<U>(s: T throws -> U, f: ErrorType -> ErrorType)-> Future<U>`
+```swift
+func transform<U>(s: T throws -> U, f: ErrorType -> ErrorType)-> Future<U>
+```
 
 Returns a new Future which is completed with the result of function `s` applied to the successful result of `self` or with the result of function `f` applied to the error value of `self`. If `s` throws an error, the returned future will be completed with the same error.
 
 
-`func transform<U>(f: Try<T> throws -> Try<U>) -> Future<U>` 
+```swift
+func transform<U>(f: Try<T> throws -> Try<U>) -> Future<U>
+```
+
 
 Returns a new Future by applying the specified function to the result of `self`. If 'f' throws an error, the returned future will be completed with the same error.
 
 
-`func transformWith<U>(f: Try<T> throws -> Future<U>) -> Future<U>`
+```swift
+func transformWith<U>(f: Try<T> throws -> Future<U>) -> Future<U>`
+```
+
 Returns a new Future by applying the specified function, which produces a Future, to the result of this Future. If 'f' throws an error, the returned future will be completed with the same error.
 
 #### zip
 
-`func zip(other: Future<U>) -> Future<(T, U)>`
+```swift
+func zip(other: Future<U>) -> Future<(T, U)>
+```
 
 Returns a new future which is completed with a tuple of the success value of `self` and `other`. If `self` or other fails with an error, the returned future will be completed with the same error.
 
@@ -326,13 +358,17 @@ An extension method which can be applied to any sequence type is `traverse`:
 #### firstCompleted
 
 
-`func firstCompleted() -> Future<T> 
+```swift
+func firstCompleted() -> Future<T>
+```
 
 Returns a new `Future` which will be completed with the result of the  first completed future in `self`.
 
 #### traverse
 
-`func traverse<U>(task: T throws -> Future<U>) -> Future<[U]>`
+```swift
+func traverse<U>(task: T throws -> Future<U>) -> Future<[U]>
+```
 
 For any sequence of `T`, the asynchronous method `traverse` applies the function `task` to each value of the sequence (thus, getting a sequence of tasks) and then completes the returned future with an array of `U`s once all tasks have been completed successfully.
 
@@ -350,7 +386,9 @@ The tasks will be executed concurrently, unless an _execution context_ is specif
 
 #### sequence
 
-`func sequence() -> Future<[T]>`
+```swift
+func sequence() -> Future<[T]>
+```
 
 For a sequence of futures `Future<T>` the method `sequence` returns a new future `Future<[T]>` which is completed with an array of `T`, where each element in the array is the success value of the corresponding future in `self` in the same order.
 
@@ -362,13 +400,13 @@ For a sequence of futures `Future<T>` the method `sequence` returns a new future
 ].sequence { users in
     // user is of type [User]
 }
-
-
 ```
 
 #### results
 
-`func results() -> Future<Try<T>>`
+```swift
+func results() -> Future<Try<T>>
+```
 
 For a sequence of futures `Future<T>`, the method `result` returns a new future which is completed with an array of `Try<T>`, where each element in the array corresponds to the result of the future in `self` in the same order.
 
@@ -384,9 +422,11 @@ For a sequence of futures `Future<T>`, the method `result` returns a new future 
 
 #### fold
 
-`func fold<U>(initial: U, combine T throws -> U) -> Future<U>`
+```swift
+func fold<U>(initial: U, combine T throws -> U) -> Future<U>
+```
 
-For a sequence of futures `Future<T>` returns a new future `Future<U>`  which will be completed with the result of the function `combine` repeatedly applied to  the success value for each future in `self` and the accumulated value  initialised with `initial`.
+For a sequence of futures `Future<T>` returns a new future `Future<U>`  which will be completed with the result of the function `combine` repeatedly applied to  the success value for each future in `self` and the accumulated value  initialized with `initial`.
 
 That is, it transforms a `SequenceOf<Future<T>>` into a `Future<U>` whose result is the combined value of the success values of each future.
 
