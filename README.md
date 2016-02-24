@@ -56,8 +56,8 @@ FutureLib helps you to write concise and comprehensible code to implement correc
   - [Cancelling a Continuation](#cancelling-a-continuation)
   - [Wrap an asynchronous function with a completion handler into a function which returns a corresponding future](#wrap-an-asynchronous-function-with-a-completion-handler-into-a-function-which-returns-a-corresponding-future)
 - [Installation](#installation)
-  - [Carthage](#carthage)
-  - [CocoaPods](#cocoapods)
+  - [[Carthage](https://github.com/Carthage/Carthage)](#carthagehttpsgithubcomcarthagecarthage)
+  - [[CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html)](#cocoapodshttpsguidescocoapodsorgusingusing-cocoapodshtml)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -661,7 +661,7 @@ session.get(url, cr.token)
 
 ## Installation
 
-### Carthage
+### [Carthage](https://github.com/Carthage/Carthage)
 
 > **Note:** Carthage only supports dynamic frameworks which are supported in Mac OS X and iOS 8 and later.
 
@@ -671,5 +671,40 @@ session.get(url, cr.token)
  to your Cartfile.		
 
 
-### CocoaPods
-TBD
+### [CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html)
+
+As a minimum, add the following line to your [Podfile](http://guides.cocoapods.org/using/the-podfile.html):
+
+```ruby
+pod 'FutureLib'
+```
+
+The above declaration loads the _most recent_ version from the git repository.
+
+You may specify a certain version or a certain _range_ of available versions. For example:
+```ruby
+pod 'FutureLib', '~> 1.0'  
+```
+
+This automatically selects the most recent version in the repository in the range from 1.0.0 and up to 2.0, not including 2.0 and higher.
+
+See more help here: [Specifying pod versions](http://guides.cocoapods.org/using/the-podfile.html#specifying-pod-versions).
+
+
+Example Podfile:
+
+```ruby
+# MyProject.Podfile
+
+use_frameworks!
+
+target 'MyTarget' do
+  pod 'FutureLib', '~> 1.0' # Version 1.0 and the versions up to 2.0, not including 2.0 and higher
+end
+```
+
+After you edited the Podfile, open Terminal, cd to the directory where the Podfile is located and type the following command in the console:
+
+```console
+$ pod install
+```
