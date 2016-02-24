@@ -53,7 +53,7 @@ public class Timer {
         _delay = Int64((delay * Double(NSEC_PER_SEC)) + 0.5)
         _interval = DISPATCH_TIME_FOREVER
         _leeway = UInt64((tolerance * Double(NSEC_PER_SEC)) + 0.5)
-        _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, DISPATCH_TARGET_QUEUE_DEFAULT)
+        _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, tolerance > 0 ? 0 : DISPATCH_TIMER_STRICT, DISPATCH_TARGET_QUEUE_DEFAULT)
         _cancellationToken = cancellationToken
         _cancelId = cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
             dispatch_source_cancel(self._timer)
@@ -99,7 +99,7 @@ public class Timer {
         _delay = Int64((delay * Double(NSEC_PER_SEC)) + 0.5)
         _interval = UInt64((interval * Double(NSEC_PER_SEC)) + 0.5)
         _leeway = UInt64((tolerance * Double(NSEC_PER_SEC)) + 0.5)
-        _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, DISPATCH_TARGET_QUEUE_DEFAULT)
+        _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, tolerance > 0 ? 0 : DISPATCH_TIMER_STRICT, DISPATCH_TARGET_QUEUE_DEFAULT)
         _cancellationToken = cancellationToken
         _cancelId = cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
             dispatch_source_cancel(self._timer)

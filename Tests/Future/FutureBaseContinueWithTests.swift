@@ -95,9 +95,11 @@ class FutureBaseContinueWithTests: XCTestCase {
     func testPendingFutureShouldExecuteContinuationWhenCancelled() {
         let expect = self.expectationWithDescription("future should be fulfilled")
         let cr = CancellationRequest()
+        Log.Info("1")
         let task: () -> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.5) {
+                Log.Info("2")
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -105,6 +107,7 @@ class FutureBaseContinueWithTests: XCTestCase {
 
         let future = task()
         let _ = future.continueWith(ct: cr.token) { (futureBase) -> () in
+            Log.Info("3")
             XCTAssertTrue(cr.token.isCancellationRequested)
             XCTAssertFalse(futureBase.isCompleted)
             expect.fulfill()

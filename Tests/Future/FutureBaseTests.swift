@@ -20,6 +20,9 @@ class FutureBaseTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
+    
+    
+    // MARK: Invariants
 
     func testPendingFutureInvariants() {
         let promise = Promise<String>()
@@ -47,6 +50,11 @@ class FutureBaseTests: XCTestCase {
         XCTAssertTrue(future.isFailure)
     }
 
+    
+    
+    
+    // MARK: wait()
+    
 
     func testWaitBlocksTheCurrentThreadUntilAfterTheFutureIsCompleted() {
         let expect = self.expectationWithDescription("future should be fulfilled")

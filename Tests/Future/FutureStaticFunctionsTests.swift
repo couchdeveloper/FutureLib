@@ -1,5 +1,5 @@
 //
-//  FutureExtensionsTests.swift
+//  FutureStaticFunctionsTests.swift
 //  FutureLib
 //
 //  Copyright © 2015 Andreas Grosam. All rights reserved.
@@ -65,6 +65,40 @@ class FutureExtensionsTests: XCTestCase {
     }
 
 
+    // MARK: Future<T>.completed(result:) -> Future<T>
+    
+    
+    func testClassMethodCompletedReturnsFulfilledFuture() {
+        let future = Future.completed(Try(1))
+        XCTAssertTrue(future.isCompleted)
+        XCTAssert(future.isSuccess)
+        XCTAssertNotNil(future.result)
+        if let r = future.result {
+            XCTAssertTrue(r.isSuccess)
+            do {
+                let v = try r.get()
+                XCTAssertEqual(1, v)
+            }
+            catch {
+                XCTFail("unexpected error")
+            }
+        }
+    }
+    
+    func testClassMethodCompletedReturnsFailedFuture() {
+        let future = Future.completed(Try<Int>(error: TestError.Failed))
+        XCTAssertTrue(future.isCompleted)
+        XCTAssert(future.isFailure)
+        XCTAssertNotNil(future.result)
+        if let r = future.result {
+            XCTAssertTrue(r.isFailure)
+        } else {
+            XCTFail()
+        }
+    }
+    
+    
+    
     func testClassMethodSucceededReturnsFulfilledFuture2() {
         let a = [1,2,3]
         let future = Future.succeeded(a)
@@ -182,6 +216,39 @@ class FutureExtensionsTests: XCTestCase {
     }
 
 
+
+    // MARK: Future<T>.apply(_:f:) -> Future<T>
+
+    
+    func testApply() {
+        let expect = self.expectationWithDescription("future should be fulfilled")
+        let future = Future<String>.apply { "OK" }
+        future.onComplete { result in
+            switch result {
+            case .Success(let value):
+                XCTAssertEqual("OK", value)
+            case .Failure(let error):
+                XCTFail("unexpected error: \(error)")
+            }
+            expect.fulfill()
+        }
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    func testApplyWithThrowingFunction() {
+        let expect = self.expectationWithDescription("future should be fulfilled")
+        let future: Future<String> = Future<String>.apply { throw TestError.Failed }
+        future.onComplete { result in
+            switch result {
+            case .Success(let value):
+                XCTFail("unexpected success: \(value)")
+            case .Failure(let error):
+                XCTAssertTrue(TestError.Failed == error)
+            }
+            expect.fulfill()
+        }
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
 
 
 }
