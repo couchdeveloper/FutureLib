@@ -86,19 +86,20 @@ extension SequenceType
         ct: CancellationTokenType = CancellationTokenNone(),
         pred: T -> Bool) -> Future<T?> 
     {
-        func searchNext(var gen: Generator) -> Future<T?> {
+        var gen = self.generate()
+        func searchNext() -> Future<T?> {
             if let elem = gen.next() {
                 return elem.transformWith(ec: ec, ct: ct) { result in 
                     switch result {
                     case .Success(let value) where pred(value): return Future<T?>.succeeded(.Some(value)) 
-                    default: return searchNext(gen)
+                    default: return searchNext()
                     }
                 }
             } else {
                 return Future.succeeded(.None)
             }
         }
-        return searchNext(self.generate())
+        return searchNext()
     }
     
     
