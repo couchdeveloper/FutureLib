@@ -352,8 +352,6 @@ Returns a new future which is completed with a tuple of the success value of `se
 
 ### Sequences of Futures and Extensions to Sequences
 
-An extension method which can be applied to any sequence type is `traverse`:
-
 
 #### firstCompleted
 
