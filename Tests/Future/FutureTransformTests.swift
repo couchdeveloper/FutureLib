@@ -53,6 +53,25 @@ class FutureTransformTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
+    func testTransform1WithSucceedFutureWithThrowingFunction() {
+        let expect = self.expectationWithDescription("future should be completed")
+        
+        let future = Future.succeeded(0)
+        
+        future.transform(s: {_ in throw TestError.Failed}, f:{_ in TestError.Failed2}).map { value in
+            XCTFail("unexpected success")
+            expect.fulfill()
+        }.onFailure { error in
+            XCTAssertTrue(TestError.Failed == error)
+            expect.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+
+    
+    
     
     func testTransform2WithSucceedFuture() {
         let expect = self.expectationWithDescription("future should be completed")
@@ -98,6 +117,32 @@ class FutureTransformTests: XCTestCase {
     }
     
     
+    func testTransform2WithSucceedFutureWithThrowingFunction() {
+        let expect = self.expectationWithDescription("future should be completed")
+        
+        let future = Future.succeeded(0)
+        
+        future.transform { result -> Try<String> in
+            switch result {
+            case .Success(let value) where value == 0:
+                throw TestError.Failed
+            default:
+                return Try(error: TestError.Failed2)
+            }
+        }.map { value in
+            XCTFail("unexpected success: \(value)")
+            expect.fulfill()
+        }.onFailure { error in
+            XCTAssertTrue(TestError.Failed == error)
+            expect.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+
+    
+    
     func testTransformWith_WithSucceedFuture() {
         let expect = self.expectationWithDescription("future should be completed")
         
@@ -130,18 +175,42 @@ class FutureTransformTests: XCTestCase {
             case .Success(let value) where value == 0: return Future.succeeded("OK")
             default: return Future.failed(TestError.Failed2)
             }
-            }.map { value in
-                XCTFail("unexpected success")
-                expect.fulfill()
-            }.onFailure { error in
-                XCTAssertTrue(TestError.Failed2 == error)
-                expect.fulfill()
+        }.map { value in
+            XCTFail("unexpected success")
+            expect.fulfill()
+        }.onFailure { error in
+            XCTAssertTrue(TestError.Failed2 == error)
+            expect.fulfill()
         }
         
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     
+    func testTransformWith_WithSucceedFutureWithThrowingFunction() {
+        let expect = self.expectationWithDescription("future should be completed")
+        
+        let future = Future.succeeded(0)
+        
+        future.transformWith { result -> Future<String> in
+            switch result {
+            case .Success(let value) where value == 0:
+                throw TestError.Failed
+            default:
+                return Future.failed(TestError.Failed2)
+            }
+        }.map { value in
+            XCTFail("unexpected success")
+            expect.fulfill()
+        }.onFailure { error in
+            XCTAssertTrue(TestError.Failed == error)
+            expect.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+
     
 
 }

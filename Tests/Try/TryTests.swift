@@ -271,7 +271,38 @@ class TryTests: XCTestCase {
     }
     
     
+    func testRecoverWhenSuccessWithThrowingFunction() {
+        let r = Try<Int>(0)
+        
+        let r0 = r.recover { (error) -> Int in
+            throw TestError.Failed
+        }
+        switch r0 {
+        case .Success(let value):
+            XCTAssertEqual(0, value)
+        case .Failure(let error):
+            XCTFail("unexpected error: \(error)")
+        }
+    }
     
+    
+    func testRecoverWhenFailureWithThrowingFunction() {
+        let r = Try<Int>(error: TestError.Failed)
+        
+        let r0 = r.recover { error in
+            throw TestError.Failed
+        }
+        switch r0 {
+        case .Success(let value):
+            XCTFail("unexpected success: \(value)")
+        case .Failure(let error):
+            XCTAssertTrue(TestError.Failed == error)
+        }
+    }
+    
+    
+
+
     // MARK: recoverWith()
     
     func testRecoverWithWhenSuccess() {
@@ -303,6 +334,39 @@ class TryTests: XCTestCase {
         }
     }
 
+    
+    func testRecoverWithWhenFailureWithThrowingFunction() {
+        let r = Try<Int>(error: TestError.Failed2)
+        
+        let r0 = r.recoverWith { error in
+            throw TestError.Failed
+        }
+        switch r0 {
+        case .Success(let value):
+            XCTFail("unexpected success: \(value)")
+            
+        case .Failure(let error):
+            XCTAssertTrue(TestError.Failed == error)
+        }
+    }
+    
+    
+    
+    // MARK: toOption()
+    
+    func testToOption1() {
+        let r = Try<Int>(0)
+        let opt = r.toOption()
+        XCTAssertNotNil(opt)
+        XCTAssertEqual(0, opt)
+
+    }
+    
+    func testToOption2() {
+        let r = Try<Int>(error: TestError.Failed)
+        let opt = r.toOption()
+        XCTAssertNil(opt)
+    }
     
 
 //    func testEqualityOperator() {

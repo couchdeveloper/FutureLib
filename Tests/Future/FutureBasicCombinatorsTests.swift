@@ -49,27 +49,6 @@ class FutureBasicCombinatorsTests: XCTestCase {
     }
 
 
-    func testAPI_flatMap() {
-        // This test will fail to compile if it fails.
-        let ec = ConcurrentAsync()
-        let ct = CancellationRequest().token
-        let future = Future.succeeded(1)
-        let f: (Int) -> Future<String> = { $0 == 0 ? Future.succeeded("OK") : Future.succeeded("Fail") }
-
-        let _ = future.flatMap(ec: ec, ct: ct, f: f)
-        let _ = future.flatMap(ec: ec, ct: ct) { Future.succeeded($0) }
-
-        let _ = future.flatMap(ct: ct, f: f)
-        let _ = future.flatMap(ct: ct) { Future.succeeded($0) }
-
-        let _ = future.flatMap(ec: ec, f: f)
-        let _ = future.flatMap(ec: ec) { Future.succeeded($0) }
-
-        let _ = future.flatMap(f: f)
-        let _ = future.flatMap { Future.succeeded($0) }
-    }
-
-
     func testGivenAPendingFutureWithMapFunctionWhenFulfilledItShouldExecuteHandler1() {
         let expect1 = self.expectationWithDescription("future should be fulfilled")
         let expect2 = self.expectationWithDescription("future should be fulfilled")
@@ -331,6 +310,28 @@ class FutureBasicCombinatorsTests: XCTestCase {
 
 
     // MARK: flatMap(_:) -> Future
+    
+    func testAPI_flatMap() {
+        // This test will fail to compile if it fails.
+        let ec = ConcurrentAsync()
+        let ct = CancellationRequest().token
+        let future = Future.succeeded(1)
+        let f: (Int) -> Future<String> = { $0 == 0 ? Future.succeeded("OK") : Future.succeeded("Fail") }
+        
+        let _ = future.flatMap(ec: ec, ct: ct, f: f)
+        let _ = future.flatMap(ec: ec, ct: ct) { Future.succeeded($0) }
+        
+        let _ = future.flatMap(ct: ct, f: f)
+        let _ = future.flatMap(ct: ct) { Future.succeeded($0) }
+        
+        let _ = future.flatMap(ec: ec, f: f)
+        let _ = future.flatMap(ec: ec) { Future.succeeded($0) }
+        
+        let _ = future.flatMap(f: f)
+        let _ = future.flatMap { Future.succeeded($0) }
+    }
+    
+
 
     func testGivenAPendingFutureWithFlatMapFunctionWhenFulfilledItShouldExecuteHandler1() {
         let expect1 = self.expectationWithDescription("future should be fulfilled")

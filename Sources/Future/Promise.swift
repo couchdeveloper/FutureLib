@@ -223,7 +223,7 @@ public class Promise<T> {
 
     /**
      Resolve the promise with a deferred result represented by a future.
-     Whent the future completes, completes `self`'s associated future with the
+     When the future completes, completes `self`'s associated future with the
      same result.
      If the promise is already resolved or if its associated future has been
      prematurely deinitialized, the method has no effect.
