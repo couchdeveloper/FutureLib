@@ -318,6 +318,7 @@
 		A10E9D9A1C3BBA3500CD5B07 /* FutureLib-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FutureLib-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1221F501C2AAEF8004F3F68 /* FutureMiscCombinatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureMiscCombinatorTests.swift; sourceTree = "<group>"; };
 		A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		A13508A91C7F297A003B0A62 /* FutureLib.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = FutureLib.podspec; sourceTree = "<group>"; };
 		A1421F4F1C2B384E00B8D9BF /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		A16FC21A1C7E2D2E001A703D /* FutureTypeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeTests.swift; sourceTree = "<group>"; };
 		A187F60D1C29DE5B00D79268 /* ExecutionContextTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionContextTests.swift; sourceTree = "<group>"; };
@@ -597,6 +598,7 @@
 				A1DF3E271BC69B4D00136A45 /* README.md */,
 				A1F8FCAE1C3AF9C6008AC595 /* .travis.yml */,
 				A1E11FF81C07876C008EC456 /* Rakefile */,
+				A13508A91C7F297A003B0A62 /* FutureLib.podspec */,
 				A10336FC1C3AD2B80014C866 /* Sources */,
 				A18FE00D1B46AF8C0094CD2A /* Tests */,
 				A108DFE01B73FFE900A34BFD /* PerformanceTests */,
