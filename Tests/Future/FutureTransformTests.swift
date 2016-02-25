@@ -24,7 +24,7 @@ class FutureTransformTests: XCTestCase {
     
     
 
-    // MARK: transform
+    // MARK: transform(ec:ct:s:f:)
     
     func testTransform1WithSucceedFuture() {
         let expect = self.expectationWithDescription("future should be completed")
@@ -70,8 +70,29 @@ class FutureTransformTests: XCTestCase {
     }
     
 
+    func testTransform1WithPendingFutureWithCancellation() {
+        let expect = self.expectationWithDescription("future should be completed")
+        let cr = CancellationRequest()
+        schedule_after(0.1) {
+            cr.cancel()
+        }
+        
+        let future = Promise.resolveAfter(1.0) { 0 }.future!
+        
+        future.transform(ct: cr.token, s: {_ in 1}, f:{ $0 }).map { value in
+            XCTFail("unexpected success")
+            expect.fulfill()
+        }.onFailure { error in
+            XCTAssertTrue(CancellationError.Cancelled == error, "Error: \(String(reflecting: error))")
+            expect.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
     
     
+
+    // MARK: transform(ec:ct:f:)
     
     func testTransform2WithSucceedFuture() {
         let expect = self.expectationWithDescription("future should be completed")
@@ -140,8 +161,40 @@ class FutureTransformTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
+    func testTransform2WithPendingFutureWithCancellation() {
+        let expect = self.expectationWithDescription("future should be completed")
+        let cr = CancellationRequest()
+        schedule_after(0.1) {
+            cr.cancel()
+        }
+        
+        let future = Promise.resolveAfter(1.0) { 0 }.future!
+        
+        future.transform(ct: cr.token) {result -> Try<String> in
+            switch result {
+            case .Success(let value) where value == 0:
+                throw TestError.Failed
+            case .Failure(let error) where CancellationError.Cancelled == error:
+                return Try(error: error)
+            default:
+                return Try(error: TestError.Failed2)
+            }
+        }
+        .map { value in
+            XCTFail("unexpected success")
+            expect.fulfill()
+        }.onFailure { error in
+            XCTAssertTrue(CancellationError.Cancelled == error, "Error: \(String(reflecting: error))")
+            expect.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    
 
     
+    // MARK: transformWith(ec:ct:f:)
     
     func testTransformWith_WithSucceedFuture() {
         let expect = self.expectationWithDescription("future should be completed")
@@ -204,6 +257,36 @@ class FutureTransformTests: XCTestCase {
             expect.fulfill()
         }.onFailure { error in
             XCTAssertTrue(TestError.Failed == error)
+            expect.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+
+    func testTransformWith_WithPendingFutureWithPrematureCancellation() {
+        let expect = self.expectationWithDescription("future should be completed")
+        
+        let future = Promise.resolveAfter(1.0) { 0 }.future!
+        let cr = CancellationRequest()
+        schedule_after(0.1) {
+            cr.cancel()
+        }
+        
+        future.transformWith(ct: cr.token) { result -> Future<String> in
+            switch result {
+            case .Success(let value) where value == 0:
+                throw TestError.Failed
+            case .Failure(let error) where CancellationError.Cancelled == error:
+                return Future.failed(error)
+            default:
+                return Future.failed(TestError.Failed2)
+            }
+        }.map { value in
+            XCTFail("unexpected success")
+            expect.fulfill()
+        }.onFailure { error in
+            XCTAssertTrue(CancellationError.Cancelled == error, "Error: \(String(reflecting: error))")
             expect.fulfill()
         }
         

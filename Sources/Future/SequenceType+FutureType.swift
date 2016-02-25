@@ -74,7 +74,9 @@ extension SequenceType
     /** 
      Returns a `Future` that will be completed with the optional result of the 
      first `Future` whose result matches the predicate. Failed `Future`s will be 
-     ignored. If no match has been found, returns a future which is completed
+     ignored. If a cancellation has been requested, the future will be completed
+     with a `CancellationError.Cancelled`.
+     If no match has been found, returns a future which is completed
      with `.None`.
     
      - parameter pred: The predicate which indicates if it's a match.
@@ -86,20 +88,25 @@ extension SequenceType
         ct: CancellationTokenType = CancellationTokenNone(),
         pred: T -> Bool) -> Future<T?> 
     {
-        var gen = self.generate()
-        func searchNext() -> Future<T?> {
+        func searchNext(inout gen: Self.Generator) -> Future<T?> {
             if let elem = gen.next() {
                 return elem.transformWith(ec: ec, ct: ct) { result in 
                     switch result {
                     case .Success(let value) where pred(value): return Future<T?>.succeeded(.Some(value)) 
-                    default: return searchNext()
+                    default:
+                        if ct.isCancellationRequested {
+                            return Future(error: CancellationError.Cancelled)
+                        } else {
+                            return searchNext(&gen)
+                        }
                     }
                 }
             } else {
                 return Future.succeeded(.None)
             }
         }
-        return searchNext()
+        var gen = self.generate()
+        return searchNext(&gen)
     }
     
     

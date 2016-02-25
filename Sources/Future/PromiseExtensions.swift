@@ -64,7 +64,9 @@ extension Promise {
         }
         timer.resume()
         promise.onRevocation {
+#if Debug
             print("Target future disposed, timer will be cancelled")
+#endif
             cr.cancel()
         }
         return promise
@@ -90,7 +92,9 @@ extension Promise {
         }
         timer.resume()
         promise.onRevocation {
+#if Debug
             print("Target future disposed, timer will be cancelled")
+#endif
             cr.cancel()
         }
         return promise
