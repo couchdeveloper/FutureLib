@@ -8,7 +8,7 @@
 
 
 public protocol TryType {
-    associatedtype ValueType
+    typealias ValueType
     
     init(_ v: ValueType)
     init(error: ErrorType)

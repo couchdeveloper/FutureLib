@@ -26,7 +26,7 @@ internal func dateTimeString(t: time_t, usec: suseconds_t, format: String) -> St
 
 
 public protocol EventType {
-    associatedtype ValueType
+    typealias ValueType
 }
 
 
@@ -443,7 +443,7 @@ public class Logger {
         }
     }
 
-    public func Error<T>(@autoclosure object: ()-> T, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+    public func Error<T>(@autoclosure object: ()-> T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UInt = __LINE__) {
         if (self.logLevel.rawValue > Severity.None.rawValue) {
             let event = Event(category: self._category, severity: Severity.Error, message: object(), function: function, file: file, line: line)
             for var et in eventTargets {
@@ -452,7 +452,7 @@ public class Logger {
         }
     }
 
-    public func Warning<T>(@autoclosure object: ()-> T, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+    public func Warning<T>(@autoclosure object: ()-> T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UInt = __LINE__) {
         if (self.logLevel.rawValue > Severity.Error.rawValue) {
             let event = Event(category: self._category, severity: Severity.Warning, message: object(), function: function, file: file, line: line)
             for var et in eventTargets {
@@ -461,7 +461,7 @@ public class Logger {
         }
     }
 
-    public func Info<T>(@autoclosure object: ()-> T, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+    public func Info<T>(@autoclosure object: ()-> T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UInt = __LINE__) {
         if (self.logLevel.rawValue > Severity.Warning.rawValue) {
             let event = Event(category: self._category, severity: Severity.Info, message: object(), function: function, file: file, line: line)
             for var et in eventTargets {
@@ -470,7 +470,7 @@ public class Logger {
         }
     }
 
-    public func Debug<T>(@autoclosure object: ()-> T, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+    public func Debug<T>(@autoclosure object: ()-> T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UInt = __LINE__) {
         if (self.logLevel.rawValue > Severity.Info.rawValue) {
             let event = Event(category: self._category, severity: Severity.Debug, message: object(), function: function, file: file, line: line)
             for var et in eventTargets {
@@ -479,7 +479,7 @@ public class Logger {
         }
     }
 
-    public func Trace<T>(@autoclosure object: ()-> T, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+    public func Trace<T>(@autoclosure object: ()-> T, file: StaticString = __FILE__, function: StaticString = __FUNCTION__, line: UInt = __LINE__) {
         if (self.logLevel.rawValue > Severity.Debug.rawValue) {
             let event = Event(category: self._category, severity: Severity.Trace, message: object(), function: function, file: file, line: line)
             for var et in eventTargets {
