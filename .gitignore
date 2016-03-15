@@ -11,8 +11,9 @@ DerivedData
 *.swp
 
 
-#exclude generated html files in folder "doc":
+#exclude generated html files in folder "doc" and "docs":
 doc/
+docs/
 
 ignored
 
