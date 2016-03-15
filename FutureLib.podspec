@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name = 'FutureLib'
-  spec.version = '0.4.4'
+  spec.version = '0.4.6'
   spec.summary = 'FutureLib is a pure Swift 2 library implementing Skala-like Futures & Promises'
   spec.license = 'Apache License, Version 2.0'
   spec.homepage = 'https://github.com/couchdeveloper/FutureLib'
