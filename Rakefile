@@ -16,6 +16,10 @@ def git_is_status_clean
     return `git status --porcelain`.empty?
 end
 
+def git_version
+    return `git describe --long`
+end
+
 
 $workspace = "FutureLib.xcworkspace"
 $allSchemes = ['FutureLib-MacOS', 'FutureLib-iOS', 'FutureLib-tvOS', 'FutureLib-watchOS']
@@ -76,4 +80,27 @@ namespace :version do
         puts "Current git description: #{`git describe --dirty`}"
         puts "Current Marketing version: #{`agvtool what-marketing-version -terse1`}"
     end
+end
+
+
+namespace :docs do
+
+    desc "Build HTML Documentation"
+    task :build do
+        cmd = "jazzy"\
+        " --clean"\
+        " --source-directory Sources"\
+        " --readme README.md"\
+        " --podspec FutureLib.podspec"\
+        " --author 'Andreas Grosam'"\
+        " --github_url https://github.com/couchdeveloper/futurelib"\
+        " --module-version #{git_version()}"\
+        " --xcodebuild-arguments -workspace,#{$workspace},-scheme,FutureLib-MacOS"\
+        " --module FutureLib"\
+        " --output docs/html"\
+        " --theme docs/themes"
+        puts(cmd)
+        sh cmd
+    end
+    
 end
