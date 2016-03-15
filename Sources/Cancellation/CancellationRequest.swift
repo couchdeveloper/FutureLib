@@ -84,6 +84,7 @@ public final class CancellationRequest: CancellationRequestType {
 
 extension CancellationRequest : CustomDebugStringConvertible {
 
+    /// - returns: A description of `self`.
     public var debugDescription: String {
         let stateString: String = self.isCancellationRequested == true
             ? "cancellation requested"

@@ -13,7 +13,6 @@ import Dispatch
  finished it will be dequeued.
  A _task_ is simply a closure which returns a `Future`.
 */
-
 public class TaskQueue {
 
     /**
@@ -21,6 +20,7 @@ public class TaskQueue {
     */
     public typealias TaskType = () -> FutureBaseType
 
+    /// Returns the dispatch queue where enqueued tasks will be started.
     public let queue: dispatch_queue_t
 
     private var _maxConcurrentTasks: UInt = 1

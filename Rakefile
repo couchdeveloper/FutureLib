@@ -52,3 +52,28 @@ desc "Build and run all benchmark tests defined within the given schemes"
 task :bench do
     sh "xcrun xcodebuild test -workspace FutureLib.xcworkspace -scheme FutureLibPerformanceTests -destination 'arch=x86_64'| xcpretty"
 end
+
+
+namespace :version do
+    
+    desc "Print a description of the current version"
+    task :describe do
+        puts "git HEAD: #{`git describe --dirty`}"
+        puts "Marketing version: #{`agvtool what-marketing-version -terse1`}"
+        puts "Build number: #{`agvtool what-version  -terse`}"
+    end
+    
+    desc "Udates BUNDLE_SHORT_VERSION with the specified version, then commits and pushes to origin"
+    task :release do
+        currentBranch = `git symbolic-ref --short HEAD`.strip
+        if currentBranch != 'master'
+            abort "Error: You must be on the master branch in order to define a new release!"
+        end
+        if !git_is_status_clean
+            abort "Error: There are uncommitted changes. Please run tests and commit changes before creating a new release!"
+        end
+        
+        puts "Current git description: #{`git describe --dirty`}"
+        puts "Current Marketing version: #{`agvtool what-marketing-version -terse1`}"
+    end
+end
