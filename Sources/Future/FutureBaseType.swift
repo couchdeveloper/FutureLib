@@ -15,8 +15,20 @@
  */
 public protocol FutureBaseType : class {
 
+    /**
+     - returns `true` if `self` has been completed, otherwise `false`.
+     */
     var isCompleted: Bool { get }
+    
+    /**
+     - returns: `true` if `self` has been completed with a success value, otherwise
+     `false`.
+     */
     var isSuccess: Bool { get }
+    
+    /**
+     - returns: `true` if `self` has been completed with an error, otherwise `false`.
+     */
     var isFailure: Bool { get }
 
     /**

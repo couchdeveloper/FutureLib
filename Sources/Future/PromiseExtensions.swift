@@ -9,7 +9,13 @@ import Dispatch
 
 
 
-
+/**
+ Creates and returns a promise which will be rejected with error `PromiseError.Timeout`
+ after the specified delay.
+ 
+ - parameter timeout: The delay after the promise will be rejected.
+ - returns: A new Promise whose `ValueType` equals `Void`.
+ */
 public func promiseWithTimeout(timeout: Double) -> Promise<Void> {
     let promise = Promise<Void>.resolveAfter(timeout,
         result: Try<Void>(error: PromiseError.Timeout))

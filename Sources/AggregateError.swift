@@ -12,20 +12,25 @@
  */
 public struct AggregateError: ErrorType {
 
+    /// Returns the errors that `self` aggregates as an array.
     public var errors: [ErrorType]
 
+    /// Initializes an `AggregateError` with an empty list of errors.
     public init() {
         self.errors = [ErrorType]()
     }
     
+    /// Initializes an `AggregateError` with a single error.
     public init(error: ErrorType) {
         self.errors = [error]
     }
     
+    /// Initializes an `AggregateError` with a sequence of errors.
     public init(_ errors: AnySequence<ErrorType>) {
         self.errors = [ErrorType](errors)
     }
     
+    /// Adds an error to `self`.
     public mutating func add(error: ErrorType) {
         errors.append(error)
     }

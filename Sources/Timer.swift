@@ -7,7 +7,9 @@
 
 import Dispatch
 
-
+/**
+ Implements a cancelable timer with precise timing.
+*/
 public class Timer {
 
     public typealias TimerHandler = (Timer) -> ()

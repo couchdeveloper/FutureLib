@@ -16,10 +16,13 @@ There are only a few errors which can be raised from operations. Programmer
 errors are usually caught by assertions.
 */
 public enum FutureError: Int, ErrorType {
+    /// Indicates an invalid type conversion.
     case InvalidCast = -1
+    /// Indicates that a predicate or filter function didn't find any matching futures.
     case NoSuchElement = -2
 }
 
+/// Equality operator for `FutureError` and `ErrorType`.
 public func == (lhs: FutureError, rhs: ErrorType) -> Bool {
     if let e = rhs as? FutureError {
         return lhs.rawValue == e.rawValue
@@ -28,6 +31,7 @@ public func == (lhs: FutureError, rhs: ErrorType) -> Bool {
     }
 }
 
+/// Equality operator for `ErrorType` and `FutureError`.
 public func == (lhs: ErrorType, rhs: FutureError) -> Bool {
     if let e = lhs as? FutureError {
         return e.rawValue == rhs.rawValue
