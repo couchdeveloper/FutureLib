@@ -8,16 +8,16 @@ def git_has_dirty_workspace
 end
 
 def git_has_untracked_files
-    return `git ls-files --exclude-standard --others`.length > 0
+    return `git ls-files --exclude-standard --others`.strip.length > 0
 end
 
 
 def git_is_status_clean
-    return `git status --porcelain`.empty?
+    return `git status --porcelain`.strip.empty?
 end
 
 def git_version
-    return `git describe --long`
+    return `git describe --long`.strip
 end
 
 
@@ -89,16 +89,14 @@ namespace :docs do
     task :build do
         cmd = "jazzy"\
         " --clean"\
-        " --source-directory Sources"\
+        " --source-directory ./Sources"\
         " --readme README.md"\
-        " --podspec FutureLib.podspec"\
         " --author 'Andreas Grosam'"\
         " --github_url https://github.com/couchdeveloper/futurelib"\
         " --module-version #{git_version()}"\
-        " --xcodebuild-arguments -workspace,#{$workspace},-scheme,FutureLib-MacOS"\
+        " --xcodebuild-arguments -workspace,../FutureLib.xcworkspace,-scheme,FutureLib-MacOS"\
         " --module FutureLib"\
-        " --output docs/html"\
-        " --theme docs/themes"
+        " --output docs/html"
         puts(cmd)
         sh cmd
     end
