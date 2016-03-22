@@ -69,8 +69,8 @@ Note: Most functions are implemented in the protocol extension.
 */
 public protocol FutureType: FutureBaseType {
 
-    typealias ValueType
-    typealias ResultType
+    associatedtype ValueType
+    associatedtype ResultType
 
     /**
      If `self` is completed returns its result, otherwise it returns `nil`.

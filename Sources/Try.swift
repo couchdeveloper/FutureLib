@@ -13,7 +13,7 @@
 */
 public protocol TryType {
     /// The type of the value.
-    typealias ValueType
+    associatedtype ValueType
     
     /**
      Creates and initializes `self` with the given value `v`.

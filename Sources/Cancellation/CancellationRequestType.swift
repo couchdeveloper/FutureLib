@@ -31,7 +31,7 @@
 public protocol CancellationRequestType {
 
 
-    typealias CancellationTokenType
+    associatedtype CancellationTokenType
 
     /**
      - returns: `true` if a cancellation has been requested.
