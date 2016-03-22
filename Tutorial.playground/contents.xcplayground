@@ -4,6 +4,6 @@
         <page name='A Motivating Example'/>
         <page name='TaskQueue Demo'/>
         <page name='TaskQueueExecutionContext Demo'/>
-        <page name='Weird API example'/>
+        <page name='NSProgress Demo'/>
     </pages>
 </playground>
