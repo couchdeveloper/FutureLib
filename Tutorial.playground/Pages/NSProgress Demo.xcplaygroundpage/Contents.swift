@@ -103,14 +103,17 @@ parentProgress.addChild(task3.progress, withPendingUnitCount: weight3)
 
 //: Add a Live view
 //: > Note: Open the Assistan View "Timeline" pane in order to view the progress indicator!
-let frame = CGRect(x: 0, y: 0, width: 200, height: 20)
+let frame = CGRect(x: 0, y: 0, width: 200, height: 50)
+let containerView = NSView(frame: frame)
 let progressView = NSProgressIndicator(frame: frame)
+containerView.addSubview(progressView)
 progressView.minValue = 0.0
 progressView.maxValue = 1.0
 progressView.style = .BarStyle
 progressView.indeterminate = false
+progressView.sizeToFit()
 
-XCPlaygroundPage.currentPage.liveView = progressView
+XCPlaygroundPage.currentPage.liveView = containerView
 progressView.startAnimation(nil)
 
 //: Now, the parent progress' `fractionCompleted` property may be bound to an UI element displaying the progress for the three tasks.
@@ -118,6 +121,7 @@ progressView.startAnimation(nil)
 let observer = ProgressObserver(progress: parentProgress, handler: { value -> () in
     dispatch_async(dispatch_get_main_queue()) {
         //print(value)
+        value
         progressView.doubleValue = value
     }
 })
