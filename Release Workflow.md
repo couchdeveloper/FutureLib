@@ -13,9 +13,9 @@ If all Tests PASS
 1. Increment bundle version: `$ agvtool new-marketing-version [version]`.
 1. In the Podfile `[NAME.podspec]` change the version `spec.version = [version]` accordingly.
 1. Run All Tests, if all tests PASS:
-1. Set git tag <version> accordingly: `$ git tag -a <version> -m "Version [version]"`.
 1. Git add all files: `$ git add --all .`.
 1. Commit changes: `$ git commit -m "Version [version]"`.
 1. Push master branch to origin master: `$ git push`.
+1. Set git tag <version> accordingly: `$ git tag -a <version> -m "Version [version]"`.
 1. Push git tags: `$ git push origin --tags`
 1. Publish Pod: `$ pod trunk push [NAME.podspec]`.
