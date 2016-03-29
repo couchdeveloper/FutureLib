@@ -33,7 +33,7 @@ private var _sync_id: Int32 = 0
  only _read_ the result from the future, but it cannot itself modify it, neither
  can it complete the future.
 */
-public class Future<T> : FutureType {
+public class Future<T>: FutureType {
 
     public typealias ValueType = T
     public typealias ResultType = Try<ValueType>
@@ -175,8 +175,7 @@ public class Future<T> : FutureType {
      - parameter ct: A cancellation token which will be monitored.
      - returns: A new future.
      */
-    @warn_unused_result
-    public final func mapTo<S>(ct: CancellationTokenType = CancellationTokenNone())
+    @warn_unused_result public final func mapTo<S>(ct: CancellationTokenType = CancellationTokenNone())
         -> Future<S> {
         let returnedFuture = Future<S>()
         self.onComplete(ec: SynchronousCurrent(), ct: ct) { [weak returnedFuture] result in
@@ -360,8 +359,7 @@ public extension Future {
     }
 
 
-    @warn_unused_result
-    public final func continueWith<U>(
+    @warn_unused_result public final func continueWith<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: FutureBaseType throws -> U)
@@ -377,8 +375,7 @@ public extension Future {
     }
 
 
-    @warn_unused_result
-    public final func continueWith<U>(
+    @warn_unused_result public final func continueWith<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: (FutureBaseType) -> Future<U>)
@@ -399,7 +396,7 @@ public extension Future {
 
 
 // MARK: Extension CustomStringConvertible
-extension Future : CustomStringConvertible {
+extension Future: CustomStringConvertible {
 
     /**
      - returns: A description of `self`.
@@ -427,7 +424,7 @@ extension Future : CustomStringConvertible {
 
 
 // MARK: Extension CustomDebugStringConvertible
-extension Future : CustomDebugStringConvertible {
+extension Future: CustomDebugStringConvertible {
 
     /**
      - returns: A description of `self`.
@@ -455,7 +452,7 @@ extension Future : CustomDebugStringConvertible {
 }
 
 
-internal final class RootFuture<T> : Future<T> {
+internal final class RootFuture<T>: Future<T> {
 
     typealias nullary_func = () -> ()
 

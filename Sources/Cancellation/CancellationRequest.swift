@@ -82,7 +82,7 @@ public final class CancellationRequest: CancellationRequestType {
 
 
 
-extension CancellationRequest : CustomDebugStringConvertible {
+extension CancellationRequest: CustomDebugStringConvertible {
 
     /// - returns: A description of `self`.
     public var debugDescription: String {

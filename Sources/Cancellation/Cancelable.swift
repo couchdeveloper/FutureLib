@@ -28,7 +28,7 @@
     can get a cancellation signal through registering an error handler on the
     corresponding future of the promise.
 */
-public protocol Cancelable : class {
+public protocol Cancelable: class {
 
     /**
      Requests a cancellation. An implementation should as soon as possible

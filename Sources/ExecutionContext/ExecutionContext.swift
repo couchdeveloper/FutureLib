@@ -96,10 +96,10 @@ public protocol ExecutionContext {
 }
 
 
-//public protocol SyncExecutionContext : ExecutionContext { }
-//public protocol AsyncExecutionContext : ExecutionContext { }
-//public protocol BarrierSyncExecutionContext : SyncExecutionContext { }
-//public protocol BarrierAsyncExecutionContext : AsyncExecutionContext { }
+//public protocol SyncExecutionContext: ExecutionContext { }
+//public protocol AsyncExecutionContext: ExecutionContext { }
+//public protocol BarrierSyncExecutionContext: SyncExecutionContext { }
+//public protocol BarrierAsyncExecutionContext: AsyncExecutionContext { }
 
 
 public extension ExecutionContext {

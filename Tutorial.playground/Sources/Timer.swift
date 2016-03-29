@@ -1,7 +1,7 @@
 import Dispatch
 
 
-public class Timer : Cancelable {
+public class Timer: Cancelable {
 
     public typealias TimerHandler = (Timer) -> ()
 

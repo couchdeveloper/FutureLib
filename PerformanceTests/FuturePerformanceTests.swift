@@ -9,7 +9,7 @@
 import XCTest
 import FutureLib
 
-private struct SyncEC : ExecutionContext {
+private struct SyncEC: ExecutionContext {
 
     func execute(f: ()->()) {
         f()

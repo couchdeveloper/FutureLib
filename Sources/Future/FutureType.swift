@@ -316,8 +316,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      and returns a result of type `U`.
      - returns: A new future.
      */
-    @warn_unused_result
-    public final func map<U>(
+    @warn_unused_result     public final func map<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: ValueType throws -> U)
@@ -357,8 +356,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A mapping function of type `T -> Future<U>` defining the continuation.
      - returns: A new future.
     */
-    @warn_unused_result
-    public final func flatMap<U>(
+    @warn_unused_result     public final func flatMap<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: ValueType throws -> Future<U>)
@@ -389,8 +387,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter ct: A cancellation token which will be monitored.
      - parameter other: The second future.
     */
-    @warn_unused_result
-    public final func zip<U>(
+    @warn_unused_result     public final func zip<U>(
         other: Future<U>,
         ct: CancellationTokenType = CancellationTokenNone())
         -> Future<(ValueType, U)> 
@@ -421,8 +418,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A closure with signature `ErrorType throws -> T`.
      - returns: A new future.
      */
-    @warn_unused_result
-    public final func recover(
+    @warn_unused_result     public final func recover(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: ErrorType throws -> ValueType)
@@ -466,8 +462,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      a deferred value by means of a future of type `future<T>`.
      - returns: A new future.
      */
-    @warn_unused_result
-    public final func recoverWith(
+    @warn_unused_result     public final func recoverWith(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: ErrorType throws -> Future<ValueType>)
@@ -503,8 +498,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      to the error value of `self`.
      - returns: A new future.
      */
-    @warn_unused_result
-    public final func transform<U>(
+    @warn_unused_result     public final func transform<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         s: ValueType throws -> U,
@@ -542,8 +536,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A function that transforms the result of this future
      - returns: A new `Future` that will be completed with the transformed value.
     */
-    @warn_unused_result
-    public final func transform<U>(
+    @warn_unused_result     public final func transform<U>(
         ec ec: ExecutionContext = ConcurrentAsync(), 
         ct: CancellationTokenType = CancellationTokenNone(),
         f: Try<ValueType> throws -> Try<U>) -> Future<U> 
@@ -572,8 +565,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A function that transforms the result of this future.
      - returns: A new `Future` that will be completed with the transformed value.
     */
-    @warn_unused_result
-    public final func transformWith<U>(
+    @warn_unused_result     public final func transformWith<U>(
         ec ec: ExecutionContext = ConcurrentAsync(), 
         ct: CancellationTokenType = CancellationTokenNone(),
         f: Try<ValueType> throws -> Future<U>) 
@@ -607,8 +599,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter predicate: A closure with signature `ValueType throws -> Bool` which is
                     applied to the success value of `self`.
     */
-    @warn_unused_result
-    public final func filter(
+    @warn_unused_result     public final func filter(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         predicate: ValueType throws -> Bool)

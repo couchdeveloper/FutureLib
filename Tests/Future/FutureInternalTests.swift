@@ -13,7 +13,7 @@ import XCTest
 A helper execution context which synchronously executes a given closure on the
 _current_ execution context. This class is used to test private behavior of Future.
 */
-struct SyncCurrent : ExecutionContext {
+struct SyncCurrent: ExecutionContext {
 
     internal func execute(f:()->()) {
         f()

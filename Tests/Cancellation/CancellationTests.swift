@@ -9,7 +9,7 @@ import XCTest
 import FutureLib
 
 
-class MyCancelable : Cancelable {
+class MyCancelable: Cancelable {
 
     func cancel() -> () {
     }

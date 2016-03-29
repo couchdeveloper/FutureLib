@@ -9,7 +9,7 @@ import XCTest
 import FutureLib
 
 
-class StringStream : FlushableOutputStreamType {
+class StringStream: FlushableOutputStreamType {
     final var string: String = ""
     final func write(string: String) {
         self.string.appendContentsOf(string)
@@ -19,7 +19,7 @@ class StringStream : FlushableOutputStreamType {
 
 }
 
-class StringEventTarget : StreamEventTarget {
+class StringEventTarget: StreamEventTarget {
 
     private let _stringstream = StringStream()
 
@@ -48,7 +48,7 @@ class StringEventTarget : StreamEventTarget {
 private class TestMessage {
 }
 
-extension TestMessage : CustomDebugStringConvertible {
+extension TestMessage: CustomDebugStringConvertible {
 
     var debugDescription: String {
         return "This is a verbose description of `TestMessage`."
@@ -57,7 +57,7 @@ extension TestMessage : CustomDebugStringConvertible {
 }
 
 
-extension TestMessage : CustomStringConvertible {
+extension TestMessage: CustomStringConvertible {
 
     var description: String {
         return "This is a short description of `TestMessage`."

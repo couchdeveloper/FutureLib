@@ -14,54 +14,54 @@
 public protocol TryType {
     /// The type of the value.
     associatedtype ValueType
-    
+
     /**
      Creates and initializes `self` with the given value `v`.
-     
+
      - parameter v: The value with which `self` will be initialized.
      */
     init(_ v: ValueType)
-    
+
     /**
      Creates and initializes `self` with the given error `error`.
-     
+
      - parameter error: The error with which `self` will be initialized.
      */
     init(error: ErrorType)
-    
+
     /**
      Creates and initializes a `Try` with the return value of the given
      closure. When the closure fails and throws and error, the result will be
      initialized with the error thrown from the closure.
-     
+
      - parameter f: A closure whose result will initialize `self`.
      */
     init(@noescape _ f: Void throws -> ValueType)
-    
+
     /// - returns: `true` if self is a `Success`, other wise `false`.
     var isSuccess: Bool { get }
-    
+
     /// - returns: `true` if self is a `Failure`, other wise `false`.
     var isFailure: Bool { get }
-    
-    
+
+
     /**
      If `self` is `Success` returns the value of `Success`. Otherwise throws
      the value of `Failure`.
-     
+
      - returns: `self`'s success value.
      - throws: `self`'s error value.
      */
     func get() throws -> ValueType
-    
-    
+
+
     /**
      Converts the Try into an Optional<T>.
      - returns:  `None` if this is a `Failure` or a `Some` containing the value if `self`
      is a `Success`.
      */
     func toOption() -> ValueType?
-    
+
     //func map<U>(@noescape f: ValueType throws -> U) -> TryType<U>
     //func flatMap<U>(@noescape f: ValueType -> TryType<U>) -> TryType<U>
     //func recoverWith(@noescape f: ErrorType throws -> TryType) -> TryType
@@ -73,14 +73,16 @@ public protocol TryType {
 
 
 /**
- The generic type `Try` represents the result of a computation which either 
+ The generic type `Try` represents the result of a computation which either
  yields a value of type `T` or an error value whose type conforms to `ErrorType`.
  */
 public enum Try<T>: TryType {
 
     public typealias ValueType = T
 
+    /// Represents the success value of `self`.
     case Success(ValueType)
+    /// Represents the error value of `self`.
     case Failure(ErrorType)
 
     /**
@@ -103,7 +105,7 @@ public enum Try<T>: TryType {
 
     /**
      Creates and initializes a `Try` with the return value of the given
-     closure. When the closure fails and throws and error, the result will be
+     closure. When the closure fails and throws an error, the result will be
      initialized with the error thrown from the closure.
 
      - parameter f: A closure whose result will initialize `self`.
@@ -118,14 +120,14 @@ public enum Try<T>: TryType {
 
     /**
      Creates and initializes a `Try` with the return value of the given
-     closure. 
-     
+     closure.
+
      - parameter f: A closure whose result will initialize `self`.
      */
     public init(@noescape _ f: Void -> T) {
         self = Success(f())
     }
-    
+
 
     /**
      - returns: `true` if self is a `Success`, other wise `false`.
@@ -142,11 +144,11 @@ public enum Try<T>: TryType {
         return !isSuccess
     }
 
-    
+
     /**
      If `self` is `Success` returns the value of `Success`. Otherwise throws
      the value of `Failure`.
-     
+
      - returns: `self`'s success value.
      - throws: `self`'s error value.
      */
@@ -157,6 +159,7 @@ public enum Try<T>: TryType {
             throw error
         }
     }
+
     
     /**
      If `self` is `Success` returns a new result with the throwing mapping function
@@ -165,10 +168,9 @@ public enum Try<T>: TryType {
      value of `Failure`.
 
      - parameter f: The maping function.
-     - returns: A Try<U>.
+     - returns: A `Try<U>`.
      */
-    @warn_unused_result
-    public func map<U>(@noescape f: T throws -> U) -> Try<U> {
+    @warn_unused_result public func map<U>(@noescape f: T throws -> U) -> Try<U> {
         switch self {
         case .Success(let value):
             return Try<U>({ try f(value) })
@@ -186,43 +188,51 @@ public enum Try<T>: TryType {
      - parameter f: The maping function.
      - returns: A `Try<U>`.
      */
-    @warn_unused_result
-    public func flatMap<U>(@noescape f: T -> Try<U>) -> Try<U> {
+    @warn_unused_result public func flatMap<U>(@noescape f: T -> Try<U>) -> Try<U> {
         switch self {
         case .Success(let value):
             return f(value)
         case .Failure(let error):
             return Try<U>(error: error)
         }
-    }
+    }   
 
-    
+
     /**
      Applies the given function `f` if this is a `Failure`, otherwise returns `self`
-     if this is a `Success`.
-     This is like `flatMap` for the exception.
+     if this is a `Success`. If the function `f` throws an error, returns a `Try`
+     initialized with the same failure value.
+     This is like `flatMap` for the failure value.
+     
+     - parameter f: The function applied to the failure value.     
+     - returns: A `Try`.
     */
     public func recoverWith(@noescape f: ErrorType throws -> Try) -> Try {
         switch self {
         case .Success: return self
-        case .Failure(let error): 
+        case .Failure(let error):
             do {
-                return try f(error)            
+                return try f(error)
             } catch {
                 return Try(error: error)
             }
         }
     }
     
+
     /**
      Applies the given function `f` if this is a `Failure`, otherwise returns `self`
-     if this is a `Success`.
-     This is like map for the exception.
+     if this is a `Success`.  If the function `f` throws an error, returns a `Try`
+     initialized with the same failure value.
+     This is like `map` for the failure value.
+     
+     - parameter f: The function applied to the failure value.     
+     - returns: A `Try`.     
     */
     public func recover(@noescape f: ErrorType throws -> T) -> Try {
         switch self {
         case .Success: return self
-        case .Failure(let error): 
+        case .Failure(let error):
             do {
                 return try Try(f(error))
             } catch {
@@ -230,9 +240,8 @@ public enum Try<T>: TryType {
             }
         }
     }
-    
 
-    
+
     /**
      Converts the Try into an Optional<T>.
      - returns:  `None` if this is a `Failure` or a `Some` containing the value if `self`
@@ -244,7 +253,7 @@ public enum Try<T>: TryType {
         case .Failure: return .None
         }
     }
-    
+
 }
 
 
@@ -252,6 +261,8 @@ extension Try where T: TryType {
     /**
      Transforms a nested `Try`, ie, a `Try` of type `Try<Try<T>>`,
      into an un-nested `Try`, ie, a `Try` of type `Try<T>`.
+     
+     returns: A value of type `Try`.
      */
     public func flatten() -> T {
         switch self {
@@ -259,7 +270,7 @@ extension Try where T: TryType {
         case .Failure(let error): return T(error: error)
         }
     }
-    
+
 }
 
 
@@ -267,8 +278,8 @@ extension Try where T: TryType {
 /**
  Implements the CustomStringConvertible and CustomDebugStringConvertible protocol.
  */
-extension Try : CustomStringConvertible, CustomDebugStringConvertible {
-    
+extension Try: CustomStringConvertible, CustomDebugStringConvertible {
+
     /// Returns a description of `self`.
     public var description: String {
         switch self {

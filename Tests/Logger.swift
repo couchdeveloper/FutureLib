@@ -31,7 +31,7 @@ public protocol EventType {
 
 
 
-public struct Event<T> : EventType {
+public struct Event<T>: EventType {
 
     public typealias ValueType = T
 
@@ -78,7 +78,7 @@ public struct WriteOptions: OptionSetType {
     public static let Sync         = WriteOptions(rawValue: 1 << 0)
 }
 
-public struct EventOptions : OptionSetType {
+public struct EventOptions: OptionSetType {
     public let rawValue: Int
     public init(rawValue: Int) { self.rawValue = rawValue }
 
@@ -157,7 +157,7 @@ public protocol Flushable {
 
 
 
-public protocol StreamEventTargetType : EventTargetType, Flushable {
+public protocol StreamEventTargetType: EventTargetType, Flushable {
 
     var eventOptions: EventOptions { get set }
 
@@ -168,26 +168,26 @@ public protocol StreamEventTargetType : EventTargetType, Flushable {
 
 
 
-public protocol FlushableOutputStreamType : OutputStreamType, Flushable {
+public protocol FlushableOutputStreamType: OutputStreamType, Flushable {
 }
 
 
 
-private struct StdOutputStream : FlushableOutputStreamType {
+private struct StdOutputStream: FlushableOutputStreamType {
     func write(string: String) { fputs(string, stdout) }
     func flush() { fflush(stdout)}
 }
 
 
 
-private struct StdErrorStream : FlushableOutputStreamType {
+private struct StdErrorStream: FlushableOutputStreamType {
     func write(string: String) { fputs(string, stdout) }
     func flush() { fflush(stderr)}
 }
 
 
 
-public class ConsoleEventTarget : StreamEventTarget {
+public class ConsoleEventTarget: StreamEventTarget {
 
     static private var stdOutputStream = StdOutputStream()
     static private let _executionQueue = dispatch_queue_create("ConsoleEventTarget queue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INTERACTIVE, 0))
@@ -200,7 +200,7 @@ public class ConsoleEventTarget : StreamEventTarget {
 
 
 
-public class StreamEventTarget : StreamEventTargetType {
+public class StreamEventTarget: StreamEventTargetType {
 
     private (set) public var name: String
     public let executionQueue: dispatch_queue_t

@@ -8,7 +8,7 @@
 
 // Error type
 
-enum TestError : Int, ErrorType {
+enum TestError: Int, ErrorType {
     case Failed
     case Failed2
     case Failed3
