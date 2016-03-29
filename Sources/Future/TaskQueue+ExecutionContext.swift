@@ -12,8 +12,10 @@
 extension TaskQueue: ExecutionContext {
 
     /** 
-     Submit the closure `f` for execution on the task queue. The block will be
-     asynchronously submitted to `self.queue`.
+     Asynchronously submits the closure `f` for execution on the TaskQueue's queue. 
+     The closure will be directly submitted to `self.queue`. That is, the closure 
+     will _not_ be enqueued into `self` and property `maxConcurrentTasks` will not 
+     be changed nor honored.
      
      - parameter f: The closure.
     */
@@ -22,18 +24,16 @@ extension TaskQueue: ExecutionContext {
     }
 
     /**
-     Asynchronously submit the task `task` for execution on the task queue. The
-     task will be immediately started when the number of concurrent running tasks 
-     is less than the maximum number of concurrent tasks. Otherwise, it will be 
-     enqueued in a FIFO queue and waits there until the concurrent number of tasks
-     decreases to less than the maximum and it's its turn to be started.
+     Enqueues the task `task` for execution on the task queue. The task will be 
+     started when the number of concurrent running tasks is less than the maximum 
+     number of concurrent tasks. 
      
-     When the task will be stated, the function `start` will be called with the
-     returned future as its argument.
+     When the task has been started and has returned its future, the function `start` 
+     will be called with the returned future as its argument.
      
      - parameter task: The asynchronous task with signature `() throws -> Future<T>`.
      - parameter start: A closure which will be called when the task will be started
-     with the tasks's returned future as its argument.
+     with the task's returned future as its argument.
      */
     public func schedule<T>(task: () throws -> Future<T>, start: Future<T> -> ()) {
         self.enqueue {

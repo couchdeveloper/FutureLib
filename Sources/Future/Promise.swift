@@ -11,14 +11,14 @@ import Dispatch
 
 
 /**
- Defines errors which belong to the domain Promise.
+ Defines errors which belong to the domain "Promise".
 */
 public enum PromiseError: Int, ErrorType {
 
-    /// Indicates that the promise has been deinitialized before its associated future has been completed.
+    /// Specifies that the promise has been deinitialized before its associated future has been completed.
     case BrokenPromise = -1
     
-    /// Indicates that the promise has been completed due to a timeout.
+    /// Specifies that the promise has been completed due to a timeout.
     case Timeout = -2
 
 }

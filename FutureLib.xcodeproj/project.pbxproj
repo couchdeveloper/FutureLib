@@ -140,9 +140,6 @@
 		A10E9E2A1C3BBD4A00CD5B07 /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9391C15EAFC0019060A /* PromiseTests.swift */; };
 		A10E9E2B1C3BBD4C00CD5B07 /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9391C15EAFC0019060A /* PromiseTests.swift */; };
 		A10E9E2C1C3BBD4D00CD5B07 /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9391C15EAFC0019060A /* PromiseTests.swift */; };
-		A10E9E2D1C3BBD5300CD5B07 /* LoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9371C15EAFC0019060A /* LoggerTests.swift */; };
-		A10E9E2E1C3BBD5400CD5B07 /* LoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9371C15EAFC0019060A /* LoggerTests.swift */; };
-		A10E9E2F1C3BBD5500CD5B07 /* LoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9371C15EAFC0019060A /* LoggerTests.swift */; };
 		A10E9E301C3BBD5D00CD5B07 /* FutureInternalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB92C1C15EAFC0019060A /* FutureInternalTests.swift */; };
 		A10E9E311C3BBD5D00CD5B07 /* FutureBaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9261C15EAFC0019060A /* FutureBaseTests.swift */; };
 		A10E9E321C3BBD5D00CD5B07 /* FutureBaseContinueWithTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9251C15EAFC0019060A /* FutureBaseContinueWithTests.swift */; };
@@ -212,10 +209,6 @@
 		A12FC0FB1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
 		A12FC0FC1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
 		A12FC0FD1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
-		A151443B1C75E4E6003A400F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
-		A151443C1C75E4E8003A400F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
-		A151443D1C75E4EA003A400F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
-		A151443E1C75E4EB003A400F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
 		A16435541C4A693A0084DAD1 /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10E9D3F1C3BB98700CD5B07 /* FutureLib.framework */; };
 		A16FC21B1C7E2D2E001A703D /* FutureTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16FC21A1C7E2D2E001A703D /* FutureTypeTests.swift */; };
 		A16FC21C1C7E2D2E001A703D /* FutureTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16FC21A1C7E2D2E001A703D /* FutureTypeTests.swift */; };
@@ -302,7 +295,6 @@
 		A10CB9311C15EAFC0019060A /* FutureLifetimeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureLifetimeTests.swift; sourceTree = "<group>"; };
 		A10CB9331C15EAFC0019060A /* FutureTypeThenExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeThenExtensionTests.swift; sourceTree = "<group>"; };
 		A10CB9351C15EAFC0019060A /* FutureLibTests-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FutureLibTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		A10CB9371C15EAFC0019060A /* LoggerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggerTests.swift; sourceTree = "<group>"; };
 		A10CB9391C15EAFC0019060A /* PromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseTests.swift; sourceTree = "<group>"; };
 		A10CB93B1C15EAFC0019060A /* TryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TryTests.swift; sourceTree = "<group>"; };
 		A10CB93C1C15EAFC0019060A /* schedule_after.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = schedule_after.swift; sourceTree = "<group>"; };
@@ -522,14 +514,6 @@
 			path = Future;
 			sourceTree = "<group>";
 		};
-		A10CB9361C15EAFC0019060A /* Logger */ = {
-			isa = PBXGroup;
-			children = (
-				A10CB9371C15EAFC0019060A /* LoggerTests.swift */,
-			);
-			path = Logger;
-			sourceTree = "<group>";
-		};
 		A10CB9381C15EAFC0019060A /* Promise */ = {
 			isa = PBXGroup;
 			children = (
@@ -633,7 +617,6 @@
 				A10CB91E1C15EAFC0019060A /* Cancellation */,
 				A10CB9221C15EAFC0019060A /* ClosureRegistry */,
 				A10CB9241C15EAFC0019060A /* Future */,
-				A10CB9361C15EAFC0019060A /* Logger */,
 				A10CB9381C15EAFC0019060A /* Promise */,
 				A10CB93A1C15EAFC0019060A /* Try */,
 				A10CB93F1C15EAFC0019060A /* TaskQueue */,
@@ -992,7 +975,6 @@
 				A10E9DFE1C3BBD2300CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DC61C3BBD1400CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DAE1C3BBD0C00CD5B07 /* TaskQueue.swift in Sources */,
-				A151443B1C75E4E6003A400F /* Logger.swift in Sources */,
 				A10E9DAC1C3BBD0C00CD5B07 /* Try.swift in Sources */,
 				A10E9E041C3BBD2300CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DAF1C3BBD0C00CD5B07 /* Timer.swift in Sources */,
@@ -1024,7 +1006,6 @@
 				A10E9E3A1C3BBD5D00CD5B07 /* FutureLifetimeTests.swift in Sources */,
 				A10E9E341C3BBD5D00CD5B07 /* FutureBasicContinuationsTests.swift in Sources */,
 				A10E9E241C3BBD3600CD5B07 /* TaskQueueTests.swift in Sources */,
-				A10E9E2F1C3BBD5500CD5B07 /* LoggerTests.swift in Sources */,
 				A10E9E391C3BBD5D00CD5B07 /* FutureStaticFunctionsTests.swift in Sources */,
 				A10E9E381C3BBD5D00CD5B07 /* FutureCancellationTests.swift in Sources */,
 				A10E9E5E1C3BBD7200CD5B07 /* CancellationTests.swift in Sources */,
@@ -1066,7 +1047,6 @@
 				A10E9E081C3BBD2300CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DD41C3BBD1500CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DB21C3BBD0D00CD5B07 /* TaskQueue.swift in Sources */,
-				A151443C1C75E4E8003A400F /* Logger.swift in Sources */,
 				A10E9DB01C3BBD0D00CD5B07 /* Try.swift in Sources */,
 				A10E9E0E1C3BBD2300CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DB31C3BBD0D00CD5B07 /* Timer.swift in Sources */,
@@ -1098,7 +1078,6 @@
 				A10E9E481C3BBD5E00CD5B07 /* FutureLifetimeTests.swift in Sources */,
 				A10E9E421C3BBD5E00CD5B07 /* FutureBasicContinuationsTests.swift in Sources */,
 				A10E9E251C3BBD3800CD5B07 /* TaskQueueTests.swift in Sources */,
-				A10E9E2E1C3BBD5400CD5B07 /* LoggerTests.swift in Sources */,
 				A10E9E471C3BBD5E00CD5B07 /* FutureStaticFunctionsTests.swift in Sources */,
 				A10E9E461C3BBD5E00CD5B07 /* FutureCancellationTests.swift in Sources */,
 				A10E9E611C3BBD7300CD5B07 /* CancellationTests.swift in Sources */,
@@ -1140,7 +1119,6 @@
 				A10E9E121C3BBD2400CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DE21C3BBD1500CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DB61C3BBD0D00CD5B07 /* TaskQueue.swift in Sources */,
-				A151443D1C75E4EA003A400F /* Logger.swift in Sources */,
 				A10E9DB41C3BBD0D00CD5B07 /* Try.swift in Sources */,
 				A10E9E181C3BBD2400CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DB71C3BBD0D00CD5B07 /* Timer.swift in Sources */,
@@ -1177,7 +1155,6 @@
 				A10E9E1C1C3BBD2500CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DF01C3BBD1600CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DBA1C3BBD0E00CD5B07 /* TaskQueue.swift in Sources */,
-				A151443E1C75E4EB003A400F /* Logger.swift in Sources */,
 				A10E9DB81C3BBD0E00CD5B07 /* Try.swift in Sources */,
 				A10E9E221C3BBD2500CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DBB1C3BBD0E00CD5B07 /* Timer.swift in Sources */,
@@ -1209,7 +1186,6 @@
 				A10E9E561C3BBD6000CD5B07 /* FutureLifetimeTests.swift in Sources */,
 				A10E9E501C3BBD6000CD5B07 /* FutureBasicContinuationsTests.swift in Sources */,
 				A10E9E261C3BBD3C00CD5B07 /* TaskQueueTests.swift in Sources */,
-				A10E9E2D1C3BBD5300CD5B07 /* LoggerTests.swift in Sources */,
 				A10E9E551C3BBD6000CD5B07 /* FutureStaticFunctionsTests.swift in Sources */,
 				A10E9E541C3BBD6000CD5B07 /* FutureCancellationTests.swift in Sources */,
 				A10E9E641C3BBD7500CD5B07 /* CancellationTests.swift in Sources */,

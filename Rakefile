@@ -90,12 +90,11 @@ namespace :docs do
         cmd = "jazzy"\
         " --swift-version 2.2"\
         " --clean"\
-        " --source-directory ./Sources"\
         " --readme README.md"\
         " --author 'Andreas Grosam'"\
         " --github_url https://github.com/couchdeveloper/futurelib"\
         " --module-version #{git_version()}"\
-        " --xcodebuild-arguments -workspace,../FutureLib.xcworkspace,-scheme,FutureLib-MacOS"\
+        " --xcodebuild-arguments -scheme,FutureLib-MacOS,-target,FutureLib-MacOS"\
         " --module FutureLib"\
         " --output docs/html"
         sh cmd

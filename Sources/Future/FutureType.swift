@@ -10,15 +10,15 @@
 // MARK: FutureError
 
 /**
-Defines errors which belong to the domain Future.
+Defines errors which belong to the domain "Future".
 
 There are only a few errors which can be raised from operations. Programmer
 errors are usually caught by assertions.
 */
 public enum FutureError: Int, ErrorType {
-    /// Indicates an invalid type conversion.
+    /// Specifies an invalid type conversion.
     case InvalidCast = -1
-    /// Indicates that a predicate or filter function didn't find any matching futures.
+    /// Specifies that a predicate or filter function didn't find any matching futures.
     case NoSuchElement = -2
 }
 

@@ -8,11 +8,12 @@
 
 
 /**
- An error used when a task or operation has been cancelled.
+ Defines errors which belong to the domain "Cancellation". 
+ This will be used when a task or operation has been cancelled.
 */
 public enum CancellationError: Int, ErrorType {
     
-    // Indicates that the task or operation has been cancelled.
+    /// Specifies that the task or operation has been cancelled.
     case Cancelled = -1
 }
 
