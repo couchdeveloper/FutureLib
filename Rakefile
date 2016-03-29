@@ -59,14 +59,14 @@ end
 
 
 namespace :version do
-    
+
     desc "Print a description of the current version"
     task :describe do
         puts "git HEAD: #{`git describe --dirty`}"
         puts "Marketing version: #{`agvtool what-marketing-version -terse1`}"
         puts "Build number: #{`agvtool what-version  -terse`}"
     end
-    
+
     desc "Udates BUNDLE_SHORT_VERSION with the specified version, then commits and pushes to origin"
     task :release do
         currentBranch = `git symbolic-ref --short HEAD`.strip
@@ -76,7 +76,7 @@ namespace :version do
         if !git_is_status_clean
             abort "Error: There are uncommitted changes. Please run tests and commit changes before creating a new release!"
         end
-        
+
         puts "Current git description: #{`git describe --dirty`}"
         puts "Current Marketing version: #{`agvtool what-marketing-version -terse1`}"
     end
@@ -88,6 +88,7 @@ namespace :docs do
     desc "Build HTML Documentation"
     task :build do
         cmd = "jazzy"\
+        " --swift-version 2.2"\
         " --clean"\
         " --source-directory ./Sources"\
         " --readme README.md"\
@@ -97,8 +98,7 @@ namespace :docs do
         " --xcodebuild-arguments -workspace,../FutureLib.xcworkspace,-scheme,FutureLib-MacOS"\
         " --module FutureLib"\
         " --output docs/html"
-        puts(cmd)
         sh cmd
     end
-    
+
 end
