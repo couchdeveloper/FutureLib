@@ -367,7 +367,7 @@ public extension FutureType where ResultType == Try<ValueType> {
         onComplete(ec: ConcurrentAsync(), ct: ct) { [weak returnedFuture] result in
             switch result {
             case .Success(let value):
-                ec.schedule({ return try f(value) }, start: { future in
+                ec.schedule({ return try f(value) }, onStart: { future in
                     returnedFuture?.completeWith(future)
                 })
             case .Failure(let error):
@@ -475,7 +475,7 @@ public extension FutureType where ResultType == Try<ValueType> {
             case .Success(let value):
                 returnedFuture?.complete(value)
             case .Failure(let error):
-                ec.schedule({ return try f(error) }, start: { future in
+                ec.schedule({ return try f(error) }, onStart: { future in
                     returnedFuture?.completeWith(future)
                 })
             }

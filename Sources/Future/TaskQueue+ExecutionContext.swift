@@ -28,14 +28,14 @@ extension TaskQueue: ExecutionContext {
      started when the number of concurrent running tasks is less than the maximum 
      number of concurrent tasks. 
      
-     When the task has been started and has returned its future, the function `start` 
+     When the task has been started and has returned its future, the function `onStart` 
      will be called with the returned future as its argument.
      
      - parameter task: The asynchronous task with signature `() throws -> Future<T>`.
-     - parameter start: A closure which will be called when the task will be started
+     - parameter onStart: A closure which will be called when the task will be started
      with the task's returned future as its argument.
      */
-    public func schedule<T>(task: () throws -> Future<T>, start: Future<T> -> ()) {
+    public func schedule<T>(task: () throws -> Future<T>, onStart: Future<T> -> ()) {
         self.enqueue {
             var future: Future<T>?
             do {
@@ -44,7 +44,7 @@ extension TaskQueue: ExecutionContext {
             catch let error {
                 future = Future<T>.failed(error)
             }
-            start(future!)
+            onStart(future!)
             return future!
         }
     }

@@ -81,17 +81,17 @@ public protocol ExecutionContext {
      Schedules an asynchronous task `task` for execution on the execution context. 
      The task will be enqueued and the function `schedule` immediately returns.
      When the task has been started and a future has been returned, the  execution 
-     context calls the callback `start` with the returned future as its argument.
-     If the task throws an error before returning a future, the start method will
-     be called with a future completed with that error.
+     context calls the callback `onStart` with the returned future as its argument.
+     If the task throws an error before returning a future, the `onStart` method 
+     will be called with a future completed with that error.
 
      - parameter task: A closure which is being scheduled. The closure may throw
      an error prior to returning the future.
 
-     - parameter start: A callback that is called when the task has been started
+     - parameter onStart: A callback that is called when the task has been started
      whose parameter is the future returned from the task.
      */
-    func schedule<T>(task: () throws -> Future<T>, start: Future<T> -> ())
+    func schedule<T>(task: () throws -> Future<T>, onStart: Future<T> -> ())
 
 }
 
@@ -109,15 +109,15 @@ public extension ExecutionContext {
      Immediately start the task on the execution context.
 
      - parameter task: A closure which is being scheduled.
-     - parameter start: A closure that is called when the `task` is being scheduled.
+     - parameter onStart: A closure that is called when the `task` is being scheduled.
      */
-    public func schedule<T>(task: () throws -> Future<T>, start: Future<T> -> ()) {
+    public func schedule<T>(task: () throws -> Future<T>, onStart: Future<T> -> ()) {
         execute {
             do {
-                start(try task())
+                onStart(try task())
             }
             catch let error {
-                start(Future<T>.failed(error))
+                onStart(Future<T>.failed(error))
             }
         }
     }

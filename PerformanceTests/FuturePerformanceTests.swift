@@ -15,8 +15,8 @@ private struct SyncEC: ExecutionContext {
         f()
     }
 
-    func schedule<FT: FutureType>(task: () -> FT, start: FT -> ()) {
-        start(task())
+    func schedule<FT: FutureType>(task: () -> FT, onStart: FT -> ()) {
+        onStart(task())
     }
 }
 
