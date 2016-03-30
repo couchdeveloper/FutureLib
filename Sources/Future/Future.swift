@@ -359,7 +359,29 @@ public extension Future {
     }
 
 
-    @warn_unused_result public final func continueWith<U>(
+    /**
+     Registers the mapping function `f` which will be applied to `self` as a
+     `FutureBaseType` when the future will be completed or when the continuation
+     will be cancelled.
+     
+     If the cancellation token is already cancelled or if it will be cancelled
+     before `self` has been completed, the returned future will be completed with
+     a `CancellationError.Cancelled` error. Note that cancelling a continuation
+     will not complete `self`! Instead the mapping function `f` will be "unregistered"
+     and called with the pending `self` as its argument. Otherwise, executes the
+     closure `f` on the given execution context when `self` is completed passing
+     the completed `self` as the argument.
+     
+     The method retains `self` until it is completed or all continuations have
+     been unregistered. If there are no other strong references and all continuations
+     have been unregistered, `self` is being deinitialized.
+     
+     - parameter ec: The execution context where the function `f` will be executed.
+     - parameter ct: A cancellation token.
+     - parameter f: A closure which will be called with the completed `self` as its argument.
+     */
+    @warn_unused_result 
+    public final func continueWith<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: FutureBaseType throws -> U)
@@ -370,22 +392,6 @@ public extension Future {
         _continueWith(on: ec, cancellationToken: ct) { [weak returnedFuture] (future) in
             let result = Try<U>({try f(future)})
             returnedFuture?.complete(result)
-        }
-        return returnedFuture
-    }
-
-
-    @warn_unused_result public final func continueWith<U>(
-        ec ec: ExecutionContext = ConcurrentAsync(),
-        ct: CancellationTokenType = CancellationTokenNone(),
-        f: (FutureBaseType) -> Future<U>)
-        -> Future<U> {
-        // Caution: the mapping function must be called even when the returned
-        // future has been deinitialized prematurely!
-        let returnedFuture = Future<U>()
-        _continueWith(on: ec, cancellationToken: ct) { [weak returnedFuture] future in
-            let mappedFuture = f(future)
-            returnedFuture?.completeWith(mappedFuture)
         }
         return returnedFuture
     }
