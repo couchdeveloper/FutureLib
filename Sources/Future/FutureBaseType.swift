@@ -33,9 +33,8 @@ public protocol FutureBaseType: class {
 
     /**
      Returns a new future with the result of the mapping function `f` applied to
-     the tuple (`self`, ct). `self` is passed as a `FutureBaseType` and `ct` is
-     the cancellation token given in the parameters. If the mapping function
-     throws an error the returned future will be completed with the same error.
+    `self`. `self` is passed as a `FutureBaseType`. If the mapping function throws 
+     an error the returned future will be completed with the same error.
 
      If the cancellation token is already cancelled or if it will be cancelled
      before `self` has been completed, the returned future will be completed with
@@ -59,36 +58,6 @@ public protocol FutureBaseType: class {
         ct: CancellationTokenType,
         f: (FutureBaseType) throws -> U)
         -> Future<U>
-
-
-    /**
-     Returns a new future with the deferred result of the mapping function `f`
-     applied to the tuple (`self`, ct). `self` is passed as a `FutureBaseType`
-     and `ct` is the cancellation token given in the parameters.
-
-     If the cancellation token is already cancelled or if it will be cancelled
-     before `self` has been completed, the returned future will be completed with
-     a `CancellationError.Cancelled` error. Note that cancelling a continuation
-     will not complete `self`! Instead the mapping function `f` will be "unregistered"
-     and called with a tuple of the pending `self` and the cancelled `ct` as its
-     argument. Otherwise, executes the closure `f` on the given execution context
-     when `self` is completed passing a tuple of the completed `self` and the
-     cancellation token as the argument.
-
-     The method retains `self` until it is completed or all continuations have
-     been unregistered. If there are no other strong references and all continuations
-     have been unregistered, `self` is being deinitialized.
-
-     - parameter ec: The execution context where the function `f` will be executed.
-     - parameter ct: A cancellation token.
-     - parameter f: A closure with signature `FutureBaseType -> Future<U>` which
-                    will be called with `self` as its argument.
-     */
-    @warn_unused_result func continueWith<U>(ec ec: ExecutionContext,
-        ct: CancellationTokenType,
-        f: (FutureBaseType) -> Future<U>)
-        -> Future<U>
-
 
 
     /**
@@ -139,22 +108,6 @@ extension FutureBaseType {
 
     @warn_unused_result public final func continueWith<U>(ct ct: CancellationTokenType,
         f: (FutureBaseType) throws -> U)
-        -> Future<U> {
-        return self.continueWith(ec: ConcurrentAsync(), ct: ct, f: f)
-    }
-
-    @warn_unused_result     public final func continueWith<U>(ec ec: ExecutionContext,
-        f: FutureBaseType -> Future<U>)
-        -> Future<U> {
-        return self.continueWith(ec: ec, ct: CancellationTokenNone(), f: f)
-    }
-
-    @warn_unused_result     public final func continueWith<U>(f: FutureBaseType -> Future<U>) -> Future<U> {
-        return self.continueWith(ec: ConcurrentAsync(), ct: CancellationTokenNone(), f: f)
-    }
-
-    @warn_unused_result     public final func continueWith<U>(ct ct: CancellationTokenType,
-        f: (FutureBaseType) -> Future<U>)
         -> Future<U> {
         return self.continueWith(ec: ConcurrentAsync(), ct: ct, f: f)
     }

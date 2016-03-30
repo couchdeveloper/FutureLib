@@ -213,15 +213,24 @@ extension SequenceType
      - parameter ct: A cancellation token.
      - returns: A future.
      */
-    @warn_unused_result     public func results(ct ct: CancellationTokenType = CancellationTokenNone())
-        -> Future<[Generator.Element.ResultType]> {
-        return self.reduce(Future<Void>.succeeded()) { (combinedFuture, elementFuture) -> Future<Void> in
-            return combinedFuture.continueWith(ec: SynchronousCurrent(), ct: ct) { _ in
-                return elementFuture.continueWith(ec: SynchronousCurrent(), ct: ct) { _ -> Void in
+    @warn_unused_result 
+    public func results(ct ct: CancellationTokenType = CancellationTokenNone())
+        -> Future<[Generator.Element.ResultType]> 
+    {
+        func waitAll(inout gen: Self.Generator) -> Future<[Try<T>]> {
+            let promise = Promise<[Try<T>]>()
+            if let future = gen.next() {
+                future.onComplete(ec: SynchronousCurrent(), ct: ct) { _  -> () in 
+                    waitAll(&gen)
+                    return
                 }
+            } else {
+                promise.fulfill(self.map { $0.result! })
             }
+            return promise.future!
         }
-        .map { self.map { $0.result! }  }
+        var gen = self.generate()
+        return waitAll(&gen)        
     }
 
 
