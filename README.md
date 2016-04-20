@@ -1,7 +1,6 @@
 # FutureLib
 
-[![Build Status](https://travis-ci.org/couchdeveloper/FutureLib.svg?branch=master)](https://travis-ci.org/couchdeveloper/FutureLib) [![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Swift 2.0](https://img.shields.io/badge/Swift-2.0-orange.svg?style=flat)](https://developer.apple.com/swift/) ![Platforms MacOS | iOS | tvOS | watchOS](https://img.shields.io/badge/Platforms-OS%20X%20%7C%20iOS%20%7C%20tvOS%20%7C%20watchOS-brightgreen.svg) [![Carthage Compatible](https://img.shields.io/badge/Carthage-Compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-
+[![Build Status](https://travis-ci.org/couchdeveloper/FutureLib.svg?branch=master)](https://travis-ci.org/couchdeveloper/FutureLib) [![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Swift 2.2](https://img.shields.io/badge/Swift-2.2-orange.svg?style=flat)](https://developer.apple.com/swift/) ![Platforms MacOS | iOS | tvOS | watchOS](https://img.shields.io/badge/Platforms-OS%20X%20%7C%20iOS%20%7C%20tvOS%20%7C%20watchOS-brightgreen.svg) [![Carthage Compatible](https://img.shields.io/badge/Carthage-Compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![CocoaPods](https://img.shields.io/badge/CocoaPods-available-370301.svg)](https://cocoapods.org/?q=Futurelib)
 --------------------------------
 **FutureLib** is a pure Swift 2 library implementing Futures & Promises inspired by
 [Scala](http://docs.scala-lang.org/overviews/core/futures.html), [Promises/A+](https://github.com/promises-aplus/promises-spec) and a cancellation concept with `CancellationRequest` and `CancellationToken` similar to [Cancellation in Managed Threads](https://msdn.microsoft.com/en-us/library/dd997364.aspx) in Microsoft's Task Parallel Library (TPL).
@@ -80,7 +79,7 @@ The underlying task may fail. In this case the future will be completed with an 
 
 > A Future is a placeholder for the result of a computation which is not yet finished. Eventually it will be completed with _either_ the _value_ or an _error_.
 
-In order to represent that kind of result, a future uses an enum type `Try<T>` internally. `Try` is a kind of variant, or _discriminated union_ which contains _either_ a value _or_ an error. Note, that there are other Swift libaries with a similar type which is usually named `Try`. The name `Try` is borrowed from Scala.
+In order to represent that kind of result, a future uses an enum type `Try<T>` internally. `Try` is a kind of variant, or _discriminated union_ which contains _either_ a value _or_ an error. Note, that there are other Swift libraries with a similar type which is usually named `Try`. The name `Try` is borrowed from Scala.
 
 > In FutureLib, `Try<T>` can contain either a value of type `T` or a value conforming to the Swift protocol `ErrorType`.
 
@@ -539,7 +538,7 @@ If we now register more than one continuation with this execution context, all c
 
 Note that continuations will _always_ execute on a certain  _Execution Context_.  If no execution context is explicitly specified a _private_ one is implicitly given, which means we should not make any assumptions about where and when the callbacks execute.
 
-An execution context can be created in various flavours and for many concrete underlying execution environments. See more chapter "Execution Context".
+An execution context can be created in various flavors and for many concrete underlying execution environments. See more chapter "Execution Context".
 
 
 ### Cancelling a Continuation
