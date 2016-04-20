@@ -87,16 +87,7 @@ namespace :docs do
 
     desc "Build HTML Documentation"
     task :build do
-        cmd = "jazzy"\
-        " --swift-version 2.2"\
-        " --clean"\
-        " --readme README.md"\
-        " --author 'Andreas Grosam'"\
-        " --github_url https://github.com/couchdeveloper/futurelib"\
-        " --module-version #{git_version()}"\
-        " --xcodebuild-arguments -scheme,FutureLib-MacOS,-target,FutureLib-MacOS"\
-        " --module FutureLib"\
-        " --output docs/html"
+        cmd = "jazzy --config .jazzy.yml --module-version #{git_version()}"
         sh cmd
     end
 
