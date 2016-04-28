@@ -7,11 +7,11 @@
 //:
 //: **Your objective:**
 //:
-//: 1. Fetch all immages from your followers and store them locally.
+//: 1. Fetch all images from your followers and store them locally.
 //: 2. Since this may potentially take a significant time, provide a means to cancel the operation.
 //: 3. Additionally, ensure that not more than _four_ concurrent network requests are active.
 //: 4. Find a robust and correct implementation.
-//: 5. Should be implemented in less than 15 lines of code. Yep - less than 15! (network code and support code does not count)
+//: 5. Should be implemented in less than 15 lines of code. Yep - less than 15! (reusable code does not count)
 //:   
 //: **Already given:**
 //: 1. An API call which returns the ids of your friends as an array of ids:   
@@ -29,13 +29,18 @@
 //: If we had just the system frameworks available, we would implement this challenge utilizing `NSOperation` and `NSOperationQueue`. When doing this, however, we will very quickly face a few problems, which turnes out, are hard to solve: first, in order to implement cancellation, we require to create three subclasses of `NSOperation`, namely `FetchFollowersOperation`, `FetchUserOperation` and `FetchImageOperation`. We have to find a correct implementation of a "thread-safe" subclass of `NSOperation` - which is actually surprisingly elaborated and difficult. The next problem we encounter is, that we need a way to pass the result of the first to the second, and the second to the third operation. To be honest, I actually have no idea how this can be accomplished in an _elegant_ and _concise_ approach. A robust and correct implementation may require at least two hundred lines of code.
 //:
 
-//: #### Utilzing FutureLib
 import FutureLib
 import Foundation
 import XCPlayground
 XCPlaygroundPage.currentPage.needsIndefiniteExecution = true
 
-//: The model classes `User`and `Image` are already given:
+
+//: ### Given
+//: - The model classes `User`and `Image`:
+//: - An API call which fetches the ids of all followers of the currently signed-in user `fetchFollowers()`
+//: - An API call which fetches a user `fetchUser(id: Int)`
+//: - An API call which fetches the image and store it to a file and returns the file path:
+
 struct User {
     let id: Int
     let recentImageUrls: [String]
@@ -52,7 +57,11 @@ struct Image {
     }
 }
 
-// The first API call which fetches the ids of all followers of the signed-in user:
+
+/**
+ Fetches a list of follower ids for the current user from the remote service.
+ - returns: A future which will be completed with an array of user IDs.
+ */
 func fetchFollowers() -> Future<[Int]> {
     NSLog("start fetching followers...")
     return Promise.resolveAfter(1.0) {
@@ -61,7 +70,12 @@ func fetchFollowers() -> Future<[Int]> {
     }.future!
 }
 
-// Given a user ID, fetch a user:
+
+/**
+ Fetches a user with the specified id from the remote service.
+ - parameter: A user id.
+ - returns: A future which will be completed with a user.
+ */
 func fetchUser(id: Int) -> Future<User> {
     NSLog("start fetching user[\(id)]...")
     return Promise.resolveAfter(1.0) {
@@ -70,7 +84,11 @@ func fetchUser(id: Int) -> Future<User> {
     }.future!
 }
 
-// Given a URL fetch the image and store it to a file and return the file path:
+/**
+ Fetches an image from the remore service.
+ - parameter: The URL of the image.
+ - returns: A future which will be completed with an image (actually a String for this demo).
+ */
 func fetchImage(url: String) -> Future<String> {
     NSLog("start fetching image[\(url)]...")
     return Promise.resolveAfter(4.0) {
@@ -81,9 +99,8 @@ func fetchImage(url: String) -> Future<String> {
 }
 
 
-//: Now, the function `downloadRecentImagesFromFollowers` implements the complete task:
-//:
-//: The following asynchronous function `downloadRecentImagesFromMyFollowers` already *almost* does what we have listed in our requirements above - with just a few lines of code. That is, it fetches all followers, then for each follower it fetches the most recent images and stores it locally. When finished, it completes its returned future with an array of array of file paths, grouped by the user id, where the downloaded images are located.
+//: ### Initial Solution
+//: Create a function which almost all does what we require:
 func downloadRecentImagesFromFollowers() -> Future<[[String]]> {
     return fetchFollowers().flatMap { userIds in
         userIds.traverse { userId -> Future<[String]> in
@@ -95,19 +112,20 @@ func downloadRecentImagesFromFollowers() -> Future<[[String]]> {
         }
     }
 }
-
-//: Print each image, once `downloadRecentImagesFromMyFollowers()` finished successfully:
+//: The above asynchronous function `downloadRecentImagesFromFollowers` already *almost* does what we have listed in our requirements above - with just a few lines of code. That is, it fetches all followers, then for each follower it fetches the most recent images and stores it locally. When finished, it completes its returned future with an array of array of file paths, grouped by the user id, where the downloaded images are located.    
+//: Call this function and print each image, once `downloadRecentImagesFromFollowers()` finished successfully:
+print("\n========================")
+print("\nInitial Solution")
 downloadRecentImagesFromFollowers().map { arrayImages in
-    arrayImages.flatten().forEach { print($0) }
-}.wait()
+    arrayImages.flatten().forEach {
+        print($0)
+    }
+}.wait() // Note: wait is only there to prevent playground to proceed, since downloadRecentImagesFromFollowers is asynchronous.
 
 
-
-//: What's missing is, that we cannot cancel this function yet. Once started, we need to wait until it is finished - well, not really: FutureLib provides an extremely convenient approach to implement cancellation:
-
+//: ### Solution Improvement 1
+//: What's missing is, that we cannot cancel this function yet. Once started, we need to wait until it is finished - well, not really: FutureLib provides an extremely convenient approach to implement cancellation:  
 //: In order to implement cancellation in this case, we pass a cancellation token to the innermost continuation. This is completely sufficient. If a cancellation has been requested, the innermost continuation will be unregistered and then called with a cancellation error. This in turn will complete all dependend futures with the same error. Additionally, any continuation will be deinitialized. This in turn deinitializes the future returned from underlying tasks. When this future will be deinitialized, the taks will be noticed and subsequently aborts its operation. In this case, this is just the timer - a real implemenation performing a network request can be easily implemented to behave exactly the same as well.
-print("\n\n========================")
-print("\n\nDemonstrate cancellation")
 func downloadRecentImagesFromFollowers2(ct: CancellationTokenType) -> Future<[[String]]> {
     let ret: Future<[[String]]> = fetchFollowers().flatMap { userIds in
         userIds.traverse { userId -> Future<[String]> in
@@ -121,6 +139,9 @@ func downloadRecentImagesFromFollowers2(ct: CancellationTokenType) -> Future<[[S
     return ret
 }
 
+
+print("\n\n========================")
+print("\nDemonstrate cancellation")
 let cr = CancellationRequest()
 let future2 = downloadRecentImagesFromFollowers2(cr.token).map { arrayImages in
     arrayImages.flatten().forEach { print($0) }
@@ -134,12 +155,9 @@ future2.onFailure { error in
     print("Error: \(error)")
 }
 
-future2.wait()
+future2.wait() // Note: wait is only there to prevent playground to proceed, since downloadRecentImagesFromFollowers2 is asynchronous.
 
-print("\n\n========================")
-print("\n\nDemonstrate execution context")
-
-
+//: ### Solution Improvement 2  
 //: Still, we are not yet finished: tasks started with the `traverse` method will execute concurrently, no matter how many. However, we want to limit the maximum number of requests to four. We need two "execution contexts" which limit the maximum number of concurrent tasks, which we pass the `traverse` method as argument. A `TaskQueue` exists specifically for that purpose. This will limit the maximum number of concurrent network requests:
 let ec1 = TaskQueue(maxConcurrentTasks: 4)
 let ec2 = TaskQueue(maxConcurrentTasks: 4)
@@ -156,6 +174,9 @@ func downloadRecentImagesFromFollowers3(ct: CancellationTokenType) -> Future<[[S
     }
     return ret
 }
+
+print("\n\n========================")
+print("\nDemonstrate execution context")
 
 let cr3 = CancellationRequest()
 downloadRecentImagesFromFollowers3(cr3.token).map { arrayImages in
