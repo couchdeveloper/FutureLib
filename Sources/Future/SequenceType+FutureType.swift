@@ -37,7 +37,8 @@ extension SequenceType {
      - parameter ct: A cancellation token.
      - parameter task: A closure which is applied to each element in `self`.
      */
-    @warn_unused_result     public func traverse<U>(
+    @warn_unused_result
+    public func traverse<U>(
         ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         task: Generator.Element throws -> Future<U>)
@@ -81,7 +82,8 @@ extension SequenceType
      - parameter pred: The predicate which indicates if it's a match.
      - returns: A `Future` holding the optional result of the search.
     */
-    @warn_unused_result     public func find(
+    @warn_unused_result
+    public func find(
         ec: ExecutionContext = ConcurrentAsync(), 
         ct: CancellationTokenType = CancellationTokenNone(),
         pred: T -> Bool) -> Future<T?> 
@@ -115,7 +117,8 @@ extension SequenceType
      - parameter ct: A cancellation token.
      - returns: A `Future` holding the optional result of the search.
      */
-    @warn_unused_result     public func firstCompleted(
+    @warn_unused_result
+    public func firstCompleted(
         ct: CancellationTokenType = CancellationTokenNone())
         -> Future<T> 
     {
@@ -153,7 +156,8 @@ extension SequenceType
      - parameter combine: The combine function.
      - returns: A future.
     */
-    @warn_unused_result     public func fold<U>(ec ec: ExecutionContext = ConcurrentAsync(),
+    @warn_unused_result
+    public func fold<U>(ec ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         initial: U,
         combine: (U, Generator.Element.ValueType) throws -> U)
@@ -176,7 +180,8 @@ extension SequenceType
      - parameter ct: A cancellation token.
      - returns: A future.
      */
-    @warn_unused_result     public func sequence(ct ct: CancellationTokenType = CancellationTokenNone())
+    @warn_unused_result
+    public func sequence(ct ct: CancellationTokenType = CancellationTokenNone())
         -> Future<[Generator.Element.ValueType]> {
         return fold(ec: SynchronousCurrent(), ct: ct, initial: ()) { _, _ -> Void in }
         .map {
@@ -213,7 +218,8 @@ extension SequenceType
      - parameter ct: A cancellation token.
      - returns: A future.
      */
-    @warn_unused_result public func results(ct ct: CancellationTokenType = CancellationTokenNone())
+    @warn_unused_result public
+    func results(ct ct: CancellationTokenType = CancellationTokenNone())
         -> Future<[Generator.Element.ResultType]> 
     {
         let promise = Promise<[Try<T>]>()

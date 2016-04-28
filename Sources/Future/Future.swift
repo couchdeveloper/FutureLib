@@ -175,7 +175,8 @@ public class Future<T>: FutureType {
      - parameter ct: A cancellation token which will be monitored.
      - returns: A new future.
      */
-    @warn_unused_result public final func mapTo<S>(ct: CancellationTokenType = CancellationTokenNone())
+    @warn_unused_result 
+    public final func mapTo<S>(ct: CancellationTokenType = CancellationTokenNone())
         -> Future<S> {
         let returnedFuture = Future<S>()
         self.onComplete(ec: SynchronousCurrent(), ct: ct) { [weak returnedFuture] result in
