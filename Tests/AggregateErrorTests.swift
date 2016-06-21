@@ -10,16 +10,16 @@ import XCTest
 import FutureLib
 
 
-private enum TestErrorA: ErrorType {
-    case Error
+private enum TestErrorA: ErrorProtocol {
+    case error
 }
 
-private enum TestErrorB: ErrorType {
-    case Error
+private enum TestErrorB: ErrorProtocol {
+    case error
 }
 
-private enum TestErrorC: ErrorType {
-    case Error
+private enum TestErrorC: ErrorProtocol {
+    case error
 }
 
 
@@ -37,9 +37,9 @@ class AggregateErrorTests: XCTestCase {
 
     func testAggregateErrorDescriptionShouldListErrors() {
         
-        var error = AggregateError(error: TestErrorA.Error)
-        error.add(TestErrorB.Error)
-        error.add(TestErrorC.Error)
+        var error = AggregateError(error: TestErrorA.error)
+        error.add(TestErrorB.error)
+        error.add(TestErrorC.error)
     
         XCTAssertTrue(error.description.contains("TestErrorA"))
         XCTAssertTrue(error.description.contains("Error"))

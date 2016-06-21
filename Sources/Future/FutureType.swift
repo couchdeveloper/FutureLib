@@ -15,15 +15,15 @@ Defines errors which belong to the domain "Future".
 There are only a few errors which can be raised from operations. Programmer
 errors are usually caught by assertions.
 */
-public enum FutureError: Int, ErrorType {
+public enum FutureError: Int, ErrorProtocol {
     /// Specifies an invalid type conversion.
-    case InvalidCast = -1
+    case invalidCast = -1
     /// Specifies that a predicate or filter function didn't find any matching futures.
-    case NoSuchElement = -2
+    case noSuchElement = -2
 }
 
 /// Equality operator for `FutureError` and `ErrorType`.
-public func == (lhs: FutureError, rhs: ErrorType) -> Bool {
+public func == (lhs: FutureError, rhs: ErrorProtocol) -> Bool {
     if let e = rhs as? FutureError {
         return lhs.rawValue == e.rawValue
     } else {
@@ -32,7 +32,7 @@ public func == (lhs: FutureError, rhs: ErrorType) -> Bool {
 }
 
 /// Equality operator for `ErrorType` and `FutureError`.
-public func == (lhs: ErrorType, rhs: FutureError) -> Bool {
+public func == (lhs: ErrorProtocol, rhs: FutureError) -> Bool {
     if let e = lhs as? FutureError {
         return e.rawValue == rhs.rawValue
     } else {
@@ -97,9 +97,9 @@ public protocol FutureType: FutureBaseType {
      - parameter ct: A cancellation token.
      - parameter f: A function taking the result of the future as its argument.
      */
-    func onComplete<U>(ec ec: ExecutionContext,
+    func onComplete<U>(ec: ExecutionContext,
         ct: CancellationTokenType,
-        f: ResultType -> U)
+        f: (ResultType) -> U)
 
 }
 
@@ -124,7 +124,7 @@ internal protocol CompletableFutureType: FutureType {
      - returns: `true` if the future has been completed as an effect of the method,
                 otherwise `false`.
     */
-    func tryComplete(result: ResultType) -> Bool
+    func tryComplete(_ result: ResultType) -> Bool
 
     /**
      Completes pending `self` with the given result.
@@ -132,7 +132,7 @@ internal protocol CompletableFutureType: FutureType {
      - parameter result: A result with which `self` will be completed.
      - precondition: `self` MUST NOT be completed.
      */
-    func complete(result: ResultType)
+    func complete(_ result: ResultType)
 
     /**
      Completes pending `self` with the given result.
@@ -141,12 +141,12 @@ internal protocol CompletableFutureType: FutureType {
      - precondition: `self` MUST NOT be completed.
      - precondition: Current execution context MUST be the gobal sync object.
      */
-    func _complete(result: ResultType)
+    func _complete(_ result: ResultType)
 
-    func complete(value: ValueType)
-    func _complete(value: ValueType)
-    func complete(error: ErrorType)
-    func _complete(error: ErrorType)
+    func complete(_ value: ValueType)
+    func _complete(_ value: ValueType)
+    func complete(_ error: ErrorProtocol)
+    func _complete(_ error: ErrorProtocol)
 
 }
 
@@ -160,7 +160,7 @@ internal extension CompletableFutureType {
 
     // Complete `self` with the deferred value of `other`.
     // The method does not retain `self`.
-    internal final func completeWith<FT: FutureType where FT.ResultType == ResultType>(other: FT) {
+    internal final func completeWith<FT: FutureType where FT.ResultType == ResultType>(_ other: FT) {
         other.onComplete(ec: ConcurrentAsync(),
             ct: CancellationTokenNone()) { [weak self] otherResult in
             self?.complete(otherResult as ResultType)
@@ -232,17 +232,17 @@ public extension FutureType where ResultType == Try<ValueType> {
      - returns:  the success value of its result.
      - throws:   the error value of its result or a `CancellationError.Cancelled` error.
      */
-    public final func get(ct: CancellationTokenType) throws -> ValueType {
+    public final func get(_ ct: CancellationTokenType) throws -> ValueType {
         while !ct.isCancellationRequested {
             if let r = self.result {
                 switch r {
-                case .Success(let v): return v
-                case .Failure(let e): throw e
+                case .success(let v): return v
+                case .failure(let e): throw e
                 }
             }
             wait(ct)
         }
-        throw CancellationError.Cancelled
+        throw CancellationError.cancelled
     }
 
 
@@ -258,11 +258,11 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A function taking a parameter `value` of type `T`.
      */
     public final func onSuccess(
-        ec ec: ExecutionContext = ConcurrentAsync(),
+        ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: ValueType -> ()) {
+        f: (ValueType) -> ()) {
         onComplete(ec: ec, ct: ct) { result in
-            if case .Success(let value) = result {
+            if case .success(let value) = result {
                 f(value)
             }
         }
@@ -281,11 +281,11 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A function taking a parameter `error` of type `ErrorType` as parameter.
      */
     public final func onFailure(
-        ec ec: ExecutionContext = ConcurrentAsync(),
+        ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: ErrorType -> ()) {
+        f: (ErrorProtocol) -> ()) {
         onComplete(ec: ec, ct: ct) { result in
-            if case .Failure(let error) = result {
+            if case .failure(let error) = result {
                 f(error)
             }
         }
@@ -317,9 +317,9 @@ public extension FutureType where ResultType == Try<ValueType> {
      - returns: A new future.
      */
     @warn_unused_result     public final func map<U>(
-        ec ec: ExecutionContext = ConcurrentAsync(),
+        ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: ValueType throws -> U)
+        f: (ValueType) throws -> U)
         -> Future<U> {
         typealias RU = Try<U>
         // Caution: the mapping function must be called even when the returned
@@ -357,20 +357,20 @@ public extension FutureType where ResultType == Try<ValueType> {
      - returns: A new future.
     */
     @warn_unused_result     public final func flatMap<U>(
-        ec ec: ExecutionContext = ConcurrentAsync(),
+        ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: ValueType throws -> Future<U>)
+        f: (ValueType) throws -> Future<U>)
         -> Future<U> {
         // Caution: the mapping function must be called even when the returned
         // future has been deinitialized prematurely!
         let returnedFuture = Future<U>()
         onComplete(ec: ConcurrentAsync(), ct: ct) { [weak returnedFuture] result in
             switch result {
-            case .Success(let value):
+            case .success(let value):
                 ec.schedule({ return try f(value) }, onStart: { future in
                     returnedFuture?.completeWith(future)
                 })
-            case .Failure(let error):
+            case .failure(let error):
                 returnedFuture?.complete(error)
             }
         }
@@ -388,7 +388,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter other: The second future.
     */
     @warn_unused_result     public final func zip<U>(
-        other: Future<U>,
+        _ other: Future<U>,
         ct: CancellationTokenType = CancellationTokenNone())
         -> Future<(ValueType, U)> 
     {
@@ -419,18 +419,18 @@ public extension FutureType where ResultType == Try<ValueType> {
      - returns: A new future.
      */
     @warn_unused_result     public final func recover(
-        ec ec: ExecutionContext = ConcurrentAsync(),
+        ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: ErrorType throws -> ValueType)
+        f: (ErrorProtocol) throws -> ValueType)
         -> Future<ValueType> {
         let returnedFuture = Future<ValueType>()
         onComplete(ec: ConcurrentAsync(), ct: ct) { [weak returnedFuture] result in
             // Caution: the mapping function must be called even when the returned
             // future has been deinitialized prematurely!
             switch result {
-            case .Success(let value):
+            case .success(let value):
                 returnedFuture?.complete(value)
-            case .Failure(let error):
+            case .failure(let error):
                 ec.execute {
                     do {
                         let value = try f(error)
@@ -463,18 +463,18 @@ public extension FutureType where ResultType == Try<ValueType> {
      - returns: A new future.
      */
     @warn_unused_result     public final func recoverWith(
-        ec ec: ExecutionContext = ConcurrentAsync(),
+        ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: ErrorType throws -> Future<ValueType>)
+        f: (ErrorProtocol) throws -> Future<ValueType>)
         -> Future<ValueType> {
         let returnedFuture = Future<ValueType>()
         onComplete(ec: ConcurrentAsync(), ct: ct) { [weak returnedFuture] result in
             // Caution: the mapping function must be called even when the returned
             // future has been deinitialized prematurely!
             switch result {
-            case .Success(let value):
+            case .success(let value):
                 returnedFuture?.complete(value)
-            case .Failure(let error):
+            case .failure(let error):
                 ec.schedule({ return try f(error) }, onStart: { future in
                     returnedFuture?.completeWith(future)
                 })
@@ -499,10 +499,10 @@ public extension FutureType where ResultType == Try<ValueType> {
      - returns: A new future.
      */
     @warn_unused_result     public final func transform<U>(
-        ec ec: ExecutionContext = ConcurrentAsync(),
+        ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        s: ValueType throws -> U,
-        f: ErrorType -> ErrorType)
+        s: (ValueType) throws -> U,
+        f: (ErrorProtocol) -> ErrorProtocol)
         -> Future<U> 
     {
         let returnedFuture = Future<U>()
@@ -510,9 +510,9 @@ public extension FutureType where ResultType == Try<ValueType> {
             // Caution: the mapping function must be called even when the returned
             // future has been deinitialized prematurely!
             switch result {
-            case .Failure(let error):
+            case .failure(let error):
                 returnedFuture?.complete(f(error))
-            case .Success(let value):
+            case .success(let value):
                 ec.execute {
                     do {
                         returnedFuture?.complete(try s(value))
@@ -537,9 +537,9 @@ public extension FutureType where ResultType == Try<ValueType> {
      - returns: A new `Future` that will be completed with the transformed value.
     */
     @warn_unused_result     public final func transform<U>(
-        ec ec: ExecutionContext = ConcurrentAsync(), 
+        ec: ExecutionContext = ConcurrentAsync(), 
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: Try<ValueType> throws -> Try<U>) -> Future<U> 
+        f: (Try<ValueType>) throws -> Try<U>) -> Future<U> 
     {
         let returnedFuture = Future<U>()
         onComplete(ec: ec, ct: ct) { [weak returnedFuture] result in
@@ -566,9 +566,9 @@ public extension FutureType where ResultType == Try<ValueType> {
      - returns: A new `Future` that will be completed with the transformed value.
     */
     @warn_unused_result     public final func transformWith<U>(
-        ec ec: ExecutionContext = ConcurrentAsync(), 
+        ec: ExecutionContext = ConcurrentAsync(), 
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: Try<ValueType> throws -> Future<U>) 
+        f: (Try<ValueType>) throws -> Future<U>) 
         -> Future<U> 
     {
         let returnedFuture = Future<U>()
@@ -600,16 +600,16 @@ public extension FutureType where ResultType == Try<ValueType> {
                     applied to the success value of `self`.
     */
     @warn_unused_result     public final func filter(
-        ec ec: ExecutionContext = ConcurrentAsync(),
+        ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        predicate: ValueType throws -> Bool)
+        predicate: (ValueType) throws -> Bool)
         -> Future<ValueType>
     {
         return map(ec: ec, ct: ct) { value in
             if try predicate(value) {
                 return value
             } else {
-                throw FutureError.NoSuchElement
+                throw FutureError.noSuchElement
             }
         }
     }

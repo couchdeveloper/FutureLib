@@ -55,7 +55,7 @@ public protocol FutureBaseType: class {
                     be called with `self` as its argument.
      - returns: A new future.
      */
-    @warn_unused_result func continueWith<U>(ec ec: ExecutionContext,
+    @warn_unused_result func continueWith<U>(ec: ExecutionContext,
         ct: CancellationTokenType,
         f: (FutureBaseType) throws -> U)
         -> Future<U>
@@ -84,7 +84,7 @@ public protocol FutureBaseType: class {
      - parameter f: A closure with signature `FutureBaseType -> Future<U>` which
                     will be called with `self` as its argument.
      */
-    @warn_unused_result func continueWith<U>(ec ec: ExecutionContext,
+    @warn_unused_result func continueWith<U>(ec: ExecutionContext,
         ct: CancellationTokenType,
         f: (FutureBaseType) -> Future<U>)
         -> Future<U>
@@ -98,7 +98,7 @@ public protocol FutureBaseType: class {
 
      - returns: A new future.
      */
-    @warn_unused_result func mapTo<S>(ct: CancellationTokenType) -> Future<S>
+    @warn_unused_result func mapTo<S>(_ ct: CancellationTokenType) -> Future<S>
 
 
 
@@ -118,7 +118,8 @@ public protocol FutureBaseType: class {
      a cancellation.
      - returns: Self if Self has been completed before a cancellation has been requested.
      */
-    func wait(cancellationToken: CancellationTokenType) -> Self
+    @discardableResult
+    func wait(_ cancellationToken: CancellationTokenType) -> Self
 
 }
 
@@ -127,33 +128,33 @@ public protocol FutureBaseType: class {
 
 extension FutureBaseType {
 
-    @warn_unused_result public final func continueWith<U>(ec ec: ExecutionContext,
-        f: FutureBaseType throws -> U)
+    @warn_unused_result public final func continueWith<U>(ec: ExecutionContext,
+        f: (FutureBaseType) throws -> U)
         -> Future<U> {
         return self.continueWith(ec: ec, ct: CancellationTokenNone(), f: f)
     }
 
-    @warn_unused_result public final func continueWith<U>(f: FutureBaseType throws -> U) -> Future<U> {
+    @warn_unused_result public final func continueWith<U>(_ f: (FutureBaseType) throws -> U) -> Future<U> {
         return self.continueWith(ec: ConcurrentAsync(), ct: CancellationTokenNone(), f: f)
     }
 
-    @warn_unused_result public final func continueWith<U>(ct ct: CancellationTokenType,
+    @warn_unused_result public final func continueWith<U>(ct: CancellationTokenType,
         f: (FutureBaseType) throws -> U)
         -> Future<U> {
         return self.continueWith(ec: ConcurrentAsync(), ct: ct, f: f)
     }
 
-    @warn_unused_result     public final func continueWith<U>(ec ec: ExecutionContext,
-        f: FutureBaseType -> Future<U>)
+    @warn_unused_result     public final func continueWith<U>(ec: ExecutionContext,
+        f: (FutureBaseType) -> Future<U>)
         -> Future<U> {
         return self.continueWith(ec: ec, ct: CancellationTokenNone(), f: f)
     }
 
-    @warn_unused_result     public final func continueWith<U>(f: FutureBaseType -> Future<U>) -> Future<U> {
+    @warn_unused_result     public final func continueWith<U>(_ f: (FutureBaseType) -> Future<U>) -> Future<U> {
         return self.continueWith(ec: ConcurrentAsync(), ct: CancellationTokenNone(), f: f)
     }
 
-    @warn_unused_result     public final func continueWith<U>(ct ct: CancellationTokenType,
+    @warn_unused_result     public final func continueWith<U>(ct: CancellationTokenType,
         f: (FutureBaseType) -> Future<U>)
         -> Future<U> {
         return self.continueWith(ec: ConcurrentAsync(), ct: ct, f: f)

@@ -44,5 +44,5 @@ public protocol Cancelable: class {
 
      - parameter error: The error that can be used to reason about the cancellation.
     */
-    func cancel(error: ErrorType)
+    func cancel(_ error: ErrorProtocol)
 }

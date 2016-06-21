@@ -34,9 +34,9 @@ class TryTests: XCTestCase {
     func testCreateResultWithSuccess() {
         let r1 = Try("OK")
         switch r1 {
-        case .Success (let value):
+        case .success (let value):
             XCTAssertEqual("OK", value)
-        case .Failure:
+        case .failure:
             XCTFail("unexpected failure")
         }
         XCTAssertTrue(r1.isSuccess)
@@ -44,9 +44,9 @@ class TryTests: XCTestCase {
 
         let r2 = Try(2)
         switch r2 {
-        case .Success (let value):
+        case .success (let value):
             XCTAssertEqual(2, value)
-        case .Failure:
+        case .failure:
             XCTFail("unexpected failure")
         }
         XCTAssertTrue(r2.isSuccess)
@@ -55,12 +55,12 @@ class TryTests: XCTestCase {
 
 
     func testCreateResultWithFailure() {
-        let r1 = Try<Int>(error: TestError.Failed)
+        let r1 = Try<Int>(error: TestError.failed)
         switch r1 {
-        case .Success:
+        case .success:
             XCTFail("unexpected success")
-        case .Failure(let error):
-            XCTAssertTrue(TestError.Failed == error)
+        case .failure(let error):
+            XCTAssertTrue(TestError.failed == error)
         }
         XCTAssertFalse(r1.isSuccess)
         XCTAssertTrue(r1.isFailure)
@@ -72,21 +72,21 @@ class TryTests: XCTestCase {
         let f: () throws -> Int = { return 0 }
         let r1 = Try<Int>(f)
         switch r1 {
-        case .Success (let value):
+        case .success (let value):
             XCTAssertEqual(0, value)
-        case .Failure:
+        case .failure:
             XCTFail("unexpected failure")
         }
     }
 
     func testCreateResultWithThrowingFunctionWhichThrows() {
-        let f: () throws -> Int = { throw TestError.Failed }
+        let f: () throws -> Int = { throw TestError.failed }
         let r1 = Try<Int>(f)
         switch r1 {
-        case .Success:
+        case .success:
             XCTFail("unexpected success")
-        case .Failure(let error):
-            XCTAssertTrue(TestError.Failed == error)
+        case .failure(let error):
+            XCTAssertTrue(TestError.failed == error)
         }
     }
 
@@ -96,9 +96,9 @@ class TryTests: XCTestCase {
         let r = Try<Int>(error: NSError(domain: "Test", code: -1, userInfo: nil))
 
         switch r {
-        case .Success:
+        case .success:
             XCTFail("unexpected success")
-        case .Failure(let error):
+        case .failure(let error):
             switch error {
             case let err as NSError:
                 XCTAssertEqual(-1, err.code)
@@ -119,24 +119,24 @@ class TryTests: XCTestCase {
             return "OK"
         }
         switch r {
-        case .Success (let value):
+        case .success (let value):
             XCTAssertEqual("OK", value)
-        case .Failure:
+        case .failure:
             XCTFail("unexpected failure")
         }
     }
 
     func testFailedResultMapsToSameResult() {
-        let r0 = Try<Int>({ throw TestError.Failed })
+        let r0 = Try<Int>({ throw TestError.failed })
         let r = r0.map { value -> String in
             XCTAssertEqual(3, value)
             return "OK"
         }
         switch r {
-        case .Success:
+        case .success:
             XCTFail("unexpected success")
-        case .Failure(let error):
-            XCTAssertTrue(TestError.Failed == error)
+        case .failure(let error):
+            XCTAssertTrue(TestError.failed == error)
         }
     }
 
@@ -144,13 +144,13 @@ class TryTests: XCTestCase {
     func testSuccessfulResultWithTrowingMappingFunctionMapsToNewResult() {
         let r = Try<Int>(3).map { value -> String in
             XCTAssertEqual(3, value)
-            throw TestError.Failed
+            throw TestError.failed
         }
         switch r {
-        case .Success:
+        case .success:
             XCTFail("unexpected success")
-        case .Failure(let error):
-            XCTAssertTrue(TestError.Failed == error)
+        case .failure(let error):
+            XCTAssertTrue(TestError.failed == error)
         }
     }
 
@@ -163,24 +163,24 @@ class TryTests: XCTestCase {
             return Try("OK")
         }
         switch r {
-        case .Success (let value):
+        case .success (let value):
             XCTAssertEqual("OK", value)
-        case .Failure:
+        case .failure:
             XCTFail("unexpected failure")
         }
     }
 
     func testFailedResultFlatMapsToSameResult() {
-        let r0 = Try<Int>({ throw TestError.Failed })
+        let r0 = Try<Int>({ throw TestError.failed })
         let r = r0.flatMap { value -> Try<String> in
             XCTAssertEqual(3, value)
             return Try("OK")
         }
         switch r {
-        case .Success:
+        case .success:
             XCTFail("unexpected success")
-        case .Failure(let error):
-            XCTAssertTrue(TestError.Failed == error)
+        case .failure(let error):
+            XCTAssertTrue(TestError.failed == error)
         }
     }
 
@@ -202,13 +202,13 @@ class TryTests: XCTestCase {
     }
 
     func testValueForFailedResultReturnsErrorValue() {
-        let r = Try<Int>({ throw TestError.Failed })
+        let r = Try<Int>({ throw TestError.failed })
         do {
             _ = try r.get()
             XCTFail("unexpected success")
         }
         catch let error {
-            XCTAssertTrue(TestError.Failed == error)
+            XCTAssertTrue(TestError.failed == error)
         }
     }
 
@@ -219,22 +219,22 @@ class TryTests: XCTestCase {
         
         let r0 = r.flatten()
         switch r0 {
-        case .Success(let value):
+        case .success(let value):
             XCTAssertEqual(1, value)
-        case .Failure(let error):
+        case .failure(let error):
             XCTFail("unexpected error: \(error)")
         }
     }
     
     func testFlattenWithFailure() {
-        let r: Try<Try<Int>> = Try<Try<Int>>(error: TestError.Failed)
+        let r: Try<Try<Int>> = Try<Try<Int>>(error: TestError.failed)
         
         let r0 = r.flatten()
         switch r0 {
-        case .Success(let value):
+        case .success(let value):
             XCTFail("unexpected success: \(value)")
-        case .Failure(let error):
-            XCTAssertTrue(TestError.Failed == error)
+        case .failure(let error):
+            XCTAssertTrue(TestError.failed == error)
         }
     }
     
@@ -248,24 +248,24 @@ class TryTests: XCTestCase {
             return -1
         }
         switch r0 {
-        case .Success(let value):
+        case .success(let value):
             XCTAssertEqual(0, value)
-        case .Failure(let error):
+        case .failure(let error):
             XCTFail("unexpected error: \(error)")
         }
     }
     
     func testRecoverWhenFailure() {
-        let r = Try<Int>(error: TestError.Failed)
+        let r = Try<Int>(error: TestError.failed)
         
         let r0 = r.recover { error in
             return -1
         }
         switch r0 {
-        case .Success(let value):
+        case .success(let value):
             XCTAssertEqual(-1, value)
         
-        case .Failure(let error):
+        case .failure(let error):
             XCTFail("unexpected error: \(error)")
         }
     }
@@ -275,28 +275,28 @@ class TryTests: XCTestCase {
         let r = Try<Int>(0)
         
         let r0 = r.recover { (error) -> Int in
-            throw TestError.Failed
+            throw TestError.failed
         }
         switch r0 {
-        case .Success(let value):
+        case .success(let value):
             XCTAssertEqual(0, value)
-        case .Failure(let error):
+        case .failure(let error):
             XCTFail("unexpected error: \(error)")
         }
     }
     
     
     func testRecoverWhenFailureWithThrowingFunction() {
-        let r = Try<Int>(error: TestError.Failed)
+        let r = Try<Int>(error: TestError.failed)
         
         let r0 = r.recover { error in
-            throw TestError.Failed
+            throw TestError.failed
         }
         switch r0 {
-        case .Success(let value):
+        case .success(let value):
             XCTFail("unexpected success: \(value)")
-        case .Failure(let error):
-            XCTAssertTrue(TestError.Failed == error)
+        case .failure(let error):
+            XCTAssertTrue(TestError.failed == error)
         }
     }
     
@@ -312,41 +312,41 @@ class TryTests: XCTestCase {
             return Try(1)
         }
         switch r0 {
-        case .Success(let value):
+        case .success(let value):
             XCTAssertEqual(0, value)
-        case .Failure(let error):
+        case .failure(let error):
             XCTFail("unexpected error: \(error)")
         }
     }
     
     func testRecoverWithWhenFailure() {
-        let r = Try<Int>(error: TestError.Failed)
+        let r = Try<Int>(error: TestError.failed)
         
         let r0 = r.recoverWith { error in
             return Try(-1)
         }
         switch r0 {
-        case .Success(let value):
+        case .success(let value):
             XCTAssertEqual(-1, value)
             
-        case .Failure(let error):
+        case .failure(let error):
             XCTFail("unexpected error: \(error)")
         }
     }
 
     
     func testRecoverWithWhenFailureWithThrowingFunction() {
-        let r = Try<Int>(error: TestError.Failed2)
+        let r = Try<Int>(error: TestError.failed2)
         
         let r0 = r.recoverWith { error in
-            throw TestError.Failed
+            throw TestError.failed
         }
         switch r0 {
-        case .Success(let value):
+        case .success(let value):
             XCTFail("unexpected success: \(value)")
             
-        case .Failure(let error):
-            XCTAssertTrue(TestError.Failed == error)
+        case .failure(let error):
+            XCTAssertTrue(TestError.failed == error)
         }
     }
     
@@ -363,7 +363,7 @@ class TryTests: XCTestCase {
     }
     
     func testToOption2() {
-        let r = Try<Int>(error: TestError.Failed)
+        let r = Try<Int>(error: TestError.failed)
         let opt = r.toOption()
         XCTAssertNil(opt)
     }

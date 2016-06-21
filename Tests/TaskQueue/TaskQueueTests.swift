@@ -22,99 +22,99 @@ class TaskQueueTests: XCTestCase {
     }
 
     func testMaxConcurrentTaskEquals1() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
+        let expect = self.expectation(withDescription: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 1
-        let g = dispatch_group_create()
+        let g = DispatchGroup()
         var i: Int32 = 0
         let task: () -> Future<Void> = {
             XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
             return Promise<Void>.resolveAfter(0.02, f: {
                 OSAtomicDecrement32(&i)
-                dispatch_group_leave(g)
+                g.leave()
             }).future!
         }
         
         let queue = TaskQueue(maxConcurrentTasks: UInt(maxConcurrentTasks))
         for _ in 0...5 {
-            dispatch_group_enter(g)
+            g.enter()
             queue.enqueue(task)
         }
-        dispatch_group_notify(g, dispatch_get_main_queue()) {
+        g.notify(queue: DispatchQueue.main) {
             expect.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
     func testMaxConcurrentTaskEquals2() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
+        let expect = self.expectation(withDescription: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 2
-        let g = dispatch_group_create()
+        let g = DispatchGroup()
         var i: Int32 = 0
         let task: () -> Future<Void> = {
             XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
             return Promise<Void>.resolveAfter(0.02, f: {
                 OSAtomicDecrement32(&i)
-                dispatch_group_leave(g)
+                g.leave()
             }).future!
         }
         
         let queue = TaskQueue(maxConcurrentTasks: UInt(maxConcurrentTasks))
         for _ in 0...10 {
-            dispatch_group_enter(g)
+            g.enter()
             queue.enqueue(task)
         }
-        dispatch_group_notify(g, dispatch_get_main_queue()) {
+        g.notify(queue: DispatchQueue.main) {
             expect.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
     
     func testMaxConcurrentTaskEquals3() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
+        let expect = self.expectation(withDescription: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 3
-        let g = dispatch_group_create()
+        let g = DispatchGroup()
         var i: Int32 = 0
         let task: () -> Future<Void> = {
             XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
             return Promise<Void>.resolveAfter(0.02, f: {
                 OSAtomicDecrement32(&i)
-                dispatch_group_leave(g)
+                g.leave()
             }).future!
         }
         
         let queue = TaskQueue(maxConcurrentTasks: UInt(maxConcurrentTasks))
         for _ in 0...15 {
-            dispatch_group_enter(g)
+            g.enter()
             queue.enqueue(task)
         }
-        dispatch_group_notify(g, dispatch_get_main_queue()) {
+        g.notify(queue: DispatchQueue.main) {
             expect.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
     func testMaxConcurrentTaskEquals4() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
+        let expect = self.expectation(withDescription: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 4
-        let g = dispatch_group_create()
+        let g = DispatchGroup()
         var i: Int32 = 0
         let task: () -> Future<Void> = {
             XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
             return Promise<Void>.resolveAfter(0.02, f: {
                 OSAtomicDecrement32(&i)
-                dispatch_group_leave(g)
+                g.leave()
             }).future!
         }
         
         let queue = TaskQueue(maxConcurrentTasks: UInt(maxConcurrentTasks))
         for _ in 0...20 {
-            dispatch_group_enter(g)
+            g.enter()
             queue.enqueue(task)
         }
-        dispatch_group_notify(g, dispatch_get_main_queue()) {
+        g.notify(queue: DispatchQueue.main) {
             expect.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 

@@ -42,7 +42,7 @@ public final class CancellationRequest: CancellationRequestType {
      - returns: A unique Id where this object can be identified.
     */
     public final var id: UInt {
-        return ObjectIdentifier(self).uintValue
+        return UInt(ObjectIdentifier(self))
     }
 
 

@@ -41,7 +41,7 @@ public protocol CancellationTokenType {
         a cancellation has been requested, otherwise it has been completed with
         "not cancelled".
     */
-    @warn_unused_result (message="Use the returned id to unregister the handler")
+    @warn_unused_result (message:"Use the returned id to unregister the handler")
     func register(on executor: ExecutionContext, f: (Bool)->()) -> Int
 
 
@@ -50,7 +50,7 @@ public protocol CancellationTokenType {
 
      - parameter id: The `id` representing the closure which has been obtained with `onCancel`.
      */
-    func unregister(id: Int)
+    func unregister(_ id: Int)
 
 
     /**
@@ -82,7 +82,7 @@ public protocol CancellationTokenType {
 
      - returns: A unique id which represents the handler being registered.
     */
-    @warn_unused_result (message="Use the returned id to unregister the handler")
+    @warn_unused_result (message:"Use the returned id to unregister the handler")
     func onCancel(on executor: ExecutionContext, cancelable: Cancelable, f: (Cancelable)->()) -> Int
 
 
@@ -111,7 +111,7 @@ public protocol CancellationTokenType {
 
      - returns: A unique id which represents the handler being registered.
     */
-    @warn_unused_result (message="Use the returned id to unregister the handler")
+    @warn_unused_result (message:"Use the returned id to unregister the handler")
     func onCancel(on executor: ExecutionContext, f: ()->()) -> Int
 
 
@@ -148,7 +148,7 @@ public extension CancellationTokenType {
 
      - returns: A unique id which represents the handler being registered.
     */
-    public final func onCancel(cancelable: Cancelable, f: (Cancelable)->()) -> Int {
+    public final func onCancel(_ cancelable: Cancelable, f: (Cancelable)->()) -> Int {
         return self.onCancel(on: ConcurrentAsync(), cancelable: cancelable, f: f)
     }
 
@@ -175,7 +175,7 @@ public extension CancellationTokenType {
 
      - returns: A unique id which represents the handler being registered.
     */
-    public final func onCancel(f: ()->()) -> Int {
+    public final func onCancel(_ f: ()->()) -> Int {
         return self.onCancel(on: ConcurrentAsync(), f: f)
     }
 

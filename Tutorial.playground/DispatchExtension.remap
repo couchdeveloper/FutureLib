@@ -1,0 +1,87 @@
+[
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 80,
+  "remove": 1,
+  "text": "D",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 88,
+  "remove": 2,
+  "text": "Q",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 94,
+  "remove": 2,
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 122,
+  "text": "_ ",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 145,
+  "remove": 10,
+  "text": "self.a",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 160,
+  "remove": 5,
+  "text": "execute:",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 198,
+  "text": "_ ",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 221,
+  "remove": 9,
+  "text": "self.",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 235,
+  "remove": 5,
+  "text": "execute:",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 274,
+  "text": "_ ",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 537,
+  "text": "_ ",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 596,
+  "remove": 1,
+  "text": "D",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 604,
+  "remove": 5,
+  "text": "Queue.",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 615,
+  "remove": 2,
+  "text": "(Int(UInt64(DispatchQ",
+ },
+ {
+  "file": "/Users/agrosam/Develop/FutureLib/Tutorial.playground/Sources/DispatchExtension.swift",
+  "offset": 621,
+  "remove": 18,
+  "text": "Attributes.qosDefault.rawValue))",
+ }
+]

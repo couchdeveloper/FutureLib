@@ -10,28 +10,28 @@
 /**
  An error encapsulating a sequence of errors.
  */
-public struct AggregateError: ErrorType {
+public struct AggregateError: ErrorProtocol {
 
     /// Returns the errors that `self` aggregates as an array.
-    public var errors: [ErrorType]
+    public var errors: [ErrorProtocol]
 
     /// Initializes an `AggregateError` with an empty list of errors.
     public init() {
-        self.errors = [ErrorType]()
+        self.errors = [ErrorProtocol]()
     }
     
     /// Initializes an `AggregateError` with a single error.
-    public init(error: ErrorType) {
+    public init(error: ErrorProtocol) {
         self.errors = [error]
     }
     
     /// Initializes an `AggregateError` with a sequence of errors.
-    public init(_ errors: AnySequence<ErrorType>) {
-        self.errors = [ErrorType](errors)
+    public init(_ errors: AnySequence<ErrorProtocol>) {
+        self.errors = [ErrorProtocol](errors)
     }
     
     /// Adds an error to `self`.
-    public mutating func add(error: ErrorType) {
+    public mutating func add(_ error: ErrorProtocol) {
         errors.append(error)
     }
     
@@ -49,7 +49,7 @@ extension AggregateError: CustomStringConvertible {
     public var description: String {
         var s = "AggregateError with errors:"
         errors.forEach {
-            s.appendContentsOf("\n\t\(String($0.dynamicType)).\(String($0))")
+            s.append("\n\t\(String($0.dynamicType)).\(String($0))")
         }
         return s
     }
@@ -66,7 +66,7 @@ extension AggregateError: CustomDebugStringConvertible {
     public var debugDescription: String {
         var s = "AggregateError with errors:"
         errors.forEach {
-            s.appendContentsOf("\n\t\(String(reflecting: $0))")
+            s.append("\n\t\(String(reflecting: $0))")
         }
         return s
     }

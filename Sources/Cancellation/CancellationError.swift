@@ -11,17 +11,17 @@
  Defines errors which belong to the domain "Cancellation". 
  This will be used when a task or operation has been cancelled.
 */
-public enum CancellationError: Int, ErrorType {
+public enum CancellationError: Int, ErrorProtocol {
     
     /// Specifies that the task or operation has been cancelled.
-    case Cancelled = -1
+    case cancelled = -1
 }
 
 
 /**
  Equality operator for `CancellationError` and `ErrorType`.
  */
-public func == (lhs: CancellationError, rhs: ErrorType) -> Bool {
+public func == (lhs: CancellationError, rhs: ErrorProtocol) -> Bool {
     if let e = rhs as? CancellationError {
         return lhs.rawValue == e.rawValue
     } else {
@@ -32,7 +32,7 @@ public func == (lhs: CancellationError, rhs: ErrorType) -> Bool {
 /**
  Equality operator for `ErrorType` and `CancellationError`.
  */
-public func == (lhs: ErrorType, rhs: CancellationError) -> Bool {
+public func == (lhs: ErrorProtocol, rhs: CancellationError) -> Bool {
     if let e = lhs as? CancellationError {
         return e.rawValue == rhs.rawValue
     } else {

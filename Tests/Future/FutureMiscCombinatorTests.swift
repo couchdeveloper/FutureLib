@@ -30,7 +30,7 @@ class FutureMiscCombinatorTests: XCTestCase {
     // MARK: zip
 
     func testZip1() {
-        let expect = self.expectationWithDescription("future should be completed")
+        let expect = self.expectation(withDescription: "future should be completed")
 
         let f1 = Future.succeeded(0)
         let f2 = Future.succeeded("OK")
@@ -40,12 +40,12 @@ class FutureMiscCombinatorTests: XCTestCase {
             expect.fulfill()
         }
 
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testZip2() {
-        let expect = self.expectationWithDescription("future should be completed")
+        let expect = self.expectation(withDescription: "future should be completed")
 
         let f1 = Promise.resolveAfter(0.01) { 0 }.future!
         let f2 = Promise.resolveAfter(0.02) { "OK" }.future!
@@ -55,37 +55,37 @@ class FutureMiscCombinatorTests: XCTestCase {
             expect.fulfill()
         }
 
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testZip3() {
-        let expect = self.expectationWithDescription("future should be completed")
+        let expect = self.expectation(withDescription: "future should be completed")
 
         let f1 = Promise.resolveAfter(0.01) { 0 }.future!
-        let f2 = Promise.resolveAfter(0.02) { throw TestError.Failed }.future!
+        let f2 = Promise.resolveAfter(0.02) { throw TestError.failed }.future!
 
         f1.zip(f2).onFailure { error in
-            XCTAssertTrue(TestError.Failed == error)
+            XCTAssertTrue(TestError.failed == error)
             expect.fulfill()
         }
 
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testZip4() {
-        let expect = self.expectationWithDescription("future should be completed")
+        let expect = self.expectation(withDescription: "future should be completed")
 
-        let f1 = Promise.resolveAfter(0.01) { throw TestError.Failed }.future!
+        let f1 = Promise.resolveAfter(0.01) { throw TestError.failed }.future!
         let f2 = Promise.resolveAfter(0.02) { "OK" }.future!
 
         f1.zip(f2).onFailure { error in
-            XCTAssertTrue(TestError.Failed == error)
+            XCTAssertTrue(TestError.failed == error)
             expect.fulfill()
         }
 
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
@@ -95,7 +95,7 @@ class FutureMiscCombinatorTests: XCTestCase {
     // MARK: filter
 
     func testFilter1() {
-        let expect = self.expectationWithDescription("future should be completed")
+        let expect = self.expectation(withDescription: "future should be completed")
 
         let future = Future.succeeded(0)
 
@@ -105,37 +105,37 @@ class FutureMiscCombinatorTests: XCTestCase {
             expect.fulfill()
         }
 
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testFilter2() {
-        let expect = self.expectationWithDescription("future should be completed")
+        let expect = self.expectation(withDescription: "future should be completed")
 
         let future = Future.succeeded(0)
 
         future.filter() { return $0 == 1 }
         .onFailure { error in
-            XCTAssertTrue(FutureError.NoSuchElement == error)
+            XCTAssertTrue(FutureError.noSuchElement == error)
             expect.fulfill()
         }
 
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testFilter3() {
-        let expect = self.expectationWithDescription("future should be completed")
+        let expect = self.expectation(withDescription: "future should be completed")
 
         let future = Future.succeeded(0)
 
-        future.filter() { _ in throw TestError.Failed }
+        future.filter() { _ in throw TestError.failed }
         .onFailure { error in
-            XCTAssertTrue(TestError.Failed == error)
+            XCTAssertTrue(TestError.failed == error)
             expect.fulfill()
         }
 
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 }

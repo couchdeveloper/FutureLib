@@ -7,77 +7,94 @@
 
 import Dispatch
 
-
-public typealias TimeInterval = Double
-
-
 /**
- An accurate timer for use in unit tests.
- */
-private final class AccurateTimer {
+ Implements a cancelable timer with precise timing.
+ */    
+
+internal class Timer {
     
-    private typealias TimerHandler = () -> ()
-    private typealias TimeInterval = Double
+    internal typealias TimerHandler = () -> ()
     
+    /// time interval in seconds
+    internal typealias TimeInterval = Double 
     
-    private final let _timer: dispatch_source_t
-    private final let _delay: Int64
-    private final let _interval: UInt64
-    private final let _leeway: UInt64
+    private let _timer: DispatchSourceTimer
     
-    private init(delay: TimeInterval, tolerance: TimeInterval = 0.0,
-                 on ec: dispatch_queue_t = dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0),
-                     f: TimerHandler) {
-        _delay = Int64((delay * Double(NSEC_PER_SEC)) + 0.5)
-        _interval = DISPATCH_TIME_FOREVER
-        _leeway = UInt64((tolerance * Double(NSEC_PER_SEC)) + 0.5)
-        _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, tolerance > 0 ? 0 : DISPATCH_TIMER_STRICT, DISPATCH_TARGET_QUEUE_DEFAULT)
-        dispatch_source_set_event_handler(_timer) {
-            dispatch_source_cancel(self._timer) // one shot timer
-            dispatch_async(ec, f)
+    /**
+     Returns a cancelable, precise one-shot timer in _resumed_ state.
+     
+     Setting a tolerance for a timer allows it to fire later than the scheduled fire
+     date, improving the ability of the system to optimize for increased power savings
+     and responsiveness. The timer may fire at any time between its scheduled fire date
+     and the scheduled fire date plus the tolerance. The timer will not fire before the
+     scheduled fire date. The default value is zero, which means no additional tolerance
+     is applied.
+     
+     As the user of the timer, you will have the best idea of what an appropriate tolerance
+     for a timer may be. A general rule of thumb, though, is to set the tolerance to at
+     least 10% of the interval, for a repeating timer. Even a small amount of tolerance
+     will have a significant positive impact on the power usage of your application.
+     The system may put a maximum value of the tolerance.
+     
+     - parameter seconds: The delay in seconds after the timer will fire.
+     - parameter tolerance: A tolerance in seconds the fire date can deviate. Must be positive.
+     - parameter on:  The execution on which to execute the block.
+     - parameter f:  The closure to submit.
+     - return: An initialized Timer object.
+     */    
+    @discardableResult
+    internal static func scheduleAfter(
+        _ seconds: TimeInterval, 
+        queue: DispatchQueue = DispatchQueue.global(), 
+        tolerance: TimeInterval = 0, 
+        f: TimerHandler) -> Timer
+    {
+        let leeway: DispatchTimeInterval = .nanoseconds(Int(seconds * 1e9 + 0.5))
+        let flags: DispatchSource.TimerFlags = seconds == 0 ? .strict : []  
+        let timer = Timer(flags: flags, queue: queue) 
+        timer._timer.setEventHandler {
+            f()
+            timer._timer.cancel()
         }
+        timer._timer.scheduleOneshot(deadline: DispatchTime.now() + seconds, leeway: leeway)
+        timer._timer.resume()
+        return timer
+    }
+    
+    
+    private init(flags: DispatchSource.TimerFlags, queue: DispatchQueue) {
+        _timer = DispatchSource.timer(flags: flags, queue: queue)
     }
     
     deinit {
-        cancel()
+        guard _timer.isCancelled else {
+            fatalError("broken timer") // the Timer object has been deinitialized before the timer has fired or has been cancelled.
+        }
     }
-    
-    
-    
-    /**
-     Starts the timer.
-     
-     The timer fires once after the specified delay plus the specified tolerance.
-     */
-    private final func resume() {
-        let time = dispatch_time(DISPATCH_TIME_NOW, _delay)
-        dispatch_source_set_timer(_timer, time, _interval, _leeway)
-        dispatch_resume(_timer)
-    }
-    
-    
     
     /**
      Returns `True` if the timer has not yet been fired and if it is not cancelled.
      */
-    private final var isValid: Bool {
-        return 0 == dispatch_source_testcancel(_timer)
+    internal final var isValid: Bool {
+        return _timer.isCancelled
     }
     
     /**
      Cancels the timer.
+     The timer handler will not be called anymore.
      */
-    private final func cancel() {
-        dispatch_source_cancel(_timer)
+    internal final func cancel() {
+        _timer.cancel()
     }
-    
+        
 }
+    
+    
 
 /**
  Submits the block on the specifie queue and executed it after the specified delay.
  The delay is as accurate as possible.
  */
-public func schedule_after(delay: TimeInterval, queue: dispatch_queue_t = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), f: () -> ()) {
-    let d = delay * Double(NSEC_PER_SEC) * 1.0e-9
-    AccurateTimer(delay: d, on: queue, f: f).resume()
+internal func schedule_after(_ delay: Timer.TimeInterval, queue: DispatchQueue = DispatchQueue.global(), f: () -> ()) {
+    Timer.scheduleAfter(delay, queue: queue, f: f)
 }

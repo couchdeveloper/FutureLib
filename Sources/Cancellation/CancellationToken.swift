@@ -57,7 +57,7 @@ public struct CancellationToken: CancellationTokenType {
 
      - returns: A unique id which represents the handler being registered.
     */
-    @warn_unused_result (message="Use the returned id to unregister the handler.")
+    @warn_unused_result (message:"Use the returned id to unregister the handler.")
     public func onCancel(
         on executor: ExecutionContext = ConcurrentAsync(),
         cancelable: Cancelable,
@@ -92,7 +92,7 @@ public struct CancellationToken: CancellationTokenType {
 
      - returns: A unique id which represents the handler being registered.
     */
-    @warn_unused_result (message="Use the returned id to unregister the handler.")
+    @warn_unused_result (message:"Use the returned id to unregister the handler.")
     public func onCancel(
         on executor: ExecutionContext = ConcurrentAsync(),
         f: ()->())
@@ -112,7 +112,7 @@ public struct CancellationToken: CancellationTokenType {
 
      - returns: A unique id identifying the registered closure.
      */
-    @warn_unused_result (message="Use the returned id to unregister the handler")
+    @warn_unused_result (message:"Use the returned id to unregister the handler")
     public func register(on executor: ExecutionContext, f: (Bool)->()) -> Int {
         return _sharedState.register(on: executor, f: f)
     }
@@ -123,7 +123,7 @@ public struct CancellationToken: CancellationTokenType {
 
      - parameter id: The `id` representing the closure which has been obtained with `onCancel`.
      */
-    public func unregister(id: Int) {
+    public func unregister(_ id: Int) {
         _sharedState.unregister(id)
     }
 

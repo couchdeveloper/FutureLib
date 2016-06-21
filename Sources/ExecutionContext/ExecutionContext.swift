@@ -74,7 +74,7 @@ public protocol ExecutionContext {
 
      - parameter f: A closure which is being submitted.
     */
-    func execute(f: () -> ())
+    func execute(_ f: () -> ())
 
 
     /**
@@ -91,7 +91,7 @@ public protocol ExecutionContext {
      - parameter onStart: A callback that is called when the task has been started
      whose parameter is the future returned from the task.
      */
-    func schedule<T>(task: () throws -> Future<T>, onStart: Future<T> -> ())
+    func schedule<T>(_ task: () throws -> Future<T>, onStart: (Future<T>) -> ())
 
 }
 
@@ -111,7 +111,7 @@ public extension ExecutionContext {
      - parameter task: A closure which is being scheduled.
      - parameter onStart: A closure that is called when the `task` is being scheduled.
      */
-    public func schedule<T>(task: () throws -> Future<T>, onStart: Future<T> -> ()) {
+    public func schedule<T>(_ task: () throws -> Future<T>, onStart: (Future<T>) -> ()) {
         execute {
             do {
                 onStart(try task())
@@ -135,7 +135,7 @@ public extension ExecutionContext {
      - return: A future which will be completed with the returned future,
      e.g. `Future<Future<T>>`
      */
-    public func schedule<T>(task: () throws -> Future<T>) -> Future<Future<T>> {
+    public func schedule<T>(_ task: () throws -> Future<T>) -> Future<Future<T>> {
         let returnedFuture = Future<Future<T>>()
         schedule(task) { future in
             returnedFuture.complete(future)
@@ -161,8 +161,8 @@ public struct MainThreadAsync: ExecutionContext {
      
      - parameter f: A closure which is being submitted.
      */
-    public func execute(f: () -> ()) {
-        dispatch_async(dispatch_get_main_queue(), f)
+    public func execute(_ f: () -> ()) {
+        DispatchQueue.main.async(execute: f)
     }
 }
 
@@ -181,8 +181,8 @@ public struct MainThreadSync: ExecutionContext {
      
      - parameter f: A closure which is being submitted.
      */
-    public func execute(f: () -> ()) {
-        dispatch_sync(dispatch_get_main_queue(), f)
+    public func execute(_ f: () -> ()) {
+        DispatchQueue.main.sync(execute: f)
     }
 }
 
@@ -201,8 +201,8 @@ public struct ConcurrentAsync: ExecutionContext {
      
      - parameter f: A closure which is being submitted.
      */
-    public func execute(f: () -> ()) {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), f)
+    public func execute(_ f: () -> ()) {
+        DispatchQueue.global(attributes: .qosUserInteractive).async(execute: f)
     }
 }
 
@@ -221,8 +221,8 @@ public struct ConcurrentSync: ExecutionContext {
      
      - parameter f: A closure which is being submitted.
      */
-    public func execute(f: () -> ()) {
-        dispatch_sync(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), f)
+    public func execute(_ f: () -> ()) {
+        DispatchQueue.global(attributes: .qosUserInteractive).sync(execute: f)
     }
 }
 
@@ -240,7 +240,7 @@ internal struct SynchronousCurrent: ExecutionContext {
 
      - parameter f: The closure takeing no parameters and returning ().
     */
-    internal func execute(f: ()->()) {
+    internal func execute(_ f: ()->()) {
         f()
     }
 

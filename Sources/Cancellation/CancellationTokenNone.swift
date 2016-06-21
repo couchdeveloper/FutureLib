@@ -30,5 +30,5 @@ public struct CancellationTokenNone: CancellationTokenType {
         f: (Bool)->()) -> Int { return -1 }
 
     /// Does nothing.
-    public func unregister(id: Int) { }
+    public func unregister(_ id: Int) { }
 }

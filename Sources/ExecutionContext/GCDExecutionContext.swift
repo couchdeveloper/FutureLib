@@ -15,7 +15,7 @@ import Dispatch
 public struct GCDSyncExecutionContext: ExecutionContext {
 
     /// - returns: The dispatch queue.
-    public let queue: dispatch_queue_t
+    public let queue: DispatchQueue
 
     /**
      Initializes a `GCDSyncExecutionContext` with the given dispatch queue.
@@ -25,7 +25,7 @@ public struct GCDSyncExecutionContext: ExecutionContext {
      
      - parameter q: A dispatch queue.
      */
-    public init(_ q: dispatch_queue_t = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
+    public init(_ q: DispatchQueue = DispatchQueue.global(attributes: .qosDefault)) {
         queue = q
     }
 
@@ -35,8 +35,8 @@ public struct GCDSyncExecutionContext: ExecutionContext {
 
      - parameter f: A closure which is being scheduled.
      */
-    public func execute(f: ()->()) {
-        dispatch_sync(queue, f)
+    public func execute(_ f: ()->()) {
+        queue.sync(execute: f)
     }
 
 }
@@ -49,7 +49,7 @@ public struct GCDSyncExecutionContext: ExecutionContext {
 public struct GCDAsyncExecutionContext: ExecutionContext {
 
     /// - returns: The dispatch queue.
-    public let queue: dispatch_queue_t
+    public let queue: DispatchQueue
 
     /**
      Initializes a `GCDAsyncExecutionContext` with the given dispatch queue.
@@ -59,7 +59,7 @@ public struct GCDAsyncExecutionContext: ExecutionContext {
      
      - parameter q: A dispatch queue.
      */
-    public init(_ q: dispatch_queue_t = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
+    public init(_ q: DispatchQueue = DispatchQueue.global(attributes: .qosDefault)) {
         queue = q
     }
 
@@ -69,8 +69,8 @@ public struct GCDAsyncExecutionContext: ExecutionContext {
 
      - parameter f: A closure which is being scheduled.
      */
-    public func execute(f: ()->()) {
-        dispatch_async(queue, f)
+    public func execute(_ f: ()->()) {
+        queue.async(execute: f)
     }
 
 }
@@ -84,7 +84,7 @@ public struct GCDAsyncExecutionContext: ExecutionContext {
 public struct GCDBarrierSyncExecutionContext: ExecutionContext {
 
     /// - returns: The dispatch queue.
-    public let queue: dispatch_queue_t
+    public let queue: DispatchQueue
 
     /**
      Initializes a `GCDBarrierSyncExecutionContext` with the given dispatch queue.
@@ -94,7 +94,7 @@ public struct GCDBarrierSyncExecutionContext: ExecutionContext {
      
      - parameter q: A dispatch queue.
     */
-    public init(_ q: dispatch_queue_t = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
+    public init(_ q: DispatchQueue = DispatchQueue.global(attributes: .qosDefault)) {
         queue = q
     }
 
@@ -104,8 +104,8 @@ public struct GCDBarrierSyncExecutionContext: ExecutionContext {
 
      - parameter f: A closure which is being scheduled.
      */
-    public func execute(f: ()->()) {
-        dispatch_barrier_sync(queue, f)
+    public func execute(_ f: ()->()) {
+        queue.sync(flags: .barrier, execute: f)
     }
 
 }
@@ -118,7 +118,7 @@ public struct GCDBarrierSyncExecutionContext: ExecutionContext {
 public struct GCDBarrierAsyncExecutionContext: ExecutionContext {
 
     /// - returns: The dispatch queue.
-    public let queue: dispatch_queue_t
+    public let queue: DispatchQueue
 
     /**
      Initializes a `GCDBarrierAsyncExecutionContext` with the given dispatch queue.
@@ -128,7 +128,7 @@ public struct GCDBarrierAsyncExecutionContext: ExecutionContext {
      
      - parameter q: A dispatch queue.
      */
-    public init(_ q: dispatch_queue_t = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
+    public init(_ q: DispatchQueue = DispatchQueue.global(attributes: .qosDefault)) {
         queue = q
     }
 
@@ -138,8 +138,8 @@ public struct GCDBarrierAsyncExecutionContext: ExecutionContext {
 
      - parameter f: A closure which is being scheduled.
      */
-    public func execute(f: ()->()) {
-        dispatch_barrier_async(queue, f)
+    public func execute(_ f: ()->()) {
+        queue.async(flags: .barrier, execute: f)
     }
 
 }

@@ -8,9 +8,9 @@
 
 
 internal struct Callback<T> {
-    let continuation: T -> ()
+    let continuation: (T) -> ()
     let id: Int
-    init(id: Int, f: T->()) {
+    init(id: Int, f: (T)->()) {
         self.id = id
         continuation = f
     }
@@ -24,55 +24,55 @@ internal enum ClosureRegistry<T> {
     typealias CallbackType = Callback<T>
 
     init() {
-        self = Empty
+        self = empty
     }
 
-    case Empty
-    case Single(T->())
-    case Multiple(ClosureRegistryMultiple<T>)
+    case empty
+    case single((T)->())
+    case multiple(ClosureRegistryMultiple<T>)
 
     var count: Int {
         switch self {
-            case .Empty: return 0
-            case .Single: return 1
-            case .Multiple(let cr): return cr.count
+            case .empty: return 0
+            case .single: return 1
+            case .multiple(let cr): return cr.count
         }
     }
 
-    mutating func register(f: T->()) -> Int {
+    mutating func register(_ f: (T)->()) -> Int {
         switch self {
-            case .Empty:
-                self = Single(f)
+            case .empty:
+                self = single(f)
                 return 0
 
-            case .Single(let first):
+            case .single(let first):
                 let cr = ClosureRegistryMultiple<T>(id: 0, f: first)
-                self = Multiple(cr)
+                self = multiple(cr)
                 return cr.register(f)
 
-            case .Multiple(let cr):
+            case .multiple(let cr):
                 return cr.register(f)
         }
     }
 
-    mutating func unregister(id: Int) -> CallbackType? {
+    mutating func unregister(_ id: Int) -> CallbackType? {
         switch self {
-        case .Empty: return nil
-        case .Single(let first):
+        case .empty: return nil
+        case .single(let first):
             let callback = CallbackType(id: 0, f: first)
-            self = Empty
+            self = empty
             return callback
-        case .Multiple(let cr):
+        case .multiple(let cr):
             return cr.unregister(id)
         }
     }
 
-    func resume(value: T) {
+    func resume(_ value: T) {
         switch self {
-        case .Empty: break
-        case .Single(let f):
+        case .empty: break
+        case .single(let f):
             f(value)
-        case .Multiple(let cr):
+        case .multiple(let cr):
             cr.resume(value)
         }
     }
@@ -93,7 +93,7 @@ internal final class ClosureRegistryMultiple<T> {
         _callbacks.reserveCapacity(2)
     }
 
-    init(id: Int, f: T->()) {
+    init(id: Int, f: (T)->()) {
         assert(id == 0)
         _callbacks.reserveCapacity(4)
         _callbacks.append(Callback(id: id, f: f))
@@ -105,22 +105,22 @@ internal final class ClosureRegistryMultiple<T> {
         return _callbacks.count
     }
 
-    final func register(f: T->()) -> Int {
+    final func register(_ f: (T)->()) -> Int {
         _id += 1
         let callback = Callback<T>(id: _id, f: f)
         _callbacks.append(callback)
         return _id
     }
 
-    final func unregister(id: Int) -> CallbackType? {
+    final func unregister(_ id: Int) -> CallbackType? {
         var cb: CallbackType? = nil
-        if let idx = _callbacks.indexOf({$0.id == id}) {
-            cb = _callbacks.removeAtIndex(idx)
+        if let idx = _callbacks.index(where: {$0.id == id}) {
+            cb = _callbacks.remove(at: idx)
         }
         return cb
     }
 
-    final func resume(value: T) {
+    final func resume(_ value: T) {
         for c in _callbacks {
             c.continuation(value)
         }

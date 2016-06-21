@@ -29,24 +29,24 @@ class FutureTypeTests: XCTestCase {
         XCTAssertNotNil(future.result)
         if let result = future.result {
             switch result {
-            case .Success(let value):
+            case .success(let value):
                 XCTAssertEqual(1, value)
-            case .Failure(let error):
+            case .failure(let error):
                 XCTFail("unexpected error: \(error)")
             }
         }
     }
 
     func testResultWithFailedFuture() {
-        let future: Future<Int> = Future.failed(TestError.Failed)
+        let future: Future<Int> = Future.failed(TestError.failed)
         
         XCTAssertNotNil(future.result)
         if let result = future.result {
             switch result {
-            case .Success(let value):
+            case .success(let value):
                 XCTFail("unexpected success: \(value)")
-            case .Failure(let error):
-                XCTAssertTrue(TestError.Failed == error)
+            case .failure(let error):
+                XCTAssertTrue(TestError.failed == error)
             }
         }
     }
@@ -57,9 +57,9 @@ class FutureTypeTests: XCTestCase {
         future.wait()
         if let result = future.result {
             switch result {
-            case .Success(let value):
+            case .success(let value):
                 XCTAssertEqual(1, value)
-            case .Failure(let error):
+            case .failure(let error):
                 XCTFail("unexpected error: \(error)")
             }
         } else {
@@ -69,15 +69,15 @@ class FutureTypeTests: XCTestCase {
 
 
     func testResultWithPendingFutureGettingFailed() {
-        let future = Promise<Int>.resolveAfter(0.1) { throw TestError.Failed }.future!
+        let future = Promise<Int>.resolveAfter(0.1) { throw TestError.failed }.future!
         XCTAssertNil(future.result)
         future.wait()
         if let result = future.result {
             switch result {
-            case .Success(let value):
+            case .success(let value):
                 XCTFail("unexpected success: \(value)")
-            case .Failure(let error):
-                XCTAssertTrue(TestError.Failed == error)
+            case .failure(let error):
+                XCTAssertTrue(TestError.failed == error)
             }
         } else {
             XCTFail()
@@ -101,12 +101,12 @@ class FutureTypeTests: XCTestCase {
     
     
     func testGetWithFailedFuture() {
-        let future: Future<Int> = Future.failed(TestError.Failed)
+        let future: Future<Int> = Future.failed(TestError.failed)
         do {
             let value = try future.get()
             XCTFail("unexpected success: \(value)")
         } catch {
-            XCTAssertTrue(TestError.Failed == error)
+            XCTAssertTrue(TestError.failed == error)
         }
     }
     
@@ -122,12 +122,12 @@ class FutureTypeTests: XCTestCase {
     }
     
     func testGetWithPendingFutureGettingFailed() {
-        let future = Promise<Int>.resolveAfter(0.1) { throw TestError.Failed }.future!
+        let future = Promise<Int>.resolveAfter(0.1) { throw TestError.failed }.future!
         do {
             let value = try future.get()
             XCTFail("unexpected success: \(value)")
         } catch {
-            XCTAssertTrue(TestError.Failed == error)
+            XCTAssertTrue(TestError.failed == error)
         }
     }
     

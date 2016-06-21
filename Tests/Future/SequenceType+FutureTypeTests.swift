@@ -11,7 +11,7 @@ import Darwin
 
 
 
-func task<T>(delay: Double, f: () throws -> T) -> Future<T> {
+func task<T>(_ delay: Double, f: () throws -> T) -> Future<T> {
     return Promise<T>.resolveAfter(delay, f: f).future!
 }
 
@@ -34,7 +34,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
     // MARK: find
     
     func testFind() {
-        let expect1 = self.expectationWithDescription("future should be completed")
+        let expect1 = self.expectation(withDescription: "future should be completed")
         let futures = [
             Promise.resolveAfter(0.10) {1}.future!,
             Promise.resolveAfter(0.12) {2}.future!,
@@ -51,11 +51,11 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTFail("unexpected error: \(error)")
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
     
     func testFindWithCancellation() {
-        let expect1 = self.expectationWithDescription("future should be completed")
+        let expect1 = self.expectation(withDescription: "future should be completed")
         let futures = [
             Promise.resolveAfter(1.10) {1}.future!,
             Promise.resolveAfter(1.12) {2}.future!,
@@ -71,10 +71,10 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTFail("unexpected success: \(value)")
             expect1.fulfill()
         }.onFailure { error in
-            XCTAssertTrue(CancellationError.Cancelled == error)
+            XCTAssertTrue(CancellationError.cancelled == error)
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(0.2, handler: nil)
+        self.waitForExpectations(withTimeout: 0.2, handler: nil)
     }
     
 
@@ -83,7 +83,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
     // Mark: firstCompleted
     
     func testFirstCompleted() {
-        let expect1 = self.expectationWithDescription("future should be completed")
+        let expect1 = self.expectation(withDescription: "future should be completed")
         let futures = [
             Promise<Int>.resolveAfter(0.30) {Log.Info("1"); return 1}.future!,
             Promise<Int>.resolveAfter(0.40) {Log.Info("3"); return 3}.future!,
@@ -110,11 +110,11 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTFail("unexpected error: \(error)")
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
     
     func testFirstCompletedWithCancellation() {
-        let expect1 = self.expectationWithDescription("future should be completed")
+        let expect1 = self.expectation(withDescription: "future should be completed")
         let cr = CancellationRequest()
         schedule_after(0.1) {
             cr.cancel()
@@ -139,87 +139,88 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTFail("unexpected success: \(value)")
             expect1.fulfill()
         }.onFailure { error in
-            XCTAssertTrue(CancellationError.Cancelled == error)
+            XCTAssertTrue(CancellationError.cancelled == error)
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(0.2, handler: nil)
+        self.waitForExpectations(withTimeout: 0.2, handler: nil)
     }
 
 
     // MARK: traverse
 
     func testTraverseInputAppliedToTaskCompletesWithArrayOfSuccessValues() {
-        let expect1 = self.expectationWithDescription("future should be completed")
+        let expect1 = self.expectation(withDescription: "future should be completed")
         let inputs = ["a", "b", "c", "d"]
         inputs.traverse { s in
-            return task(0.1) { s.uppercaseString }
+            return task(0.1) { s.uppercased() }
         }.onSuccess { value in
             XCTAssertEqual(["A", "B", "C", "D"], value)
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testTraverseInputAppliedToTaskFails() {
-        let expect1 = self.expectationWithDescription("future should be completed")
+        let expect1 = self.expectation(withDescription: "future should be completed")
         let inputs = ["a", "b", "cc", "d"]
-        inputs.traverse { s in
+        let future: Future<[String]> = inputs.traverse { s in
             return task(0.01) {
                 guard s.characters.count > 1 else {
-                    throw TestError.Failed
+                    throw TestError.failed
                 }
-                s.uppercaseString
+                return s.uppercased()
             }
-        }.onFailure { error in
-            XCTAssertTrue(TestError.Failed == error)
+        }
+        future.onFailure { error in
+            XCTAssertTrue(TestError.failed == error)
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 10000, handler: nil)
     }
 
     func testTraverseCanBeCancelled() {
-        let expect1 = self.expectationWithDescription("future should be completed")
+        let expect1 = self.expectation(withDescription: "future should be completed")
         let cr = CancellationRequest()
         let inputs = ["a", "b", "c", "d"]
         inputs.traverse(ct: cr.token) { s -> Future<String> in
             return task(2.0) {
-                return s.uppercaseString
+                return s.uppercased()
             }
         }.onFailure { error in
-            XCTAssertTrue(CancellationError.Cancelled == error)
+            XCTAssertTrue(CancellationError.cancelled == error)
             expect1.fulfill()
         }
         schedule_after(0.1) {
             cr.cancel()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testTraverseCompletesWithErrorFromTask() {
-        let expect1 = self.expectationWithDescription("future should be completed")
+        let expect1 = self.expectation(withDescription: "future should be completed")
         let inputs = [0.05, 0.08, 0.01, 0.3]
 
         let task: (Double) -> Future<Double> = { d in
             return Promise.resolveAfter(d) {
                 if d > 0.02 { return d }
-                throw TestError.Failed
+                throw TestError.failed
 
             }.future!
         }
 
         inputs.traverse() { d in task(d) }
         .onFailure { error in
-            XCTAssertTrue(TestError.Failed == error, String(error))
+            XCTAssertTrue(TestError.failed == error, String(error))
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(2, handler: nil)
+        self.waitForExpectations(withTimeout: 2, handler: nil)
     }
 
 
     func testTraverseInputAppliedToTaskFails2() {
-        let expect1 = self.expectationWithDescription("future should be completed")
+        let expect1 = self.expectation(withDescription: "future should be completed")
         let inputs = [1.1, 1.5, 0.01, 3.0]
 
         // Utilize a cancellation token to cancel all pending tasks when one
@@ -236,16 +237,16 @@ class SequenceTypeFutureTypeTests: XCTestCase {
 
         inputs.traverse(ct: cr.token) { d in task(d) }
         .onFailure { error in
-            XCTAssertTrue(CancellationError.Cancelled == error, String(error))
+            XCTAssertTrue(CancellationError.cancelled == error, String(error))
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
 
     func testTraverseWithTaskQueueExecutionContextWith1MaxConcurrentTask() {
-        let expect1 = self.expectationWithDescription("future should be completed")
+        let expect1 = self.expectation(withDescription: "future should be completed")
         let maxConcurrentTasks: Int32 = 1
         let ec = TaskQueue(maxConcurrentTasks: UInt(maxConcurrentTasks))
         let inputs = ["a", "b", "c", "d", "e"]
@@ -255,7 +256,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
             return Promise<String>.resolveAfter(0.02, f: {
                 OSAtomicDecrement32(&i)
-                return s.uppercaseString
+                return s.uppercased()
             }).future!
         }
 
@@ -265,12 +266,12 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTAssertEqual(["A", "B", "C", "D", "E"], value)
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testTraverseWithTaskQueueExecutionContextWith2MaxConcurrentTask() {
-        let expect1 = self.expectationWithDescription("future should be completed")
+        let expect1 = self.expectation(withDescription: "future should be completed")
         let maxConcurrentTasks: Int32 = 2
         let ec = TaskQueue(maxConcurrentTasks: UInt(maxConcurrentTasks))
         let inputs = ["a", "b", "c", "d", "e"]
@@ -280,7 +281,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
             return Promise<String>.resolveAfter(0.02, f: {
                 OSAtomicDecrement32(&i)
-                return s.uppercaseString
+                return s.uppercased()
             }).future!
         }
         
@@ -290,7 +291,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
                 XCTAssertEqual(["A", "B", "C", "D", "E"], value)
                 expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
@@ -299,7 +300,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
 
     func testFoldCallsCombineInOrder() {
 
-        let expect1 = self.expectationWithDescription("future1 should be completed")
+        let expect1 = self.expectation(withDescription: "future1 should be completed")
 
         let futures = [
             task(0.01) { "A"},
@@ -311,13 +312,13 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTAssertEqual("ABCD", s)
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testFoldWillContinueWhenAllFuturesHaveBeenCompleted1() {
 
-        let expect1 = self.expectationWithDescription("future1 should be completed")
+        let expect1 = self.expectation(withDescription: "future1 should be completed")
 
         let futures = [
             task(0.01) { "A"},
@@ -331,17 +332,17 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             }
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
     func testFoldWillContinueWhenNextinSequenceFails() {
 
-        let expect1 = self.expectationWithDescription("future1 should be completed")
+        let expect1 = self.expectation(withDescription: "future1 should be completed")
 
         let futures = [
             task(0.01) { "A"},
             task(0.07) { "B"},
-            task(0.05) { throw TestError.Failed },
+            task(0.05) { throw TestError.failed },
             task(0.20) { "D"}
         ]
         futures.fold(initial: ()) { _,_ -> Void in }.onFailure { error in
@@ -351,18 +352,18 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTAssertFalse(futures[3].isCompleted)
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testFoldWillContinueWhenNextinSequenceFails2() {
 
-        let expect1 = self.expectationWithDescription("future1 should be completed")
+        let expect1 = self.expectation(withDescription: "future1 should be completed")
 
         let futures = [
             task(0.01) { "A"},
             task(0.07) { "B"},
-            task(0.05) { throw TestError.Failed },
+            task(0.05) { throw TestError.failed },
             task(0.03) { "D"}
         ]
         futures.fold(initial: ()) { _,_ -> Void in }.onFailure { error in
@@ -372,7 +373,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTAssertTrue(futures[3].isSuccess)
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
@@ -383,7 +384,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
 
     func testSequenceMapsToArrayOfTs() {
 
-        let expect1 = self.expectationWithDescription("future1 should be completed")
+        let expect1 = self.expectation(withDescription: "future1 should be completed")
 
         let futures = [
             task(0.01) { "A"},
@@ -395,7 +396,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTAssertEqual(["A", "B", "C", "D"], s)
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
@@ -404,7 +405,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
 
     func testResultsMapsToArrayOfResults() {
 
-        let expect1 = self.expectationWithDescription("future1 should be completed")
+        let expect1 = self.expectation(withDescription: "future1 should be completed")
 
         let futures = [
             task(0.01) { "A"},
@@ -419,7 +420,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTAssertEqual(["A", "B", "C", "D"], values)
             expect1.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 }

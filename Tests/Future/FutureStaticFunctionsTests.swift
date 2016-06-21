@@ -25,7 +25,7 @@ class FutureExtensionsTests: XCTestCase {
 
 
     func testClassMethodFailedReturnsRejectedFuture() {
-        let future = Future<Int>.failed(TestError.Failed)
+        let future = Future<Int>.failed(TestError.failed)
         XCTAssertTrue(future.isCompleted)
         XCTAssert(future.isFailure)
         XCTAssertNotNil(future.result)
@@ -35,7 +35,7 @@ class FutureExtensionsTests: XCTestCase {
                 let v = try r.get()
                 print("\(v)")
             }
-            catch TestError.Failed {
+            catch TestError.failed {
             }
             catch {
                 XCTFail("unexpected error")
@@ -86,7 +86,7 @@ class FutureExtensionsTests: XCTestCase {
     }
     
     func testClassMethodCompletedReturnsFailedFuture() {
-        let future = Future.completed(Try<Int>(error: TestError.Failed))
+        let future = Future.completed(Try<Int>(error: TestError.failed))
         XCTAssertTrue(future.isCompleted)
         XCTAssert(future.isFailure)
         XCTAssertNotNil(future.result)
@@ -121,8 +121,8 @@ class FutureExtensionsTests: XCTestCase {
     // MARK: Future<T>.failedAfter(delay:, error:) -> Future<T>
 
     func testClassMethodFailedAfterReturnsAFutureWhichBecomesFailedAfterTheDelay() {
-        let expect1 = self.expectationWithDescription("continuation should be called")
-        let future = Future<Int>.failedAfter(0.1, error: TestError.Failed)
+        let expect1 = self.expectation(withDescription: "continuation should be called")
+        let future = Future<Int>.failedAfter(0.1, error: TestError.failed)
         future.onComplete { r in
             if let r = future.result {
                 XCTAssertTrue(r.isFailure)
@@ -130,7 +130,7 @@ class FutureExtensionsTests: XCTestCase {
                     let v = try r.get()
                     print("\(v)")
                 }
-                catch TestError.Failed {
+                catch TestError.failed {
                 }
                 catch {
                     XCTFail("unexpected error")
@@ -138,14 +138,14 @@ class FutureExtensionsTests: XCTestCase {
             }
             expect1.fulfill()
         }
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     // MARK: Future<T>.succeededAfter(delay:, value:) -> Future<T>
 
     func testClassMethodSucceededAfterReturnsAFutureWhichBecomesSucceededAfterTheDelay() {
-        let expect1 = self.expectationWithDescription("continuation should be called")
+        let expect1 = self.expectation(withDescription: "continuation should be called")
         let future = Future<Int>.succeededAfter(0.1, value: 1)
         future.onComplete { r in
             if let r = future.result {
@@ -160,16 +160,16 @@ class FutureExtensionsTests: XCTestCase {
             }
             expect1.fulfill()
         }
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     // MARK: Future<T>.failedAfter(delay:, cancellationToken:, error:) -> Future<T>
 
     func testCancellingClassMethodFailedAfterReturnsAFutureWhichBecomesRejectedWithACancellationError() {
-        let expect1 = self.expectationWithDescription("continuation should be called")
+        let expect1 = self.expectation(withDescription: "continuation should be called")
         let cr1 = CancellationRequest()
-        let future = Future<Int>.failedAfter(10, cancellationToken: cr1.token, error: TestError.Failed)
+        let future = Future<Int>.failedAfter(10, cancellationToken: cr1.token, error: TestError.failed)
         future.onComplete { r in
             if let r = future.result {
                 XCTAssertTrue(r.isFailure)
@@ -177,7 +177,7 @@ class FutureExtensionsTests: XCTestCase {
                     let _ = try r.get()
                     XCTFail("unexpected success")
                 }
-                catch CancellationError.Cancelled {
+                catch CancellationError.cancelled {
                 }
                 catch {
                     XCTFail("unexpected error")
@@ -186,14 +186,14 @@ class FutureExtensionsTests: XCTestCase {
             expect1.fulfill()
         }
         cr1.cancel()
-        waitForExpectationsWithTimeout(0.1, handler: nil)
+        waitForExpectations(withTimeout: 0.1, handler: nil)
     }
 
 
     // MARK: Future<T>.succeededAfter(delay:, cancellationToken:, value:) -> Future<T>
 
     func testCancellingClassMethodSucceededAfterReturnsAFutureWhichBecomesRejectedWithACancellationError() {
-        let expect1 = self.expectationWithDescription("continuation should be called")
+        let expect1 = self.expectation(withDescription: "continuation should be called")
         let cr1 = CancellationRequest()
         let future = Future<Int>.succeededAfter(10, cancellationToken: cr1.token, value: 1)
         future.onComplete { r in
@@ -203,7 +203,7 @@ class FutureExtensionsTests: XCTestCase {
                     let _ = try r.get()
                     XCTFail("unexpected success")
                 }
-                catch CancellationError.Cancelled {
+                catch CancellationError.cancelled {
                 }
                 catch {
                     XCTFail("unexpected error")
@@ -212,7 +212,7 @@ class FutureExtensionsTests: XCTestCase {
             expect1.fulfill()
         }
         cr1.cancel()
-        waitForExpectationsWithTimeout(0.1, handler: nil)
+        waitForExpectations(withTimeout: 0.1, handler: nil)
     }
 
 
@@ -221,33 +221,33 @@ class FutureExtensionsTests: XCTestCase {
 
     
     func testApply() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
+        let expect = self.expectation(withDescription: "future should be fulfilled")
         let future = Future<String>.apply { "OK" }
         future.onComplete { result in
             switch result {
-            case .Success(let value):
+            case .success(let value):
                 XCTAssertEqual("OK", value)
-            case .Failure(let error):
+            case .failure(let error):
                 XCTFail("unexpected error: \(error)")
             }
             expect.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
     
     func testApplyWithThrowingFunction() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
-        let future: Future<String> = Future<String>.apply { throw TestError.Failed }
+        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let future: Future<String> = Future<String>.apply { throw TestError.failed }
         future.onComplete { result in
             switch result {
-            case .Success(let value):
+            case .success(let value):
                 XCTFail("unexpected success: \(value)")
-            case .Failure(let error):
-                XCTAssertTrue(TestError.Failed == error)
+            case .failure(let error):
+                XCTAssertTrue(TestError.failed == error)
             }
             expect.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 

@@ -7,7 +7,7 @@
 
 import Dispatch
 
-extension SequenceType where Generator.Element: CancellationTokenType {
+extension Sequence where Iterator.Element: CancellationTokenType {
 
 
     /**
@@ -24,9 +24,7 @@ extension SequenceType where Generator.Element: CancellationTokenType {
         -> CancellationTokenType {
         let scs = SharedCancellationState()
         let ct = CancellationToken(sharedState: scs)
-        let sync_queue = dispatch_queue_create("private sync queue",
-            dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
-                QOS_CLASS_USER_INITIATED, 0))
+        let sync_queue = DispatchQueue(label: "private sync queue", attributes: [.serial, .qosUserInitiated])
         let private_ec = GCDAsyncExecutionContext(sync_queue)
         private_ec.execute {
             var count = 0
@@ -39,7 +37,7 @@ extension SequenceType where Generator.Element: CancellationTokenType {
                     allCancelled = allCancelled && cancelled
                     if !cancelled {
                         scs.complete()
-                        for (i, ct) in self.enumerate() {
+                        for (i, ct) in self.enumerated() {
                             ct.unregister(ids[i])
                         }
                     } else if count == 0 && allCancelled {
@@ -67,9 +65,7 @@ extension SequenceType where Generator.Element: CancellationTokenType {
         -> CancellationTokenType {
         let scs = SharedCancellationState()
         let ct = CancellationToken(sharedState: scs)
-        let sync_queue = dispatch_queue_create("private sync queue",
-            dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
-                QOS_CLASS_USER_INITIATED, 0))
+        let sync_queue = DispatchQueue(label: "private sync queue", attributes: [.serial, .qosUserInitiated])
         let private_ec = GCDAsyncExecutionContext(sync_queue)
         private_ec.execute {
             var count = 0
@@ -80,7 +76,7 @@ extension SequenceType where Generator.Element: CancellationTokenType {
                     count  -= 1
                     if cancelled {
                         scs.cancel()
-                        for (i, ct) in self.enumerate() {
+                        for (i, ct) in self.enumerated() {
                             ct.unregister(ids[i])
                         }
                     } else if count == 0 {

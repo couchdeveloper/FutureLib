@@ -8,15 +8,15 @@
 
 // Error type
 
-enum TestError: Int, ErrorType {
-    case Failed
-    case Failed2
-    case Failed3
+enum TestError: Int, ErrorProtocol {
+    case failed
+    case failed2
+    case failed3
 }
 
 //func == (lhs: TestError, rhs: TestError) -> Bool { return lhs.isEqual(rhs) }
 
-func == (lhs: TestError, rhs: ErrorType) -> Bool {
+func == (lhs: TestError, rhs: ErrorProtocol) -> Bool {
     if let e = rhs as? TestError {
         return lhs.rawValue == e.rawValue
     }
@@ -25,7 +25,7 @@ func == (lhs: TestError, rhs: ErrorType) -> Bool {
     }
 }
 
-func == (lhs: ErrorType, rhs: TestError) -> Bool {
+func == (lhs: ErrorProtocol, rhs: TestError) -> Bool {
     if let e = lhs as? TestError {
         return e.rawValue == rhs.rawValue
     }

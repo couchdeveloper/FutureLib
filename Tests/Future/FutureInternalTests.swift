@@ -15,7 +15,7 @@ _current_ execution context. This class is used to test private behavior of Futu
 */
 struct SyncCurrent: ExecutionContext {
 
-    internal func execute(f:()->()) {
+    internal func execute(_ f:()->()) {
         f()
     }
 }
@@ -38,7 +38,7 @@ class FutureInternalTests: XCTestCase {
     //
 
     func testFutureInternalsExecuteOnTheSynchronizationQueue1() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
+        let expect = self.expectation(withDescription: "future should be fulfilled")
         let promise = Promise<String>()
         let test:()->() = {
             let future = promise.future!
@@ -49,12 +49,12 @@ class FutureInternalTests: XCTestCase {
         }
         test()
         promise.fulfill("OK")
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testFutureInternalsExecuteOnTheSynchronizationQueue2() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
+        let expect = self.expectation(withDescription: "future should be fulfilled")
         let promise = Promise<String>()
         let cr = CancellationRequest()
         let test:()->() = {
@@ -66,12 +66,12 @@ class FutureInternalTests: XCTestCase {
         }
         test()
         cr.cancel()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 
     func testFutureInternalsExecuteOnTheSynchronizationQueue3() {
-        let expect = self.expectationWithDescription("future should be fulfilled")
+        let expect = self.expectation(withDescription: "future should be fulfilled")
         let promise = Promise<String>()
         let cr = CancellationRequest()
         cr.cancel()
@@ -83,7 +83,7 @@ class FutureInternalTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
     
 

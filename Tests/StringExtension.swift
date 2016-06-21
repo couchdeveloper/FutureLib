@@ -9,10 +9,10 @@
 
 public extension String {
     /// Returns `true` iff `self` begins contains `substring`.
-    public func contains(substring: String) -> Bool {
-        let range = self.rangeOfString(substring)
+    public func contains(_ substring: String) -> Bool {
+        let range = self.range(of: substring)
         if let r = range {
-            return r.startIndex != r.endIndex
+            return r.lowerBound != r.upperBound
         }
         return false
     }

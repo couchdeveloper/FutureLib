@@ -26,7 +26,7 @@ extension FutureType {
      - returns: A `Future` whose `ValueType` equals the return type of the function 
      `f`.
      */
-    static public func apply<ValueType>(ec: ExecutionContext = ConcurrentAsync(),
+    static public func apply<ValueType>(_ ec: ExecutionContext = ConcurrentAsync(),
         f: () throws -> ValueType)
         -> Future<ValueType> 
     {
@@ -43,7 +43,7 @@ extension FutureType {
      - parameter error: The error with which the future will be completed.
      - returns: A completed future.
      */
-    static public func failed(error: ErrorType) -> Future<ValueType> {
+    static public func failed(_ error: ErrorProtocol) -> Future<ValueType> {
         return Future<ValueType>(error: error)
     }
 
@@ -53,7 +53,7 @@ extension FutureType {
      - parameter value: The value with which the future will be completed.
      - returns: A completed future.
      */
-    static public func succeeded(value: ValueType) -> Future<ValueType> {
+    static public func succeeded(_ value: ValueType) -> Future<ValueType> {
         return Future<ValueType>(value: value)
     }
 
@@ -62,7 +62,7 @@ extension FutureType {
      - parameter result: The result of type `Try<T>` with which the future will be completed.
      - returns: A completed future.
      */
-    static public func completed(result: Try<ValueType>) -> Future<ValueType> {
+    static public func completed(_ result: Try<ValueType>) -> Future<ValueType> {
         return Future<ValueType>(result: result)
     }
     
@@ -79,20 +79,24 @@ extension FutureType {
      - parameter error: The error with which the future will be completed after the delay.
      - returns: A new future.
      */
-    static public func failedAfter(delay: Double,
+    static public func failedAfter(_ delay: Double,
         cancellationToken: CancellationTokenType = CancellationTokenNone(),
-        error: ErrorType)
+        error: ErrorProtocol)
         -> Future<ValueType> {
         let returnedFuture = Future<ValueType>()
         let cid = cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
-            returnedFuture.complete(Try<ValueType>(error: CancellationError.Cancelled))
+            returnedFuture.complete(Try<ValueType>(error: CancellationError.cancelled))
         }
         // Perhaps, we should capture returnedFuture weakly?!
-        let timer = Timer(delay: delay, tolerance: 0, cancellationToken: cancellationToken) { _ in
+        let timer = Timer.scheduleOneShot(deadline: .after(seconds: delay)) { _ in
             returnedFuture.complete(Try<ValueType>(error: error))
             cancellationToken.unregister(cid)
         }
-        timer.resume()
+        var cancellationId = -1
+        cancellationId = cancellationToken.onCancel {
+            timer.cancel()
+            cancellationToken.unregister(cancellationId)
+        }
         return returnedFuture
     }
 
@@ -107,20 +111,24 @@ extension FutureType {
      - parameter value: The value with which the future will be completed after the delay.
      - returns: A future.
      */
-    static public func succeededAfter(delay: Double,
+    static public func succeededAfter(_ delay: Double,
         cancellationToken: CancellationTokenType = CancellationTokenNone(),
         value: ValueType)
         -> Future<ValueType> {
         let returnedFuture = Future<ValueType>()
         let cid = cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
-            returnedFuture.complete(Try<ValueType>(error: CancellationError.Cancelled))
+            returnedFuture.complete(Try<ValueType>(error: CancellationError.cancelled))
         }
         // Perhaps, we should capture returnedFuture weakly?!
-        let timer = Timer(delay: delay, tolerance: 0, cancellationToken: cancellationToken) { _ in
+        let timer = Timer.scheduleOneShot(deadline: .after(seconds: delay)) { _ in
             returnedFuture.complete(Try<ValueType>(value))
             cancellationToken.unregister(cid)
         }
-        timer.resume()
+        var cancellationId = -1
+        cancellationId = cancellationToken.onCancel {
+            timer.cancel()
+            cancellationToken.unregister(cancellationId)
+        }
         return returnedFuture
     }
 

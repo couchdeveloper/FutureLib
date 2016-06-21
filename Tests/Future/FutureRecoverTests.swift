@@ -11,7 +11,7 @@ import FutureLib
 
 class FutureRecoverTests: XCTestCase {
 
-    private let timeout: NSTimeInterval = 1000
+    private let timeout: Foundation.TimeInterval = 1
 
     override func setUp() {
         super.setUp()
@@ -26,7 +26,7 @@ class FutureRecoverTests: XCTestCase {
     // MARK: recover(_:)
 
     func testRecoverReturnsSuccesFutureWithPendingFuturePropagatesSuccessValueWhenCompletedWithSuccessValue() {
-        let expect = self.expectationWithDescription("future should be completed")
+        let expect = self.expectation(withDescription: "future should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
@@ -42,22 +42,22 @@ class FutureRecoverTests: XCTestCase {
             XCTAssertEqual("OK", value)
             expect.fulfill()
         }
-        self.waitForExpectationsWithTimeout(timeout, handler: nil)
+        self.waitForExpectations(withTimeout: timeout, handler: nil)
     }
 
 
     func testRecoverReturnsSucceededFutureWithPendingFutureInvokesRecoverHandlerWhenCompletedWithError() {
-        let expect1 = self.expectationWithDescription("future1 should be completed")
-        let expect2 = self.expectationWithDescription("future2 should be completed")
+        let expect1 = self.expectation(withDescription: "future1 should be completed")
+        let expect2 = self.expectation(withDescription: "future2 should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
-                promise.reject(TestError.Failed)
+                promise.reject(TestError.failed)
             }
             return promise.future!
         }
         asyncTask().recover { error in
-            XCTAssertTrue(TestError.Failed == error)
+            XCTAssertTrue(TestError.failed == error)
             expect1.fulfill()
             return "Failed"
         }
@@ -65,30 +65,30 @@ class FutureRecoverTests: XCTestCase {
             XCTAssertEqual("Failed", value)
             expect2.fulfill()
         }
-        self.waitForExpectationsWithTimeout(timeout, handler: nil)
+        self.waitForExpectations(withTimeout: timeout, handler: nil)
     }
 
 
     func testRecoverReturnsFailedFutureWithPendingFutureInvokesRecoverHandlerWhichThrowsErrorWhenCompletedWithError() {
-        let expect1 = self.expectationWithDescription("future1 should be completed")
-        let expect2 = self.expectationWithDescription("future2 should be completed")
+        let expect1 = self.expectation(withDescription: "future1 should be completed")
+        let expect2 = self.expectation(withDescription: "future2 should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
-                promise.reject(TestError.Failed)
+                promise.reject(TestError.failed)
             }
             return promise.future!
         }
         asyncTask().recover { error in
-            XCTAssertTrue(TestError.Failed == error)
+            XCTAssertTrue(TestError.failed == error)
             expect1.fulfill()
-            throw TestError.Failed
+            throw TestError.failed
         }
         .onFailure { error in
-            XCTAssertTrue(TestError.Failed == error)
+            XCTAssertTrue(TestError.failed == error)
             expect2.fulfill()
         }
-        self.waitForExpectationsWithTimeout(timeout, handler: nil)
+        self.waitForExpectations(withTimeout: timeout, handler: nil)
     }
 
 
@@ -96,7 +96,7 @@ class FutureRecoverTests: XCTestCase {
     // MARK: recoeverWith(_:)
 
     func testRecoverWithReturnsSuccesFutureWithPendingFuturePropagatesSuccessValueWhenCompletedWithSuccessValue() {
-        let expect = self.expectationWithDescription("future should be completed")
+        let expect = self.expectation(withDescription: "future should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
@@ -112,22 +112,22 @@ class FutureRecoverTests: XCTestCase {
             XCTAssertEqual("OK", value)
             expect.fulfill()
         }
-        self.waitForExpectationsWithTimeout(timeout, handler: nil)
+        self.waitForExpectations(withTimeout: timeout, handler: nil)
     }
 
 
     func testRecoverWithReturnsSucceededFutureWithPendingFutureInvokesRecoverHandlerWhenCompletedWithDeferredError() {
-        let expect1 = self.expectationWithDescription("future1 should be completed")
-        let expect2 = self.expectationWithDescription("future2 should be completed")
+        let expect1 = self.expectation(withDescription: "future1 should be completed")
+        let expect2 = self.expectation(withDescription: "future2 should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
-                promise.reject(TestError.Failed)
+                promise.reject(TestError.failed)
             }
             return promise.future!
         }
         asyncTask().recoverWith { error in
-            XCTAssertTrue(TestError.Failed == error)
+            XCTAssertTrue(TestError.failed == error)
             expect1.fulfill()
             return Future<String>.succeededAfter(0.01, value: "Deferred Failed")
         }
@@ -135,7 +135,7 @@ class FutureRecoverTests: XCTestCase {
             XCTAssertEqual("Deferred Failed", value)
             expect2.fulfill()
         }
-        self.waitForExpectationsWithTimeout(timeout, handler: nil)
+        self.waitForExpectations(withTimeout: timeout, handler: nil)
     }
 
 

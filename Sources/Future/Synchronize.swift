@@ -7,7 +7,7 @@
 
 import Dispatch
 
-private var queueIDKey = 0
+private var queueIDKey = DispatchSpecificKey<ObjectIdentifier>()
 
 
 /**
@@ -16,7 +16,7 @@ private var queueIDKey = 0
 */
 struct Synchronize {
 
-    let syncQueue: dispatch_queue_t
+    let syncQueue: DispatchQueue
     static let name: StaticString = "sync-queue"
 
     /**
@@ -31,13 +31,11 @@ struct Synchronize {
         // method will be executed. If this `execute()` method schedules its closure
         // - given as an argument - synchronously, it may unintentionally and unexpectedly
         // block or even dead-lock.
-        syncQueue = dispatch_queue_create(name,
-            dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT,
-                QOS_CLASS_USER_INTERACTIVE, 0))
+        syncQueue = DispatchQueue(label: name, attributes: [.qosUserInteractive, .concurrent])
         // Use the pointer value to syncQueue as the context in order to have
         // a unique context:
-        let context = UnsafeMutablePointer<Void>(Unmanaged<dispatch_queue_t>.passUnretained(syncQueue).toOpaque())
-        dispatch_queue_set_specific(syncQueue, &queueIDKey, context, nil)
+        let syncQueueId = ObjectIdentifier(syncQueue)
+        syncQueue.setSpecific(key: queueIDKey, value: syncQueueId)
     }
 
 
@@ -45,8 +43,8 @@ struct Synchronize {
         Returns true if the current thread is synchronized with the syncQueue.
     */
     func isSynchronized() -> Bool {
-        let context = UnsafeMutablePointer<Void>(Unmanaged<dispatch_queue_t>.passUnretained(syncQueue).toOpaque())
-        return dispatch_get_specific(&queueIDKey) == context 
+        let syncQueueId = ObjectIdentifier(syncQueue)
+        return DispatchQueue.getSpecific(key: queueIDKey) == syncQueueId 
     }
 
 
@@ -66,11 +64,11 @@ struct Synchronize {
     /// function directly calls the closure. Otherwise it dispatches it on the synchronization
     /// context.
     /// - parameter f: The closure.
-    func readSyncSafe(/*@noescape*/ f: () -> ()) {
+    func readSyncSafe(/*@noescape*/ _ f: () -> ()) {
         if isSynchronized() {
             f()
         } else {
-            dispatch_sync(syncQueue, f)
+            syncQueue.sync(execute: f)
         }
     }
 
@@ -82,9 +80,9 @@ struct Synchronize {
     /// the closure must not modify the objects associated to the context.
     /// The closure will be dispatched on the synchronization context and waits for completion.
     /// - parameter f: The closure.
-    func readSync(/*@noescape*/ f: () -> ()) {
+    func readSync(/*@noescape*/ _ f: () -> ()) {
         assert(!isSynchronized(), "Will deadlock")
-        dispatch_sync(syncQueue, f)
+        syncQueue.sync(execute: f)
     }
 
     /// The function writeAsync asynchronously executes the closure on the synchronization
@@ -92,8 +90,8 @@ struct Synchronize {
     /// The closure can safely modify the objects associated to the context. No other
     /// concurrent read or write operation can interfere.
     /// - parameter f: The closure.
-    func writeAsync(f: () -> ()) {
-        dispatch_barrier_async(syncQueue, f)
+    func writeAsync(_ f: () -> ()) {
+        syncQueue.async(flags: .barrier, execute: f)
     }
 
     /// The function writeSync executes the closure on the synchronization execution
@@ -103,9 +101,9 @@ struct Synchronize {
     /// The current execution context must not already be the synchronization context,
     /// otherwise the function will dead lock.
     /// - parameter f: The closure.
-    func writeSync(/*@noescape*/ f: () -> ()) {
+    func writeSync(/*@noescape*/ _ f: () -> ()) {
         assert(!isSynchronized(), "Will deadlock")
-        dispatch_barrier_sync(syncQueue, f)
+        syncQueue.sync(flags: .barrier, execute: f)
     }
 
 

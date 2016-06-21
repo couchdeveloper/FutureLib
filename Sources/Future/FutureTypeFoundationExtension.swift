@@ -32,7 +32,7 @@ extension FutureType {
         // while loop will "busy wait".
 
         let runLoop = CFRunLoopGetCurrent()
-        CFRunLoopAddSource(runLoop, runLoopSource, kCFRunLoopDefaultMode)
+        CFRunLoopAddSource(runLoop, runLoopSource, CFRunLoopMode.defaultMode)
         self.onComplete(ec: ConcurrentAsync(), ct: CancellationTokenNone()) { _ in
             CFRunLoopStop(runLoop)
         }
@@ -41,7 +41,7 @@ extension FutureType {
         while !self.isCompleted {
             CFRunLoopRun()
         }
-        CFRunLoopRemoveSource(runLoop, runLoopSource, kCFRunLoopDefaultMode)
+        CFRunLoopRemoveSource(runLoop, runLoopSource, CFRunLoopMode.defaultMode)
         return self
     }
 

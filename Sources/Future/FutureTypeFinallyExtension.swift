@@ -11,18 +11,18 @@
 extension FutureType {
 
     public final func finally(
-        ec: ExecutionContext = GCDAsyncExecutionContext(),
+        _ ec: ExecutionContext = GCDAsyncExecutionContext(),
         _ ct: CancellationTokenType = CancellationTokenNone(),
-        f: ResultType -> ()) {
+        f: (ResultType) -> ()) {
         onComplete(ec: ec, ct: ct, f: f)
     }
 
 
     //@warn_unused_result (message="Not using the returned future may prevent the continuation to be called.")
     public final func finally<U>(
-        ec: ExecutionContext = GCDAsyncExecutionContext(),
+        _ ec: ExecutionContext = GCDAsyncExecutionContext(),
         _ ct: CancellationTokenType = CancellationTokenNone(),
-        f: ResultType -> U)
+        f: (ResultType) -> U)
         -> Future<U> {
         let returnedFuture = Future<U>()
         onComplete(ec: ec, ct: ct) { [weak returnedFuture] result in
@@ -37,9 +37,9 @@ extension FutureType {
 
     //@warn_unused_result (message="Not using the returned future may prevent the continuation to be called.")
     public final func finally<U>(
-        ec: ExecutionContext = GCDAsyncExecutionContext(),
+        _ ec: ExecutionContext = GCDAsyncExecutionContext(),
         _ ct: CancellationTokenType = CancellationTokenNone(),
-        f: ResultType throws -> U)
+        f: (ResultType) throws -> U)
         -> Future<U> {
         let returnedFuture = Future<U>()
         onComplete(ec: ec, ct: ct) { [weak returnedFuture] result in
@@ -58,9 +58,9 @@ extension FutureType {
 
     //@warn_unused_result (message="Not using the returned future may prevent the continuation to be called.")
     public final func finally<U>(
-        ec: ExecutionContext = GCDAsyncExecutionContext(),
+        _ ec: ExecutionContext = GCDAsyncExecutionContext(),
         _ ct: CancellationTokenType = CancellationTokenNone(),
-        f: ResultType throws -> Future<U>)
+        f: (ResultType) throws -> Future<U>)
         -> Future<U> {
         let returnedFuture = Future<U>()
         onComplete(ec: SynchronousCurrent(), ct: ct) { [weak returnedFuture] result -> () in

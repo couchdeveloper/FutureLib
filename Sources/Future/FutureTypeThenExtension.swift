@@ -25,9 +25,9 @@ extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A closure taking a parameter `value` of type `T`.
      */
     public final func then(
-        ec ec: ExecutionContext = GCDAsyncExecutionContext(),
+        ec: ExecutionContext = GCDAsyncExecutionContext(),
         cancellationToken: CancellationTokenType = CancellationTokenNone(),
-        f: ValueType -> ()) {
+        f: (ValueType) -> ()) {
         onSuccess(ec: ec, ct: cancellationToken, f: f)
     }
 
@@ -51,9 +51,9 @@ extension FutureType where ResultType == Try<ValueType> {
      - returns: A future.
      */
     public final func then<U>(
-        ec ec: ExecutionContext = GCDAsyncExecutionContext(),
+        ec: ExecutionContext = GCDAsyncExecutionContext(),
         cancellationToken: CancellationTokenType = CancellationTokenNone(),
-        f: ValueType throws -> U)
+        f: (ValueType) throws -> U)
         -> Future<U> {
         return map(ec: ec, ct: cancellationToken, f: f)
     }
@@ -80,9 +80,9 @@ extension FutureType where ResultType == Try<ValueType> {
                 with the continuation function's returned future.
      */
     public final func then<U>(
-        ec ec: ExecutionContext = GCDAsyncExecutionContext(),
+        ec: ExecutionContext = GCDAsyncExecutionContext(),
         cancellationToken: CancellationTokenType = CancellationTokenNone(),
-        f: ValueType -> Future<U>)
+        f: (ValueType) -> Future<U>)
         -> Future<U> {
         return flatMap(ec: ec, ct: cancellationToken, f: f)
     }

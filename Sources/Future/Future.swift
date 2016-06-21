@@ -40,7 +40,7 @@ public class Future<T>: FutureType {
     private typealias ClosureRegistryType = ClosureRegistry<Try<ValueType>>
 
     private var _result: Try<ValueType>?
-    private var _cr = ClosureRegistryType.Empty
+    private var _cr = ClosureRegistryType.empty
     internal let sync = _sync[Int(OSAtomicIncrement32(&_sync_id) % 7)]
 
 
@@ -50,6 +50,10 @@ public class Future<T>: FutureType {
     internal init() {
     }
 
+    deinit {
+        // ...
+    }
+    
     /**
      Designated initializer which creates a future completed with the given success value.
      - parameter value: The value which is bound to the completed `self`.
@@ -71,7 +75,7 @@ public class Future<T>: FutureType {
      Designated initializer which creates a future completed with the given error.
      - parameter error: The error which is bound to the completed `self`.
     */
-    internal init(error: ErrorType) {
+    internal init(error: ErrorProtocol) {
         _result = Try<ValueType>(error: error)
     }
 
@@ -82,7 +86,7 @@ public class Future<T>: FutureType {
      - returns: A unique Id representing `self`.
     */
     public final var id: UInt {
-        return ObjectIdentifier(self).uintValue
+        return UInt(ObjectIdentifier(self))
     }
 
 
@@ -122,13 +126,13 @@ public class Future<T>: FutureType {
      - parameter f: A function taking the result of the future as its argument.
     */
     public final func onComplete<U>(
-        ec ec: ExecutionContext = ConcurrentAsync(),
+        ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: Try<ValueType> -> U) {
+        f: (Try<ValueType>) -> U) {
         sync.writeAsync {
             if ct.isCancellationRequested {
                 ec.execute {
-                    _ = f(Try<ValueType>(error: CancellationError.Cancelled))
+                    _ = f(Try<ValueType>(error: CancellationError.cancelled))
                 }
                 return
             }
@@ -141,24 +145,24 @@ public class Future<T>: FutureType {
             var cid: Int = -1
             let id = self._cr.register { result in
                 ec.execute {
-                    self
+                    _ = self
                     _ = f(result)
                 }  // import `self` into the closure in order to keep a strong
                 // reference to self until after self will be completed.
                 ct.unregister(cid)
             }
-            cid = ct.onCancel(on: GCDBarrierAsyncExecutionContext(self.sync.syncQueue)) {
-                switch self._cr {
-                case .Empty: break
-                case .Single, .Multiple:
-                    assert(self._result == nil)
-                    let callback = self._cr.unregister(id)
-                    assert(callback != nil)
-                    ec.execute {
-                        callback!.continuation(Try<ValueType>(error: CancellationError.Cancelled))
-                    }
-                }
-            }
+//            cid = ct.onCancel(on: GCDBarrierAsyncExecutionContext(self.sync.syncQueue)) {
+//                switch self._cr {
+//                case .empty: break
+//                case .single, .multiple:
+//                    assert(self._result == nil)
+//                    let callback = self._cr.unregister(id)
+//                    assert(callback != nil)
+//                    ec.execute {
+//                        callback!.continuation(Try<ValueType>(error: CancellationError.cancelled))
+//                    }
+//                }
+//            }
         }
     }
 
@@ -175,12 +179,12 @@ public class Future<T>: FutureType {
      - parameter ct: A cancellation token which will be monitored.
      - returns: A new future.
      */
-    @warn_unused_result public final func mapTo<S>(ct: CancellationTokenType = CancellationTokenNone())
+    @warn_unused_result public final func mapTo<S>(_ ct: CancellationTokenType = CancellationTokenNone())
         -> Future<S> {
         let returnedFuture = Future<S>()
         self.onComplete(ec: SynchronousCurrent(), ct: ct) { [weak returnedFuture] result in
             returnedFuture?.complete(result.map {
-                guard case let mappedValue as S = $0 else { throw FutureError.InvalidCast }
+                guard case let mappedValue as S = $0 else { throw FutureError.invalidCast }
                 return mappedValue
             })
         }
@@ -197,21 +201,22 @@ public class Future<T>: FutureType {
 extension Future: CompletableFutureType {
 
 
-    internal final func complete(result: ResultType) {
+    internal final func complete(_ result: ResultType) {
         sync.writeAsync {
             self._complete(result)
         }
     }
 
-    internal final func complete(value: ValueType) {
+    internal final func complete(_ value: ValueType) {
         complete(ResultType(value))
     }
 
-    internal final func complete(error: ErrorType) {
+    internal final func complete(_ error: ErrorProtocol) {
         complete(ResultType(error: error))
     }
 
-    internal final func tryComplete(result: ResultType) -> Bool {
+    @discardableResult
+    internal final func tryComplete(_ result: ResultType) -> Bool {
         var ret = false
         sync.writeSync {
             ret = self._tryComplete(result)
@@ -220,7 +225,8 @@ extension Future: CompletableFutureType {
     }
 
 
-    internal final func _tryComplete(result: ResultType) -> Bool {
+    @discardableResult
+    internal final func _tryComplete(_ result: ResultType) -> Bool {
         assert(sync.isSynchronized())
         if _result == nil {
             _complete(result)
@@ -229,19 +235,19 @@ extension Future: CompletableFutureType {
         return false
     }
 
-    internal final func _complete(result: ResultType) {
+    internal final func _complete(_ result: ResultType) {
         assert(sync.isSynchronized())
         assert(self._result == nil)
         self._result = result
         _cr.resume(result)
-        _cr = ClosureRegistryType.Empty
+        _cr = ClosureRegistryType.empty
     }
 
-    internal final func _complete(value: ValueType) {
+    internal final func _complete(_ value: ValueType) {
         _complete(ResultType(value))
     }
 
-    internal final func _complete(error: ErrorType) {
+    internal final func _complete(_ error: ErrorProtocol) {
         _complete(ResultType(error: error))
     }
 
@@ -263,14 +269,15 @@ extension Future {
      - parameter cancellationToken: A cancellation token which will be monitored by `self`.
      - returns:  `self`
      */
-    public final func wait(cancellationToken: CancellationTokenType) -> Self {
+    @discardableResult    
+    public final func wait(_ cancellationToken: CancellationTokenType) -> Self {
 
         // wait until completed or a cancellation has been requested
-        let sem: dispatch_semaphore_t = dispatch_semaphore_create(0)
+        let sem: DispatchSemaphore = DispatchSemaphore(value: 0)
         onComplete(ec: ConcurrentAsync(), ct: cancellationToken) { _ in
-            dispatch_semaphore_signal(sem)
+            sem.signal()
         }
-        dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
+        _ = sem.wait(timeout: DispatchTime.distantFuture)
         return self
     }
 
@@ -279,13 +286,14 @@ extension Future {
      Blocks the current thread until `self` is completed.
      - returns: `self`
      */
+    @discardableResult
     public final func wait() -> Self {
         // wait until completed or a cancellation has been requested
-        let sem: dispatch_semaphore_t = dispatch_semaphore_create(0)
+        let sem: DispatchSemaphore = DispatchSemaphore(value: 0)
         onComplete(ec: ConcurrentAsync(), ct: CancellationTokenNone()) { _ in
-            dispatch_semaphore_signal(sem)
+            sem.signal()
         }
-        dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
+        _ = sem.wait(timeout: DispatchTime.distantFuture)
         return self
     }
 
@@ -320,7 +328,7 @@ public extension Future {
     private final func _continueWith<U>(
         on ec: ExecutionContext,
         cancellationToken ct: CancellationTokenType,
-        f: FutureBaseType -> U) {
+        f: (FutureBaseType) -> U) {
         sync.writeAsync {
             if ct.isCancellationRequested {
                 ec.execute {
@@ -344,14 +352,14 @@ public extension Future {
             }
             cid = ct.onCancel(on: GCDBarrierAsyncExecutionContext(self.sync.syncQueue)) {
                 switch self._cr {
-                case .Empty: break
-                case .Single, .Multiple:
+                case .empty: break
+                case .single, .multiple:
                     let callback = self._cr.unregister(id)
                     assert(callback != nil)
                     ec.execute {
                         // Note: the error argument will be ignored in the
                         // registered function.
-                        callback!.continuation(Try<ValueType>(error: CancellationError.Cancelled))
+                        callback!.continuation(Try<ValueType>(error: CancellationError.cancelled))
                     }
                 }
             }
@@ -360,9 +368,9 @@ public extension Future {
 
 
     @warn_unused_result public final func continueWith<U>(
-        ec ec: ExecutionContext = ConcurrentAsync(),
+        ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: FutureBaseType throws -> U)
+        f: (FutureBaseType) throws -> U)
         -> Future<U> {
         // Caution: the mapping function must be called even when the returned
         // future has been deinitialized prematurely!
@@ -376,7 +384,7 @@ public extension Future {
 
 
     @warn_unused_result public final func continueWith<U>(
-        ec ec: ExecutionContext = ConcurrentAsync(),
+        ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: (FutureBaseType) -> Future<U>)
         -> Future<U> {
@@ -407,8 +415,8 @@ extension Future: CustomStringConvertible {
             var stateString: String
             if let res = self._result {
                 switch res {
-                case .Failure(let error): stateString = "Failed with: \(String(error))"
-                case .Success(let value): stateString = "Succeeded with: \(String(value))"
+                case .failure(let error): stateString = "Failed with: \(String(error))"
+                case .success(let value): stateString = "Succeeded with: \(String(value))"
                 }
             } else {
                 stateString = "Pending with \(self._cr.count) continuations."
@@ -435,9 +443,9 @@ extension Future: CustomDebugStringConvertible {
             var stateString: String
             if let res = self._result {
                 switch res {
-                case .Failure(let error):
+                case .failure(let error):
                     stateString = "Failed with: \(String(reflecting: error))"
-                case .Success(let value):
+                case .success(let value):
                     stateString = "Succeeded with: \(String(reflecting: value))"
                 }
             } else {
@@ -467,7 +475,7 @@ internal final class RootFuture<T>: Future<T> {
         super.init(value: value)
     }
 
-    internal override init(error: ErrorType) {
+    internal override init(error: ErrorProtocol) {
         super.init(error: error)
     }
 
@@ -475,7 +483,7 @@ internal final class RootFuture<T>: Future<T> {
         // Caution: deinit might be called on the synchroninization context Future.Sync!
         if let f = onRevocation {
             if _result == nil {
-                dispatch_async(dispatch_get_global_queue(0, 0), f)
+                DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes(rawValue: UInt64(0))).async(execute: f)
             }
         }
     }
