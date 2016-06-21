@@ -25,7 +25,7 @@ class CancellationOperatorsTests: XCTestCase {
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let ct = cr1.token || cr2.token
-        ct.onCancel {
+        _ = ct.onCancel {
             expect.fulfill()
         }
         cr1.cancel()
@@ -39,7 +39,7 @@ class CancellationOperatorsTests: XCTestCase {
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let ct = cr1.token || cr2.token
-        ct.onCancel {
+        _ = ct.onCancel {
             expect.fulfill()
         }
         cr2.cancel()
@@ -53,7 +53,7 @@ class CancellationOperatorsTests: XCTestCase {
         let cr2 = CancellationRequest()
         let cr3 = CancellationRequest()
         let ct = cr1.token || cr2.token || cr3.token
-        ct.onCancel {
+        _ = ct.onCancel {
             expect.fulfill()
         }
         cr1.cancel()
@@ -68,7 +68,7 @@ class CancellationOperatorsTests: XCTestCase {
         let cr2 = CancellationRequest()
         let cr3 = CancellationRequest()
         let ct = cr1.token || cr2.token || cr3.token
-        ct.onCancel {
+        _ = ct.onCancel {
             expect.fulfill()
         }
         cr2.cancel()
@@ -83,7 +83,7 @@ class CancellationOperatorsTests: XCTestCase {
         let cr2 = CancellationRequest()
         let cr3 = CancellationRequest()
         let ct = cr1.token || cr2.token || cr3.token
-        ct.onCancel {
+        _ = ct.onCancel {
             expect.fulfill()
         }
         cr3.cancel()
@@ -121,7 +121,7 @@ class CancellationOperatorsTests: XCTestCase {
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let ct = cr1.token && cr2.token
-        ct.onCancel {
+        _ = ct.onCancel {
             expect.fulfill()
         }
         cr1.cancel()
@@ -175,7 +175,7 @@ class CancellationOperatorsTests: XCTestCase {
         let cr2 = CancellationRequest()
         let cr3 = CancellationRequest()
         let ct = cr1.token && cr2.token && cr3.token
-        ct.onCancel {
+        _ = ct.onCancel {
             expect.fulfill()
         }
         cr1.cancel()

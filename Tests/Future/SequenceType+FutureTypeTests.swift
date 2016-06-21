@@ -176,7 +176,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTAssertTrue(TestError.failed == error)
             expect1.fulfill()
         }
-        self.waitForExpectations(withTimeout: 10000, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
     func testTraverseCanBeCancelled() {
@@ -339,13 +339,18 @@ class SequenceTypeFutureTypeTests: XCTestCase {
 
         let expect1 = self.expectation(withDescription: "future1 should be completed")
 
-        let futures = [
-            task(0.01) { "A"},
-            task(0.07) { "B"},
+        let futures: [Future<String>] = [
+            task(0.01) { "A" },
+            task(0.07) { "B" },
             task(0.05) { throw TestError.failed },
-            task(0.20) { "D"}
+            task(0.20) { "D" }
         ]
-        futures.fold(initial: ()) { _,_ -> Void in }.onFailure { error in
+        futures.fold(initial: "") { (a, b) in 
+            a + b
+        }.map { value in
+            value
+        }
+        .onFailure { error in
             XCTAssertTrue(futures[0].isSuccess)
             XCTAssertTrue(futures[1].isSuccess)
             XCTAssertTrue(futures[2].isFailure)
@@ -360,13 +365,18 @@ class SequenceTypeFutureTypeTests: XCTestCase {
 
         let expect1 = self.expectation(withDescription: "future1 should be completed")
 
-        let futures = [
-            task(0.01) { "A"},
-            task(0.07) { "B"},
+        let futures: [Future<String>] = [
+            task(0.01) { "A" },
+            task(0.07) { "B" },
             task(0.05) { throw TestError.failed },
-            task(0.03) { "D"}
+            task(0.03) { "D" }
         ]
-        futures.fold(initial: ()) { _,_ -> Void in }.onFailure { error in
+        futures.fold(initial: "") { (a, b) in
+            a + b
+        }.map { value in
+            value
+        }
+        .onFailure { error in
             XCTAssertTrue(futures[0].isSuccess)
             XCTAssertTrue(futures[1].isSuccess)
             XCTAssertTrue(futures[2].isFailure)
@@ -386,11 +396,11 @@ class SequenceTypeFutureTypeTests: XCTestCase {
 
         let expect1 = self.expectation(withDescription: "future1 should be completed")
 
-        let futures = [
-            task(0.01) { "A"},
-            task(0.07) { "B"},
-            task(0.03) { "C"},
-            task(0.05) { "D"}
+        let futures: [Future<String>] = [
+            task(0.01) { "A" },
+            task(0.07) { "B" },
+            task(0.03) { "C" },
+            task(0.05) { "D" }
         ]
         futures.sequence().onSuccess { s in
             XCTAssertEqual(["A", "B", "C", "D"], s)
@@ -407,11 +417,11 @@ class SequenceTypeFutureTypeTests: XCTestCase {
 
         let expect1 = self.expectation(withDescription: "future1 should be completed")
 
-        let futures = [
-            task(0.01) { "A"},
-            task(0.07) { "B"},
-            task(0.03) { "C"},
-            task(0.05) { "D"}
+        let futures: [Future<String>] = [
+            task(0.01) { "A" },
+            task(0.07) { "B" },
+            task(0.03) { "C" },
+            task(0.05) { "D" }
         ]
         typealias ResultT = Try<String>
         futures.results().map { results in

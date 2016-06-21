@@ -11,8 +11,15 @@ private var queueIDKey = DispatchSpecificKey<ObjectIdentifier>()
 
 
 /**
-    A Synchronization object which uses a serial dispatch_queue to enforce
-    "Synchronize-With" and "Happens-Before" relationship.
+ A Synchronization object which uses a serial dispatch_queue to enforce
+ "Synchronize-With" and "Happens-Before" relationship.
+ 
+ - Bug: When submitting a closure with `syncQueue.async(flags: .barrier)` which 
+ imports a variable, the imported object will not be released and will leak.
+ To alleviate the issue, the sync queue will be created as a serial queue, and
+ `writeAsync` must not submit the closure with flag `.barrier`.
+         
+
 */
 struct Synchronize {
 
@@ -31,7 +38,8 @@ struct Synchronize {
         // method will be executed. If this `execute()` method schedules its closure
         // - given as an argument - synchronously, it may unintentionally and unexpectedly
         // block or even dead-lock.
-        syncQueue = DispatchQueue(label: name, attributes: [.qosUserInteractive, .concurrent])
+        // TODO: syncQueue = DispatchQueue(label: name, attributes: [.qosUserInteractive, .concurrent])
+        syncQueue = DispatchQueue(label: name, attributes: [.qosUserInteractive])
         // Use the pointer value to syncQueue as the context in order to have
         // a unique context:
         let syncQueueId = ObjectIdentifier(syncQueue)
@@ -91,7 +99,8 @@ struct Synchronize {
     /// concurrent read or write operation can interfere.
     /// - parameter f: The closure.
     func writeAsync(_ f: () -> ()) {
-        syncQueue.async(flags: .barrier, execute: f)
+        // TODO: syncQueue.async(flags: .barrier, execute: f)
+        syncQueue.async(execute: f)
     }
 
     /// The function writeSync executes the closure on the synchronization execution
@@ -103,7 +112,8 @@ struct Synchronize {
     /// - parameter f: The closure.
     func writeSync(/*@noescape*/ _ f: () -> ()) {
         assert(!isSynchronized(), "Will deadlock")
-        syncQueue.sync(flags: .barrier, execute: f)
+        // TODO: syncQueue.sync(flags: .barrier, execute: f)
+        syncQueue.sync(execute: f)
     }
 
 

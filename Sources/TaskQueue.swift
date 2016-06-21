@@ -69,7 +69,7 @@ public class TaskQueue {
         }
         assert(_concurrentTasks <= _maxConcurrentTasks)
         let future = task()
-        future.continueWith(ec: GCDAsyncExecutionContext(self._syncQueue),
+        _ = future.continueWith(ec: GCDAsyncExecutionContext(self._syncQueue),
             ct: CancellationTokenNone()) { _ in
             self._concurrentTasks -= 1    
             if self._concurrentTasks < self._maxConcurrentTasks && self._suspended {
@@ -96,7 +96,7 @@ public class TaskQueue {
             self.queue.suspend()
             self._group.notify(queue: self._syncQueue) {
                 let future = task()
-                future.continueWith(ec: GCDAsyncExecutionContext(self._syncQueue),
+                _ = future.continueWith(ec: GCDAsyncExecutionContext(self._syncQueue),
                     ct: CancellationTokenNone()) { _ in
                     self.queue.resume()
                 }

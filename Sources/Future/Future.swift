@@ -107,6 +107,7 @@ public class Future<T>: FutureType {
 
 
 
+    let gSyncQueue = DispatchQueue(label: "Test", attributes: [.qosUserInteractive])
 
     /**
      Executes the closure `f` on the given execution context when `self` is
@@ -151,18 +152,18 @@ public class Future<T>: FutureType {
                 // reference to self until after self will be completed.
                 ct.unregister(cid)
             }
-//            cid = ct.onCancel(on: GCDBarrierAsyncExecutionContext(self.sync.syncQueue)) {
-//                switch self._cr {
-//                case .empty: break
-//                case .single, .multiple:
-//                    assert(self._result == nil)
-//                    let callback = self._cr.unregister(id)
-//                    assert(callback != nil)
-//                    ec.execute {
-//                        callback!.continuation(Try<ValueType>(error: CancellationError.cancelled))
-//                    }
-//                }
-//            }
+            cid = ct.onCancel(on: GCDBarrierAsyncExecutionContext(self.sync.syncQueue)) {
+                switch self._cr {
+                case .empty: break
+                case .single, .multiple:
+                    assert(self._result == nil)
+                    let callback = self._cr.unregister(id)
+                    assert(callback != nil)
+                    ec.execute {
+                        callback!.continuation(Try<ValueType>(error: CancellationError.cancelled))
+                    }
+                }
+            }
         }
     }
 

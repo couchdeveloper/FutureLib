@@ -82,7 +82,7 @@ private enum CancellationState {
     private func unregister(_ id: Int) {
         switch self {
         case .pending(var cr):
-            cr.unregister(id)
+            _ = cr.unregister(id)
         default: break
         }
     }
@@ -173,7 +173,7 @@ internal final class SharedCancellationState {
                         f(cancelable)
                     }
                 }
-                self // keep a reference in order to prevent from prematurely
+                _ = self // keep a reference in order to prevent from prematurely
                      // deinitialization
             }
         }
@@ -190,7 +190,7 @@ internal final class SharedCancellationState {
                         f()
                     }
                 }
-                self // keep a reference in order to prevent from prematurely
+                _ = self // keep a reference in order to prevent from prematurely
                      // deinitialization
             }
         }

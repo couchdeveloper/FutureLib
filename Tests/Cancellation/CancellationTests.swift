@@ -233,7 +233,7 @@ class CancellationTests: XCTestCase {
             let dummy = Dummy(expect: expect)
             _ = ct.onCancel {
                 XCTFail("unexpected")
-                dummy
+                _ = dummy
             }
         }
 

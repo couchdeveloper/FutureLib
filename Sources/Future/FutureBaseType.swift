@@ -55,7 +55,8 @@ public protocol FutureBaseType: class {
                     be called with `self` as its argument.
      - returns: A new future.
      */
-    @warn_unused_result func continueWith<U>(ec: ExecutionContext,
+    @warn_unused_result
+    func continueWith<U>(ec: ExecutionContext,
         ct: CancellationTokenType,
         f: (FutureBaseType) throws -> U)
         -> Future<U>

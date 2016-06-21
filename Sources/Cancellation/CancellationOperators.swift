@@ -33,9 +33,9 @@ public func && (left: CancellationTokenType, right: CancellationTokenType)
     -> CancellationTokenType {
     let scs = SharedCancellationState()
     let ec = ConcurrentAsync()
-    left.register(on: ec) { cancelled in
+    _ = left.register(on: ec) { cancelled in
         if cancelled {
-            right.register(on: ec) { cancelled in
+            _ = right.register(on: ec) { cancelled in
                 scs.cancel()
             }
         }

@@ -85,6 +85,7 @@ public class Timer {
         case .wallClockTime(let time):
             timer._timer.scheduleOneshot(wallDeadline: DispatchWallTime(time: time), leeway: leeway)
         }        
+        timer._timer.resume()
         return timer
     }
     

@@ -370,12 +370,11 @@ class FutureThenExtensionTests: XCTestCase {
             }
             return promise.future!
         }
-        let dummyFuture = asyncTask().then { value -> Int in
+        _ = asyncTask().then { value -> Int in
             XCTAssertEqual("OK", value)
             expect.fulfill()
             return 0
         }
-        dummyFuture
         self.waitForExpectations(withTimeout: timeout, handler: nil)
     }
 
@@ -387,11 +386,10 @@ class FutureThenExtensionTests: XCTestCase {
             }
             return promise.future!
         }
-        let dummyFuture = asyncTask().then { value -> Int in
+        _ = asyncTask().then { value -> Int in
             XCTFail("unexpected success")
             return 0
         }
-        dummyFuture
         usleep(100*1000)
     }
 
@@ -405,12 +403,11 @@ class FutureThenExtensionTests: XCTestCase {
             }
             return promise.future!
         }
-        let dummyFuture = asyncTask().then { value -> Future<Int> in
+        _ = asyncTask().then { value -> Future<Int> in
             XCTAssertEqual("OK", value)
             expect.fulfill()
             return Promise<Int>(value: 0).future!
         }
-        dummyFuture
         self.waitForExpectations(withTimeout: timeout, handler: nil)
     }
 
@@ -422,11 +419,10 @@ class FutureThenExtensionTests: XCTestCase {
             }
             return promise.future!
         }
-        let dummyFuture = asyncTask().then { value -> Future<Int> in
+        _ = asyncTask().then { value -> Future<Int> in
             XCTFail("unexpected success")
             return Promise(value: 0).future!
         }
-        dummyFuture
         usleep(100*1000)
     }
 

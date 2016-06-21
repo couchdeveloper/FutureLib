@@ -122,7 +122,9 @@ class FutureTypeTests: XCTestCase {
     }
     
     func testGetWithPendingFutureGettingFailed() {
-        let future = Promise<Int>.resolveAfter(0.1) { throw TestError.failed }.future!
+        let future = Promise<Int>.resolveAfter(0.1) { 
+            throw TestError.failed 
+        }.future!
         do {
             let value = try future.get()
             XCTFail("unexpected success: \(value)")

@@ -78,53 +78,95 @@ class FutureLifetimeTests: XCTestCase {
         XCTAssertNil(weakRef)
     }
     
-    func testFutureShouldDeallocateIfThereAreNoObservers1() {
+    func testContinuationShouldDeallocateAfterComplete() {
         let promise = Promise<Int>()
-        let expect1 = self.expectation(withDescription: "imported variable should deallocate")
-        let expect2 = self.expectation(withDescription: "closure should deallocate")
-        let expect3 = self.expectation(withDescription: "continuation should deallocate")
+        let expect = self.expectation(withDescription: "continuation should deallocate")
         DispatchQueue.global().async {
             let future = promise.future!
-            let d1 = Dummy(name: "Imported variable", expect: expect1)
-            let d2 = Dummy(name: "DispatchQueue closure", expect: expect2)
-            future.onComplete() { [weak future, weak d2] result in
+            future.onComplete { result in
                 // After this closure has been run, local strong variable (d3) should be deallocated!
-                let d3 = Dummy(name: "Continuation", expect: expect3)
-
-                // Note: after this closure has been run, imported strong variable (d1) should be deallocated!
-                if d2 != nil {
-                    print("Error: d2 should be deallocated")
-                } 
-                if future == nil {
-                    print("Error: future must not be deallocated")
-                } 
+                _ = Dummy(name: "Continuation", expect: expect)
                 if case .failure = result {
-                    XCTFail("unexpected")
-                }
-                NSLog("Using d1: \(d1)")
-                NSLog("Using result: \(result)")
-                DispatchQueue.global().after(when: .now() + .milliseconds(100)) { [weak future, weak d1, weak d2, weak d3] in
-                    if let d1 = d1 {
-                        print("Error: imported variable \"\(d1)\" should be deallocated")
-                    }
-                    if let d2 = d2 {
-                        print("Error: imported variable \"\(d2)\" should be deallocated")
-                    }
-                    if let d3 = d3 {
-                        print("Error: imported variable \"\(d3)\" should be deallocated")
-                    }
-                    if let future = future {
-                        print("Error: future \(future) should be deallocated")
-                    }
+                    XCTFail("unexpected failure")
                 }
             }
         }
-        DispatchQueue.global().after(when: .now() + .milliseconds(500)) {
+        schedule_after(0.1) {
             promise.resolve(Try(0))
         }
-        sleep(1)
-        waitForExpectations(withTimeout: 1000, handler: nil)
+        waitForExpectations(withTimeout: 0.2, handler: nil)
     }
+    
+    func testImportedVariableShouldDeallocateAfterComplete() {
+        let promise = Promise<Int>()
+        let expect = self.expectation(withDescription: "imported variable should deallocate")
+        let expect1 = self.expectation(withDescription: "onComplete handler should be called")
+        DispatchQueue.global().async {
+            let future = promise.future!
+            let importedVariable = Dummy(name: "Imported variable", expect: expect)
+            future.onComplete { result in
+                // Note: after this closure has been run, imported strong variable should be deallocated!
+                _ = importedVariable
+                if case .failure = result {
+                    XCTFail("unexpected failure")
+                }
+                schedule_after(0.1) {
+                    expect1.fulfill()
+                }
+            }
+        }
+        schedule_after(0.1) {
+            promise.resolve(Try(0))
+        }
+        waitForExpectations(withTimeout: 1, handler: nil)
+    }
+    
+    
+    func testFutureShouldDeallocateAfterThereAreNoObservers() {
+        let promise = Promise<Int>()
+        let expect = self.expectation(withDescription: "future should deallocate")
+        DispatchQueue.global().async {
+            let future = promise.future!
+            future.onComplete { result in
+                if case .failure = result {
+                    XCTFail("unexpected")
+                }
+                // Note: all continuations must have been run, before future will be released
+                schedule_after(0.1) { [weak future] in
+                    if let _ = future {
+                        XCTFail("future should be deallocated")
+                    }
+                    expect.fulfill()
+                }
+            }
+        }
+        schedule_after(0.1) { 
+            promise.resolve(Try(0))
+        }
+        waitForExpectations(withTimeout: 1, handler: nil)
+    }
+    
+    
+    func test1() {
+        let expect = self.expectation(withDescription: "dummy should deallocate")
+        let expect2 = self.expectation(withDescription: "finished")
+        DispatchQueue.global().async {
+            let d = Dummy(name: "imported variable", expect: expect)
+            schedule_after(0.1) { 
+                let _ = d
+                schedule_after(0.1) { [weak d] in
+                    print("========test========")
+                    if let _ = d {
+                        XCTFail("dummy should be deallocated")
+                    }
+                    expect2.fulfill()
+                }
+            }
+        }
+        waitForExpectations(withTimeout: 1, handler: nil)
+    }
+    
+
     
     
     func testFutureShouldDeallocateIfThereAreNoObservers2() {
@@ -208,7 +250,7 @@ class FutureLifetimeTests: XCTestCase {
                         print(d3)
                     }
                 }
-            };
+            }
         }
         
         waitForExpectations(withTimeout: 1, handler: nil)
