@@ -244,14 +244,6 @@ class SequenceTypeFutureTypeTests: XCTestCase {
     }
 
     
-    func testSetTargetQueue() {
-        //  Error: "Cannot change the target of this queue after it has been activated" 
-        let queue = DispatchQueue(label: "queue", attributes: DispatchQueueAttributes.serial)
-        let syncQueue = DispatchQueue(label: "sync_queue", attributes: DispatchQueueAttributes.serial) 
-        queue.setTarget(queue: syncQueue)       
-    }
-
-
     func testTraverseWithTaskQueueExecutionContextWith1MaxConcurrentTask() {
         let expect1 = self.expectation(withDescription: "future should be completed")
         let maxConcurrentTasks: Int32 = 1
