@@ -841,18 +841,28 @@
 					};
 					A10E9D5A1C3BB9AE00CD5B07 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = XA5RXB77R9;
+						DevelopmentTeamName = "Andreas Grosam";
 					};
 					A10E9D631C3BB9AE00CD5B07 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = XA5RXB77R9;
+						DevelopmentTeamName = "Andreas Grosam";
 					};
 					A10E9D831C3BBA1500CD5B07 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = XA5RXB77R9;
+						DevelopmentTeamName = "Andreas Grosam";
 					};
 					A10E9D901C3BBA3400CD5B07 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = XA5RXB77R9;
+						DevelopmentTeamName = "Andreas Grosam";
 					};
 					A10E9D991C3BBA3500CD5B07 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = XA5RXB77R9;
+						DevelopmentTeamName = "Andreas Grosam";
 					};
 				};
 			};

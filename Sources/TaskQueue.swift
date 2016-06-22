@@ -20,7 +20,10 @@ public class TaskQueue {
     */
     public typealias TaskType = () -> FutureBaseType
 
-    /// Returns the dispatch queue where enqueued tasks will be started.
+    /**
+     Returns the dispatch queue where enqueued tasks will be started.
+     The queue properties must not be modified.
+    */
     public let queue: DispatchQueue
 
     private var _maxConcurrentTasks: UInt = 1
@@ -34,15 +37,10 @@ public class TaskQueue {
 
      - parameter maxConcurrentTasks: The number of tasks which can be executed
      concurrently.
-     - parameter queue: The dispatch queue where to start the tasks. This should
-     be a serial dispatch queue.
     */
-    public init(maxConcurrentTasks: UInt = 1,
-        queue: DispatchQueue =
-        DispatchQueue(label: "task_queue.queue", attributes: DispatchQueueAttributes.serial)) {
-        self.queue = queue
+    public init(maxConcurrentTasks: UInt = 1) {
+        self.queue = DispatchQueue(label: "task_queue.queue", attributes: DispatchQueueAttributes.serial, target: _syncQueue)
         _maxConcurrentTasks = maxConcurrentTasks
-        queue.setTarget(queue: _syncQueue)
     }
 
     /**
