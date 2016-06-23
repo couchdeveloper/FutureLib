@@ -37,11 +37,11 @@ public class Future<T>: FutureType {
 
     public typealias ValueType = T
     public typealias ResultType = Try<ValueType>
-    private typealias ClosureRegistryType = ClosureRegistry<Try<ValueType>>
+    private typealias ClosureRegistryType = Continuations<Try<ValueType>>
 
     private var _result: Try<ValueType>?
-    private var _cr = ClosureRegistryType.empty
-    internal let sync = _sync[Int(OSAtomicIncrement32(&_sync_id) % 7)]
+    private var _cr: ClosureRegistryType! = ClosureRegistryType() 
+    internal let sync = _sync[Int(OSAtomicIncrement32(&_sync_id) % 7)] // Synchronize(name: "future-sync-queue-\(OSAtomicIncrement32(&_sync_id))")//
 
 
     /**
@@ -49,9 +49,8 @@ public class Future<T>: FutureType {
     */
     internal init() {
     }
-
+    
     deinit {
-        // ...
     }
     
     /**
@@ -104,11 +103,6 @@ public class Future<T>: FutureType {
     }
 
 
-
-
-
-    let gSyncQueue = DispatchQueue(label: "Test", attributes: [.qosUserInteractive])
-
     /**
      Executes the closure `f` on the given execution context when `self` is
      completed passing `self`'s result as an argument.
@@ -145,23 +139,20 @@ public class Future<T>: FutureType {
             }
             var cid: Int = -1
             let id = self._cr.register { result in
+                assert(self.sync.isSynchronized())
                 ec.execute {
-                    _ = self
                     _ = f(result)
-                }  // import `self` into the closure in order to keep a strong
-                // reference to self until after self will be completed.
+                }  
+                // import `self` into the closure in order to keep a strong
+                // reference to self until after self will be completed:
+                _ = self
                 ct.unregister(cid)
             }
-            cid = ct.onCancel(on: GCDBarrierAsyncExecutionContext(self.sync.syncQueue)) {
-                switch self._cr {
-                case .empty: break
-                case .single, .multiple:
-                    assert(self._result == nil)
-                    let callback = self._cr.unregister(id)
-                    assert(callback != nil)
-                    ec.execute {
-                        callback!.continuation(Try<ValueType>(error: CancellationError.cancelled))
-                    }
+            cid = ct.onCancel(on: GCDAsyncExecutionContext(self.sync.syncQueue)) { // TODO: Use GCDBarrierAsyncExecutionContext!
+                if let callback = self._cr.unregister(id) {
+                    callback.continuation(Try<ValueType>(error: CancellationError.cancelled))
+                } else {
+                    assert(false, "callback must not be nil")
                 }
             }
         }
@@ -180,7 +171,7 @@ public class Future<T>: FutureType {
      - parameter ct: A cancellation token which will be monitored.
      - returns: A new future.
      */
-    @warn_unused_result public final func mapTo<S>(_ ct: CancellationTokenType = CancellationTokenNone())
+    public final func mapTo<S>(_ ct: CancellationTokenType = CancellationTokenNone())
         -> Future<S> {
         let returnedFuture = Future<S>()
         self.onComplete(ec: SynchronousCurrent(), ct: ct) { [weak returnedFuture] result in
@@ -241,7 +232,8 @@ extension Future: CompletableFutureType {
         assert(self._result == nil)
         self._result = result
         _cr.resume(result)
-        _cr = ClosureRegistryType.empty
+        //_cr = ClosureRegistryType.empty
+        _cr = nil  // TODO: using optional to avoid data race in deinit
     }
 
     internal final func _complete(_ value: ValueType) {
@@ -260,8 +252,6 @@ extension Future: CompletableFutureType {
 // MARK: Waitable
 
 extension Future {
-
-
 
     /**
      Blocks the current thread until `self` is completed or if a cancellation
@@ -345,30 +335,25 @@ public extension Future {
             }
             var cid: Int = -1
             let id = self._cr.register { _ in
+                assert(self.sync.isSynchronized())
                 ec.execute {
                     _ = f(self)
-                }  // import `self` into the function in order to keep a strong
+                }  
+                _ = self
+                // import `self` into the function in order to keep a strong
                 // reference to self until after self will be completed.
                 ct.unregister(cid)
             }
-            cid = ct.onCancel(on: GCDBarrierAsyncExecutionContext(self.sync.syncQueue)) {
-                switch self._cr {
-                case .empty: break
-                case .single, .multiple:
-                    let callback = self._cr.unregister(id)
-                    assert(callback != nil)
-                    ec.execute {
-                        // Note: the error argument will be ignored in the
-                        // registered function.
-                        callback!.continuation(Try<ValueType>(error: CancellationError.cancelled))
-                    }
+            cid = ct.onCancel(on: GCDAsyncExecutionContext(self.sync.syncQueue)) { // TODO: Use GCDBarrierAsyncExecutionContext
+                if let callback = self._cr.unregister(id) {
+                    callback.continuation(Try<ValueType>(error: CancellationError.cancelled))
                 }
             }
         }
     }
 
 
-    @warn_unused_result public final func continueWith<U>(
+    public final func continueWith<U>(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: (FutureBaseType) throws -> U)
@@ -384,7 +369,7 @@ public extension Future {
     }
 
 
-    @warn_unused_result public final func continueWith<U>(
+    public final func continueWith<U>(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: (FutureBaseType) -> Future<U>)
@@ -484,9 +469,19 @@ internal final class RootFuture<T>: Future<T> {
         // Caution: deinit might be called on the synchroninization context Future.Sync!
         if let f = onRevocation {
             if _result == nil {
-                DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes(rawValue: UInt64(0))).async(execute: f)
+                DispatchQueue.global().async(execute: f)
             }
         }
     }
-
+    
 }
+
+extension RootFuture: CustomPlaygroundQuickLookable  {
+    
+    internal var customPlaygroundQuickLook: PlaygroundQuickLook {
+        return .text(String(self))
+    }
+}
+
+
+

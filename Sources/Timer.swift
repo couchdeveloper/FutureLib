@@ -75,7 +75,8 @@ public class Timer {
         let timer = Timer(flags: flags) 
         timer._timer.setEventHandler {
             ec.execute(f)
-            _ = timer // prevent the timer to deinitialize prematurely.
+            timer.cancel()
+            // Note: also keep a reference to `timer` in order to prevent the timer to deinitialize prematurely
         }    
         switch deadline {
         case .now: 
@@ -123,7 +124,8 @@ public class Timer {
         let timer = Timer(flags: flags) 
         timer._timer.setEventHandler {
             ec.execute(f)
-            _ = timer // prevent the timer to deinitialize prematurely 
+            timer.cancel()
+            // Note: also keep a reference to `timer` in order to prevent the timer to deinitialize prematurely
         }    
         timer._timer.scheduleOneshot(deadline: DispatchTime.now() + seconds, leeway: leeway)
         timer._timer.resume()
@@ -166,8 +168,8 @@ public class Timer {
         let flags: DispatchSource.TimerFlags = leeway.isZero() ? .strict : []  
         let timer = Timer(flags: flags) 
         timer._timer.setEventHandler {
-            _ = timer // prevent the timer to deinitialize prematurely
             ec.execute(f)
+            _ = timer // prevent the timer to deinitialize prematurely
         }    
         switch deadline {
         case .now: 

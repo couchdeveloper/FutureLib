@@ -39,7 +39,7 @@ struct Synchronize {
         // - given as an argument - synchronously, it may unintentionally and unexpectedly
         // block or even dead-lock.
         // TODO: syncQueue = DispatchQueue(label: name, attributes: [.qosUserInteractive, .concurrent])
-        syncQueue = DispatchQueue(label: name, attributes: [.qosUserInteractive])
+        syncQueue = DispatchQueue(label: name, attributes: [.qosUserInteractive, .serial])
         // Use the pointer value to syncQueue as the context in order to have
         // a unique context:
         let syncQueueId = ObjectIdentifier(syncQueue)
@@ -90,6 +90,7 @@ struct Synchronize {
     /// - parameter f: The closure.
     func readSync(/*@noescape*/ _ f: () -> ()) {
         assert(!isSynchronized(), "Will deadlock")
+        //dispatchPrecondition(condition: .notOnQueue(syncQueue))
         syncQueue.sync(execute: f)
     }
 
@@ -112,6 +113,7 @@ struct Synchronize {
     /// - parameter f: The closure.
     func writeSync(/*@noescape*/ _ f: () -> ()) {
         assert(!isSynchronized(), "Will deadlock")
+        //dispatchPrecondition(condition: .notOnQueue(syncQueue))
         // TODO: syncQueue.sync(flags: .barrier, execute: f)
         syncQueue.sync(execute: f)
     }

@@ -139,6 +139,7 @@ public struct GCDBarrierAsyncExecutionContext: ExecutionContext {
      - parameter f: A closure which is being scheduled.
      */
     public func execute(_ f: ()->()) {
+        fatalError("Must not use flag .barrier: due to bug in Swfit3 and GCD when submitting closures with flag .barrier: captured variables will not be released")
         queue.async(flags: .barrier, execute: f)
     }
 

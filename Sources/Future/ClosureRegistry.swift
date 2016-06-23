@@ -6,7 +6,6 @@
 //
 
 
-
 internal struct Callback<T> {
     let continuation: (T) -> ()
     let id: Int
@@ -15,6 +14,32 @@ internal struct Callback<T> {
         continuation = f
     }
 }
+
+
+final class Continuations<T> {
+    private var _cr: ClosureRegistry<T>
+    init() {
+        _cr = .empty
+    }
+    
+    func register(_ f: (T)->()) -> Int {
+        return _cr.register(f)
+    }
+    
+    func unregister(_ id: Int) -> Callback<T>? {
+        return _cr.unregister(id)
+    }    
+    
+    func resume(_ value: T) { 
+        _cr.resume(value)
+    }
+    
+    var count: Int {
+        return _cr.count
+    }
+}
+
+
 
 /**
  A ClosureRegistry manages closures.

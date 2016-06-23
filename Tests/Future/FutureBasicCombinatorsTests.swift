@@ -337,6 +337,7 @@ class FutureBasicCombinatorsTests: XCTestCase {
         let expect1 = self.expectation(withDescription: "future should be fulfilled")
         let expect2 = self.expectation(withDescription: "future should be fulfilled")
         let promise = Promise<String>()
+        //let future = promise.future!
         promise.future!.flatMap { value -> Future<Int> in
             XCTAssertEqual("OK", value)
             expect1.fulfill()

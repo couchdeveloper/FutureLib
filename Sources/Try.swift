@@ -170,7 +170,7 @@ public enum Try<T>: TryType {
      - parameter f: The maping function.
      - returns: A `Try<U>`.
      */
-    @warn_unused_result public func map<U>(_ f: @noescape (T) throws -> U) -> Try<U> {
+    public func map<U>(_ f: @noescape (T) throws -> U) -> Try<U> {
         switch self {
         case .success(let value):
             return Try<U>({ try f(value) })
@@ -188,7 +188,7 @@ public enum Try<T>: TryType {
      - parameter f: The maping function.
      - returns: A `Try<U>`.
      */
-    @warn_unused_result public func flatMap<U>(_ f: @noescape (T) -> Try<U>) -> Try<U> {
+    public func flatMap<U>(_ f: @noescape (T) -> Try<U>) -> Try<U> {
         switch self {
         case .success(let value):
             return f(value)

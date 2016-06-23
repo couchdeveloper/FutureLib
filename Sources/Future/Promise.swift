@@ -25,7 +25,6 @@ public enum PromiseError: Int, ErrorProtocol {
 
 
 
-
 /**
  A _promise_ complements a _future_ in that it provides the public API to
  create and complete a future _indirectly_ through an instance of a `Promise`.
@@ -70,6 +69,7 @@ public enum PromiseError: Int, ErrorProtocol {
 public class Promise<T> {
     public typealias ValueType = T
 
+    private let _syncQueue = DispatchQueue(label: "com.futurelib.promise-sync-queue", attributes: .serial)
     private var _future: RootFuture<T>?
     private weak var _weakFuture: RootFuture<T>?
 
@@ -134,10 +134,12 @@ public class Promise<T> {
      - parameter f: The closure
      */
     public final func onRevocation(_ f:()->()) {
-        if let future = _weakFuture {
-            future.onRevocation = f
-        } else {
-            DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes(rawValue: UInt64(0))).async(execute: f)
+        _syncQueue.sync {
+            if let future = self._weakFuture {
+                future.onRevocation = f
+            } else {
+                DispatchQueue.global().async(execute: f)
+            }
         }
     }
 
@@ -153,11 +155,14 @@ public class Promise<T> {
      TODO: must be thread-safe
      */
     public final var future: Future<T>? {
-        if let future = _weakFuture {
-            _future = nil
-            return future
+        return _syncQueue.sync {
+            if let future = self._weakFuture {
+                _future = nil
+                return future
+            } else {
+                return nil
+            }
         }
-        return nil
     }
 
 
@@ -170,8 +175,10 @@ public class Promise<T> {
      - parameter value: The value which the promise will be bound to.
      */
     public final func fulfill(_ value: T) {
-        if let future = _weakFuture {
-            future.complete(Try(value))
+        _syncQueue.sync {
+            if let future = _weakFuture {
+                future.complete(Try(value))
+            }
         }
     }
 
@@ -185,8 +192,10 @@ public class Promise<T> {
      - parameter error: The error which the promise will be bound to.
     */
     public final func reject(_ error: ErrorProtocol) {
-        if let future = _weakFuture {
-            future.complete(Try(error: error))
+        _syncQueue.sync {
+            if let future = _weakFuture {
+                future.complete(Try(error: error))
+            }
         }
     }
 
@@ -203,8 +212,10 @@ public class Promise<T> {
      - parameter result: The result which the promise will be bound to.
      */
     public final func resolve(_ result: Try<T>) {
-        if let future = _weakFuture {
-            future.complete(result)
+        _syncQueue.sync {
+            if let future = _weakFuture {
+                future.complete(result)
+            }
         }
     }
 
@@ -218,8 +229,10 @@ public class Promise<T> {
      - parameter result: The result which the promise will be bound to.
      */
     public final func tryResolve(_ result: Try<T>) {
-        if let future = _weakFuture {
-            _ = future.tryComplete(result)
+        _syncQueue.sync {
+            if let future = _weakFuture {
+                _ = future.tryComplete(result)
+            }
         }
     }
     
@@ -234,8 +247,10 @@ public class Promise<T> {
      - parameter future: The future whose eventual result will complete `self`.
      */
     public final func resolve(_ future: Future<T>) {
-        if let future = _weakFuture {
-            future.completeWith(future)
+        _syncQueue.sync {
+            if let future = _weakFuture {
+                future.completeWith(future)
+            }
         }
     }
 

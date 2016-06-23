@@ -316,7 +316,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      and returns a result of type `U`.
      - returns: A new future.
      */
-    @warn_unused_result     public final func map<U>(
+    public final func map<U>(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: (ValueType) throws -> U)
@@ -356,7 +356,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A mapping function of type `T -> Future<U>` defining the continuation.
      - returns: A new future.
     */
-    @warn_unused_result     public final func flatMap<U>(
+    public final func flatMap<U>(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: (ValueType) throws -> Future<U>)
@@ -387,7 +387,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter ct: A cancellation token which will be monitored.
      - parameter other: The second future.
     */
-    @warn_unused_result     public final func zip<U>(
+    public final func zip<U>(
         _ other: Future<U>,
         ct: CancellationTokenType = CancellationTokenNone())
         -> Future<(ValueType, U)> 
@@ -418,7 +418,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A closure with signature `ErrorType throws -> T`.
      - returns: A new future.
      */
-    @warn_unused_result     public final func recover(
+    public final func recover(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: (ErrorProtocol) throws -> ValueType)
@@ -462,7 +462,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      a deferred value by means of a future of type `future<T>`.
      - returns: A new future.
      */
-    @warn_unused_result     public final func recoverWith(
+    public final func recoverWith(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: (ErrorProtocol) throws -> Future<ValueType>)
@@ -498,7 +498,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      to the error value of `self`.
      - returns: A new future.
      */
-    @warn_unused_result     public final func transform<U>(
+    public final func transform<U>(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         s: (ValueType) throws -> U,
@@ -536,7 +536,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A function that transforms the result of this future
      - returns: A new `Future` that will be completed with the transformed value.
     */
-    @warn_unused_result     public final func transform<U>(
+    public final func transform<U>(
         ec: ExecutionContext = ConcurrentAsync(), 
         ct: CancellationTokenType = CancellationTokenNone(),
         f: (Try<ValueType>) throws -> Try<U>) -> Future<U> 
@@ -565,7 +565,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter f: A function that transforms the result of this future.
      - returns: A new `Future` that will be completed with the transformed value.
     */
-    @warn_unused_result     public final func transformWith<U>(
+    public final func transformWith<U>(
         ec: ExecutionContext = ConcurrentAsync(), 
         ct: CancellationTokenType = CancellationTokenNone(),
         f: (Try<ValueType>) throws -> Future<U>) 
@@ -599,7 +599,7 @@ public extension FutureType where ResultType == Try<ValueType> {
      - parameter predicate: A closure with signature `ValueType throws -> Bool` which is
                     applied to the success value of `self`.
     */
-    @warn_unused_result     public final func filter(
+    public final func filter(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         predicate: (ValueType) throws -> Bool)

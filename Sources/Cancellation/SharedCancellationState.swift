@@ -173,8 +173,7 @@ internal final class SharedCancellationState {
                         f(cancelable)
                     }
                 }
-                _ = self // keep a reference in order to prevent from prematurely
-                     // deinitialization
+                _ = self // keep a reference in order to prevent from premature deinitialization
             }
         }
         return result
@@ -190,8 +189,7 @@ internal final class SharedCancellationState {
                         f()
                     }
                 }
-                _ = self // keep a reference in order to prevent from prematurely
-                     // deinitialization
+                _ = self // keep a reference in order to prevent from premature deinitialization
             }
         }
         return result

@@ -37,7 +37,7 @@ extension Sequence {
      - parameter ct: A cancellation token.
      - parameter task: A closure which is applied to each element in `self`.
      */
-    @warn_unused_result     public func traverse<U>(
+    public func traverse<U>(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         task: (Iterator.Element) throws -> Future<U>)
@@ -81,7 +81,7 @@ extension Sequence
      - parameter pred: The predicate which indicates if it's a match.
      - returns: A `Future` holding the optional result of the search.
     */
-    @warn_unused_result     public func find(
+    public func find(
         _ ec: ExecutionContext = ConcurrentAsync(), 
         ct: CancellationTokenType = CancellationTokenNone(),
         pred: (T) -> Bool) -> Future<T?> 
@@ -115,7 +115,7 @@ extension Sequence
      - parameter ct: A cancellation token.
      - returns: A `Future` holding the optional result of the search.
      */
-    @warn_unused_result     public func firstCompleted(
+    public func firstCompleted(
         _ ct: CancellationTokenType = CancellationTokenNone())
         -> Future<T> 
     {
@@ -153,7 +153,7 @@ extension Sequence
      - parameter combine: The combine function.
      - returns: A future.
     */
-    @warn_unused_result     public func fold<U>(ec: ExecutionContext = ConcurrentAsync(),
+    public func fold<U>(ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         initial: U,
         combine: (U, Iterator.Element.ValueType) throws -> U)
@@ -176,7 +176,7 @@ extension Sequence
      - parameter ct: A cancellation token.
      - returns: A future.
      */
-    @warn_unused_result     public func sequence(ct: CancellationTokenType = CancellationTokenNone())
+    public func sequence(ct: CancellationTokenType = CancellationTokenNone())
         -> Future<[Iterator.Element.ValueType]> {
         return fold(ec: SynchronousCurrent(), ct: ct, initial: ()) { _, _ -> Void in }
         .map {
@@ -213,7 +213,7 @@ extension Sequence
      - parameter ct: A cancellation token.
      - returns: A future.
      */
-    @warn_unused_result     public func results(ct: CancellationTokenType = CancellationTokenNone())
+    public func results(ct: CancellationTokenType = CancellationTokenNone())
         -> Future<[Iterator.Element.ResultType]> {
         return self.reduce(Future<Void>.succeeded()) { (combinedFuture, elementFuture) -> Future<Void> in
             return combinedFuture.continueWith(ec: SynchronousCurrent(), ct: ct) { _ in

@@ -29,7 +29,7 @@
 //: If we had just the system frameworks available, we would implement this challenge utilizing `NSOperation` and `NSOperationQueue`. When doing this, however, we will very quickly face a few problems, which turnes out, are hard to solve: first, in order to implement cancellation, we require to create three subclasses of `NSOperation`, namely `FetchFollowersOperation`, `FetchUserOperation` and `FetchImageOperation`. We have to find a correct implementation of a "thread-safe" subclass of `NSOperation` - which is actually surprisingly elaborated and difficult. The next problem we encounter is, that we need a way to pass the result of the first to the second, and the second to the third operation. To be honest, I actually have no idea how this can be accomplished in an _elegant_ and _concise_ approach. A robust and correct implementation may require at least two hundred lines of code.
 //:
 
-//: #### Utilzing FutureLib
+//: #### Utilizing FutureLib
 import FutureLib
 import Foundation
 import XCPlayground
@@ -103,7 +103,7 @@ downloadRecentImagesFromFollowers().map { arrayImages in
 
 
 
-//: What's missing is, that we cannot cancel this function yet. Once started, we need to wait until it is finished - well, not really: FutureLib provides an extremely convenient approach to implement cancellation:
+//: What's still missing is, that we cannot cancel this function yet. Once started, we need to wait until it is finished - well, not really: FutureLib provides an extremely convenient approach to implement cancellation:
 
 //: In order to implement cancellation in this case, we pass a cancellation token to the innermost continuation. This is completely sufficient. If a cancellation has been requested, the innermost continuation will be unregistered and then called with a cancellation error. This in turn will complete all dependend futures with the same error. Additionally, any continuation will be deinitialized. This in turn deinitializes the future returned from underlying tasks. When this future will be deinitialized, the taks will be noticed and subsequently aborts its operation. In this case, this is just the timer - a real implemenation performing a network request can be easily implemented to behave exactly the same as well.
 print("\n\n========================")
@@ -160,8 +160,8 @@ func downloadRecentImagesFromFollowers3(ct: CancellationTokenType) -> Future<[[S
 let cr3 = CancellationRequest()
 downloadRecentImagesFromFollowers3(cr3.token).map { arrayImages in
     arrayImages.flatten().forEach { print($0) }
-    }
-    .onFailure { error in
+}
+.onFailure { error in
         print("Error: \(error)")
 }
 

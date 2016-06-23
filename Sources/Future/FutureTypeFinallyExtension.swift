@@ -18,7 +18,6 @@ extension FutureType {
     }
 
 
-    //@warn_unused_result (message="Not using the returned future may prevent the continuation to be called.")
     public final func finally<U>(
         _ ec: ExecutionContext = GCDAsyncExecutionContext(),
         _ ct: CancellationTokenType = CancellationTokenNone(),
@@ -35,7 +34,6 @@ extension FutureType {
     }
 
 
-    //@warn_unused_result (message="Not using the returned future may prevent the continuation to be called.")
     public final func finally<U>(
         _ ec: ExecutionContext = GCDAsyncExecutionContext(),
         _ ct: CancellationTokenType = CancellationTokenNone(),
@@ -56,7 +54,6 @@ extension FutureType {
     }
 
 
-    //@warn_unused_result (message="Not using the returned future may prevent the continuation to be called.")
     public final func finally<U>(
         _ ec: ExecutionContext = GCDAsyncExecutionContext(),
         _ ct: CancellationTokenType = CancellationTokenNone(),
