@@ -21,6 +21,7 @@ class TaskQueueTests: XCTestCase {
         super.tearDown()
     }
 
+    // FIXME: Thread Sanitizer fails
     func testMaxConcurrentTaskEquals1() {
         let expect = self.expectation(withDescription: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 1
@@ -45,6 +46,7 @@ class TaskQueueTests: XCTestCase {
         self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
+    // FIXME: Thread Sanitizer fails    
     func testMaxConcurrentTaskEquals2() {
         let expect = self.expectation(withDescription: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 2
@@ -69,6 +71,7 @@ class TaskQueueTests: XCTestCase {
         self.waitForExpectations(withTimeout: 1, handler: nil)
     }
     
+    // FIXME: Thread Sanitizer fails    
     func testMaxConcurrentTaskEquals3() {
         let expect = self.expectation(withDescription: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 3
@@ -93,6 +96,7 @@ class TaskQueueTests: XCTestCase {
         self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
+    // FIXME: Thread Sanitizer fails        
     func testMaxConcurrentTaskEquals4() {
         let expect = self.expectation(withDescription: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 4

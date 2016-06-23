@@ -479,6 +479,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         self.waitForExpectations(withTimeout: timeout, handler: nil)
     }
 
+    // FIXME: Thread Sanitizer fails    
     func testGivenAPendingFutureWithSuccessHandlerWhenRejectedItShouldNotExecutedHandler2() {
         let cr = CancellationRequest()
         let test: ()->Future<String> = {

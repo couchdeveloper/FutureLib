@@ -36,9 +36,9 @@ class SharedCancellationStateTests: XCTestCase {
         XCTAssertTrue(cs.isCancelled)
     }
 
-    func testIsCancelledIsFalseWhenCompletingASharedCancellationState() {
+    func testIsCancelledIsFalseWhenInvalidatingASharedCancellationState() {
         let cs = SharedCancellationState()
-        cs.complete()
+        cs.invalidate()
         XCTAssertTrue(cs.isCompleted)
         XCTAssertFalse(cs.isCancelled)
     }

@@ -30,7 +30,7 @@ public final class CancellationRequest: CancellationRequestType {
      turn deregisters all handlers.
     */
     deinit {
-        _sharedState.complete()
+        _sharedState.invalidate()
     }
 
     internal final var sharedState: SharedCancellationState {

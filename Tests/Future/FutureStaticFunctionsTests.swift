@@ -120,6 +120,7 @@ class FutureExtensionsTests: XCTestCase {
 
     // MARK: Future<T>.failedAfter(delay:, error:) -> Future<T>
 
+    // FIXME: Thread Sanitizer fails    
     func testClassMethodFailedAfterReturnsAFutureWhichBecomesFailedAfterTheDelay() {
         let expect1 = self.expectation(withDescription: "continuation should be called")
         let future = Future<Int>.failedAfter(0.1, error: TestError.failed)
@@ -166,6 +167,7 @@ class FutureExtensionsTests: XCTestCase {
 
     // MARK: Future<T>.failedAfter(delay:, cancellationToken:, error:) -> Future<T>
 
+    // FIXME: Thread Sanitizer fails    
     func testCancellingClassMethodFailedAfterReturnsAFutureWhichBecomesRejectedWithACancellationError() {
         let expect1 = self.expectation(withDescription: "continuation should be called")
         let cr1 = CancellationRequest()
@@ -191,7 +193,7 @@ class FutureExtensionsTests: XCTestCase {
 
 
     // MARK: Future<T>.succeededAfter(delay:, cancellationToken:, value:) -> Future<T>
-
+    // FIXME: Thread Sanitizer fails    
     func testCancellingClassMethodSucceededAfterReturnsAFutureWhichBecomesRejectedWithACancellationError() {
         let expect1 = self.expectation(withDescription: "continuation should be called")
         let cr1 = CancellationRequest()

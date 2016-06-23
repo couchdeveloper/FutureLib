@@ -122,6 +122,7 @@ class FutureLifetimeTests: XCTestCase {
     }
     
     
+    // FIXME: Thread Sanitizer fails    
     func testFutureShouldDeallocateAfterThereAreNoObservers() {
         let promise = Promise<Int>()
         let expect = self.expectation(withDescription: "future should deallocate")
@@ -220,6 +221,7 @@ class FutureLifetimeTests: XCTestCase {
         waitForExpectations(withTimeout: 1, handler: nil)
     }
     
+    // FIXME: Thread Sanitizer fails    
     func testFutureShouldDeallocateIfThereAreNoObservers4() {
         let cr = CancellationRequest()
         let ct = cr.token

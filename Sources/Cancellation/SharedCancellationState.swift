@@ -8,22 +8,35 @@
 import Dispatch
 
 
-private enum CancellationState {
+/**
+ A BinaryFuture can have the following states:
+  - pending, or
+  - completed with a boolean value
+ 
+ In the _pending_ case, the value contains an array of closures. In the 
+ _completed_ state, the value contains a boolean value which is true, if `self`
+ has been cancelled, and `false` if `self` has been completed without a
+ cancellation request.
+ 
+ The cancellation state can register cancellation handlers if it is in the 
+ pending state. Otherwise, it will be executed immediately. Registered handlers 
+ will be executed when `self` will be completed.  
+ 
+ After completing `self` all handlers will run and will be subsequently released.
+*/
+private enum BinaryFuture {
     typealias ClosureRegistryType = ClosureRegistry<Bool>
 
-    case pending(ClosureRegistryType)
-    case completed(Bool)
-
+    case pending(_: ClosureRegistryType)
+    case completed(_: Bool)
 
     private init() {
-        self = pending(ClosureRegistryType())
+        self = .pending(ClosureRegistryType())
     }
 
-
-    private init(completed: Bool) {
-        self = .completed(completed)
+    private init(value: Bool) {
+        self = .completed(value)
     }
-
 
     private var isCompleted: Bool {
         switch self {
@@ -32,34 +45,21 @@ private enum CancellationState {
         }
     }
 
-
-    private var isCancelled: Bool {
+    private var value: Bool? {
         switch self {
         case .completed(let v): return v
-        default: return false
+        default: return nil
         }
     }
 
-
-    private mutating func cancel() {
+    private mutating func complete(value: Bool) {
         switch self {
-        case .pending(let state):
-            self = CancellationState(completed: true)
-            state.resume(true)
+        case .pending(let handlers):
+            handlers.resume(value)
+            self = .completed(value)
         case .completed: break
         }
     }
-
-
-    private mutating func complete() {
-        switch self {
-        case .pending(let state):
-            self = CancellationState(completed: false)
-            state.resume(false)
-        case .completed: break
-        }
-    }
-
 
     private mutating func register(_ f: (Bool)->()) -> Int {
         var result: Int = -1
@@ -72,7 +72,6 @@ private enum CancellationState {
         }
         return result
     }
-
 
     /**
      Unregister the closure previously registered with `register`.
@@ -87,47 +86,53 @@ private enum CancellationState {
         }
     }
 
-
 }
+
 
 private let syncQueue = DispatchQueue(label: "cancellation.sync_queue", attributes: DispatchQueueAttributes.serial)
 
+
+
+/**
+ A `CancellationState` represents the state of a cancellation request and its
+ cancellation token. Both share the identical value which is wrapped into a
+ `SharedCancellationState` object.
+ 
+*/
 internal final class SharedCancellationState {
 
-    private var value = CancellationState()
+    private var future = BinaryFuture()
 
-
-    final var isCompleted: Bool {
-        var result = false
-        syncQueue.sync {
-            result = self.value.isCompleted
-        }
-        return result
+    deinit {
     }
-
+    
+    final var isCompleted: Bool {
+        return syncQueue.sync {
+            self.future.isCompleted
+        }
+    }
 
     final var isCancelled: Bool {
-        var result = false
-        syncQueue.sync {
-            result = self.value.isCancelled
+        return syncQueue.sync {
+            if let value = self.future.value {
+                return value == true
+            } else {
+                return false
+            } 
         }
-        return result
     }
-
 
     final func cancel() {
         syncQueue.async {
-            self.value.cancel()
+            self.future.complete(value: true)
         }
     }
 
-
-    final func complete() {
+    final func invalidate() {
         syncQueue.async {
-            self.value.complete()
+            self.future.complete(value: false)
         }
     }
-
 
     /**
      Register a closure which will be called when `self` has been completed.
@@ -138,17 +143,14 @@ internal final class SharedCancellationState {
      to unregister it again.
      */
     final func register(on executor: ExecutionContext, f: (Bool)->()) -> Int {
-        var result = -1
-        syncQueue.sync {
-            result = self.value.register { cancelled in
+        return syncQueue.sync {
+            return self.future.register { cancelled in
                 executor.execute {
                     f(cancelled)
                 }
             }
         }
-        return result
     }
-
 
     /**
      Unregister the closure previously registered with `register`.
@@ -157,17 +159,15 @@ internal final class SharedCancellationState {
      */
     final func unregister(_ id: Int) {
         syncQueue.async {
-            self.value.unregister(id)
+            self.future.unregister(id)
         }
     }
-
 
     final func onCancel(on executor: ExecutionContext,
         cancelable: Cancelable,
         f: (Cancelable)->()) -> Int {
-        var result: Int = -1
-        syncQueue.sync {
-            result = self.value.register { cancelled in
+        return syncQueue.sync {
+            return self.future.register { cancelled in
                 if cancelled {
                     executor.execute {
                         f(cancelable)
@@ -176,25 +176,17 @@ internal final class SharedCancellationState {
                 _ = self // keep a reference in order to prevent from premature deinitialization
             }
         }
-        return result
     }
 
-
     final func onCancel(on executor: ExecutionContext, f: ()->()) -> Int {
-        var result: Int = -1
-        syncQueue.sync {
-            result = self.value.register { cancelled in
+        return syncQueue.sync {
+            return self.future.register { cancelled in
                 if cancelled {
-                    executor.execute {
-                        f()
-                    }
+                    executor.execute(f)
                 }
                 _ = self // keep a reference in order to prevent from premature deinitialization
             }
         }
-        return result
     }
-
-
 
 }

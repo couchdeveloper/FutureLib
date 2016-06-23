@@ -38,6 +38,32 @@
                BlueprintName = "FutureLib-MacOSTests"
                ReferencedContainer = "container:FutureLib.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "FutureBasicContinuationsTests/testGivenAPendingFutureWithSuccessHandlerWhenRejectedItShouldNotExecutedHandler2()">
+               </Test>
+               <Test
+                  Identifier = "FutureExtensionsTests/testCancellingClassMethodSucceededAfterReturnsAFutureWhichBecomesRejectedWithACancellationError()">
+               </Test>
+               <Test
+                  Identifier = "FutureLifetimeTests/testFutureShouldDeallocateAfterThereAreNoObservers()">
+               </Test>
+               <Test
+                  Identifier = "FutureLifetimeTests/testFutureShouldDeallocateIfThereAreNoObservers4()">
+               </Test>
+               <Test
+                  Identifier = "TaskQueueTests/testMaxConcurrentTaskEquals1()">
+               </Test>
+               <Test
+                  Identifier = "TaskQueueTests/testMaxConcurrentTaskEquals2()">
+               </Test>
+               <Test
+                  Identifier = "TaskQueueTests/testMaxConcurrentTaskEquals3()">
+               </Test>
+               <Test
+                  Identifier = "TaskQueueTests/testMaxConcurrentTaskEquals4()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

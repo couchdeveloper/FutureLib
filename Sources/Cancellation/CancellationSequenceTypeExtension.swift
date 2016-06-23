@@ -36,7 +36,7 @@ extension Sequence where Iterator.Element: CancellationTokenType {
                     count -= 1
                     allCancelled = allCancelled && cancelled
                     if !cancelled {
-                        scs.complete()
+                        scs.invalidate()
                         for (i, ct) in self.enumerated() {
                             ct.unregister(ids[i])
                         }
@@ -80,7 +80,7 @@ extension Sequence where Iterator.Element: CancellationTokenType {
                             ct.unregister(ids[i])
                         }
                     } else if count == 0 {
-                        scs.complete()
+                        scs.invalidate()
                     }
                 }
                 ids.append(id)

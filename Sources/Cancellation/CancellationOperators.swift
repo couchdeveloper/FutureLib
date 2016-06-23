@@ -36,7 +36,9 @@ public func && (left: CancellationTokenType, right: CancellationTokenType)
     _ = left.register(on: ec) { cancelled in
         if cancelled {
             _ = right.register(on: ec) { cancelled in
-                scs.cancel()
+                if cancelled { //TODO: revert
+                    scs.cancel()
+                }
             }
         }
     }

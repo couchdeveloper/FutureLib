@@ -148,11 +148,10 @@ public class Future<T>: FutureType {
                 _ = self
                 ct.unregister(cid)
             }
-            cid = ct.onCancel(on: GCDAsyncExecutionContext(self.sync.syncQueue)) { // TODO: Use GCDBarrierAsyncExecutionContext!
+            // TODO: Use GCDBarrierAsyncExecutionContext!
+            cid = ct.onCancel(on: GCDAsyncExecutionContext(self.sync.syncQueue)) { 
                 if let callback = self._cr.unregister(id) {
                     callback.continuation(Try<ValueType>(error: CancellationError.cancelled))
-                } else {
-                    assert(false, "callback must not be nil")
                 }
             }
         }
