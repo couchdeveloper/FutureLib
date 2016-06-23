@@ -88,8 +88,15 @@ private enum BinaryFuture {
 
 }
 
-
-private let syncQueue = DispatchQueue(label: "cancellation.sync_queue", attributes: DispatchQueueAttributes.serial)
+private var queueIDKey = DispatchSpecificKey<ObjectIdentifier>()
+private let syncQueue: DispatchQueue = {
+    let queue = DispatchQueue(label: "cancellation.sync_queue", attributes: DispatchQueueAttributes.serial)
+    queue.setSpecific(key: queueIDKey, value: ObjectIdentifier(queue))
+    return queue
+}()
+private func isSynchronized() -> Bool {
+    return DispatchQueue.getSpecific(key: queueIDKey) == ObjectIdentifier(syncQueue) 
+}
 
 
 
@@ -101,20 +108,33 @@ private let syncQueue = DispatchQueue(label: "cancellation.sync_queue", attribut
 */
 internal final class SharedCancellationState {
 
-    private var future = BinaryFuture()
+    private let future = UnsafeMutablePointer<BinaryFuture>(allocatingCapacity: 1)
 
+    init() {
+        future.initialize(with: BinaryFuture())
+    }
+    
     deinit {
+        // We cannot determine whether deinit is beeing called within syncQueue or any other context!
+        if isSynchronized() {
+            future.deinitialize(count: 1)
+        } else {
+            let ptr = future
+            syncQueue.sync {      
+                ptr.deinitialize(count: 1)
+            }
+        }
     }
     
     final var isCompleted: Bool {
         return syncQueue.sync {
-            self.future.isCompleted
+            self.future.pointee.isCompleted
         }
     }
 
     final var isCancelled: Bool {
         return syncQueue.sync {
-            if let value = self.future.value {
+            if let value = self.future.pointee.value {
                 return value == true
             } else {
                 return false
@@ -123,28 +143,30 @@ internal final class SharedCancellationState {
     }
 
     final func cancel() {
+        let ptr = future
         syncQueue.async {
-            self.future.complete(value: true)
+            ptr.pointee.complete(value: true)
         }
     }
 
     final func invalidate() {
+        let ptr = future
         syncQueue.async {
-            self.future.complete(value: false)
+            ptr.pointee.complete(value: false)
         }
     }
 
     /**
      Register a closure which will be called when `self` has been completed.
 
-     - parameter on: An exdcution context where function `f` will be executed.
+     - parameter on: An execution context where function `f` will be executed.
      - parameter f: The closure which will be executed.
      - returns: An id which represents the registered closure which can be used
      to unregister it again.
      */
     final func register(on executor: ExecutionContext, f: (Bool)->()) -> Int {
         return syncQueue.sync {
-            return self.future.register { cancelled in
+            return self.future.pointee.register { cancelled in
                 executor.execute {
                     f(cancelled)
                 }
@@ -158,8 +180,9 @@ internal final class SharedCancellationState {
      - parameter id: The `id` representing the closure which has been obtained with `onCancel`.
      */
     final func unregister(_ id: Int) {
+        let ptr = future
         syncQueue.async {
-            self.future.unregister(id)
+            ptr.pointee.unregister(id)
         }
     }
 
@@ -167,7 +190,7 @@ internal final class SharedCancellationState {
         cancelable: Cancelable,
         f: (Cancelable)->()) -> Int {
         return syncQueue.sync {
-            return self.future.register { cancelled in
+            return self.future.pointee.register { cancelled in
                 if cancelled {
                     executor.execute {
                         f(cancelable)
@@ -180,7 +203,7 @@ internal final class SharedCancellationState {
 
     final func onCancel(on executor: ExecutionContext, f: ()->()) -> Int {
         return syncQueue.sync {
-            return self.future.register { cancelled in
+            return self.future.pointee.register { cancelled in
                 if cancelled {
                     executor.execute(f)
                 }
