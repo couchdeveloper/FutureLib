@@ -67,8 +67,8 @@ extension Promise {
             promise.resolve(result)
         }
         promise.onRevocation {
-#if Debug
-            print("Target future disposed, timer will be cancelled")
+#if DEBUG
+            Log.Debug("Target future disposed, timer will be cancelled")
 #endif
             timer.cancel()
         }
@@ -90,11 +90,12 @@ extension Promise {
     public static func resolveAfter(_ delay: Double, f: () throws -> ValueType) -> Promise {
         let promise = Promise<T>()
         let timer = Timer.scheduleOneShot(deadline: .after(seconds: delay)) { _ in
+            Log.Debug("\(Thread.current()): promise will be resolved")
             promise.resolve(Try(f))
         }
         promise.onRevocation {
-#if Debug
-            print("Target future disposed, timer will be cancelled")
+#if DEBUG
+            Log.Debug("Target future disposed, timer will be cancelled")
 #endif
             timer.cancel()
         }

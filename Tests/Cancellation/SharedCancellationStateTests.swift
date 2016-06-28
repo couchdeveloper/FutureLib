@@ -22,22 +22,22 @@ class SharedCancellationStateTests: XCTestCase {
     }
 
     func testInitialSharedCancellationStateIsNotCancelled() {
-        XCTAssertFalse(SharedCancellationState().isCancelled)
+        XCTAssertFalse(SharedCancellationState.create().isCancelled)
     }
 
     func testInitialSharedCancellationStateIsNotCompleted() {
-        XCTAssertFalse(SharedCancellationState().isCompleted)
+        XCTAssertFalse(SharedCancellationState.create().isCompleted)
     }
 
     func testIsCancelledIsTrueWhenCancellingASharedCancellationState() {
-        let cs = SharedCancellationState()
+        let cs = SharedCancellationState.create()
         cs.cancel()
         XCTAssertTrue(cs.isCompleted)
         XCTAssertTrue(cs.isCancelled)
     }
 
     func testIsCancelledIsFalseWhenInvalidatingASharedCancellationState() {
-        let cs = SharedCancellationState()
+        let cs = SharedCancellationState.create()
         cs.invalidate()
         XCTAssertTrue(cs.isCompleted)
         XCTAssertFalse(cs.isCancelled)
@@ -46,7 +46,7 @@ class SharedCancellationStateTests: XCTestCase {
 
 
     func testOnCancelHandlerShouldExecuteWhenCancelled() {
-        let cs = SharedCancellationState()
+        let cs = SharedCancellationState.create()
         let expect1 = self.expectation(withDescription: "cancellation handler should be called")
         _ = cs.onCancel(on: GCDAsyncExecutionContext()) {
             expect1.fulfill()
@@ -58,7 +58,7 @@ class SharedCancellationStateTests: XCTestCase {
     }
 
     func testOnCancelHandlerShouldExecuteIfCancelled() {
-        let cs = SharedCancellationState()
+        let cs = SharedCancellationState.create()
         let expect1 = self.expectation(withDescription: "cancellation handler should be called")
         cs.cancel()
         _ = cs.onCancel(on: GCDAsyncExecutionContext()) {

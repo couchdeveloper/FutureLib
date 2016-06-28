@@ -206,9 +206,19 @@
 		A10E9E721C3BBD9500CD5B07 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
 		A10E9E731C3BBD9500CD5B07 /* schedule_after.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93C1C15EAFC0019060A /* schedule_after.swift */; };
 		A10E9E741C3BBD9500CD5B07 /* TestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9411C15EAFC0019060A /* TestError.swift */; };
+		A12403371D1CFDE7006A48C5 /* DispatchQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12403361D1CFDE7006A48C5 /* DispatchQueueTests.swift */; };
+		A12403381D1CFDE7006A48C5 /* DispatchQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12403361D1CFDE7006A48C5 /* DispatchQueueTests.swift */; };
+		A12403391D1CFDE7006A48C5 /* DispatchQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12403361D1CFDE7006A48C5 /* DispatchQueueTests.swift */; };
+		A124033B1D1D003A006A48C5 /* ExeceutionContextInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A124033A1D1D003A006A48C5 /* ExeceutionContextInfo.swift */; };
+		A124033C1D1D003A006A48C5 /* ExeceutionContextInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A124033A1D1D003A006A48C5 /* ExeceutionContextInfo.swift */; };
+		A124033D1D1D003A006A48C5 /* ExeceutionContextInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A124033A1D1D003A006A48C5 /* ExeceutionContextInfo.swift */; };
 		A12FC0FB1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
 		A12FC0FC1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
 		A12FC0FD1C3BD9D900C83057 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */; };
+		A1580AFF1D218EF7002B5D5C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1580AFE1D218EF7002B5D5C /* Logger.swift */; };
+		A1580B001D218EF7002B5D5C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1580AFE1D218EF7002B5D5C /* Logger.swift */; };
+		A1580B011D218EF7002B5D5C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1580AFE1D218EF7002B5D5C /* Logger.swift */; };
+		A1580B021D218EF7002B5D5C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1580AFE1D218EF7002B5D5C /* Logger.swift */; };
 		A16435541C4A693A0084DAD1 /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10E9D3F1C3BB98700CD5B07 /* FutureLib.framework */; };
 		A16FC21B1C7E2D2E001A703D /* FutureTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16FC21A1C7E2D2E001A703D /* FutureTypeTests.swift */; };
 		A16FC21C1C7E2D2E001A703D /* FutureTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16FC21A1C7E2D2E001A703D /* FutureTypeTests.swift */; };
@@ -219,6 +229,9 @@
 		A1C8688A1C71F80B00E1107E /* FutureTransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C868891C71F80B00E1107E /* FutureTransformTests.swift */; };
 		A1C8688B1C71F80B00E1107E /* FutureTransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C868891C71F80B00E1107E /* FutureTransformTests.swift */; };
 		A1C8688C1C71F80B00E1107E /* FutureTransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C868891C71F80B00E1107E /* FutureTransformTests.swift */; };
+		A1D7DFB31D223ABE00B93E13 /* StopWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D7DFB21D223ABE00B93E13 /* StopWatch.swift */; };
+		A1D7DFB41D223ABE00B93E13 /* StopWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D7DFB21D223ABE00B93E13 /* StopWatch.swift */; };
+		A1D7DFB51D223ABE00B93E13 /* StopWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D7DFB21D223ABE00B93E13 /* StopWatch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -309,9 +322,12 @@
 		A10E9D911C3BBA3400CD5B07 /* FutureLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FutureLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10E9D9A1C3BBA3500CD5B07 /* FutureLib-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FutureLib-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1221F501C2AAEF8004F3F68 /* FutureMiscCombinatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureMiscCombinatorTests.swift; sourceTree = "<group>"; };
+		A12403361D1CFDE7006A48C5 /* DispatchQueueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchQueueTests.swift; sourceTree = "<group>"; };
+		A124033A1D1D003A006A48C5 /* ExeceutionContextInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExeceutionContextInfo.swift; sourceTree = "<group>"; };
 		A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		A13508A91C7F297A003B0A62 /* FutureLib.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = FutureLib.podspec; sourceTree = "<group>"; };
 		A1421F4F1C2B384E00B8D9BF /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		A1580AFE1D218EF7002B5D5C /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		A16FC21A1C7E2D2E001A703D /* FutureTypeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTypeTests.swift; sourceTree = "<group>"; };
 		A187F60D1C29DE5B00D79268 /* ExecutionContextTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionContextTests.swift; sourceTree = "<group>"; };
 		A18EB58D1B7BDBED00B74714 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/Mac/Nimble.framework; sourceTree = "<group>"; };
@@ -325,6 +341,7 @@
 		A1B80E861BE15FBC0031A489 /* Tutorial.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Tutorial.playground; sourceTree = "<group>"; };
 		A1C868891C71F80B00E1107E /* FutureTransformTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FutureTransformTests.swift; sourceTree = "<group>"; };
 		A1CD28141B46C04B00B408E4 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
+		A1D7DFB21D223ABE00B93E13 /* StopWatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StopWatch.swift; sourceTree = "<group>"; };
 		A1DF3E271BC69B4D00136A45 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A1E11FF81C07876C008EC456 /* Rakefile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; path = Rakefile; sourceTree = "<group>"; };
 		A1F8FCAE1C3AF9C6008AC595 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
@@ -440,6 +457,7 @@
 		A103370B1C3AD2B80014C866 /* Future */ = {
 			isa = PBXGroup;
 			children = (
+				A1580AFE1D218EF7002B5D5C /* Logger.swift */,
 				A103370D1C3AD2B80014C866 /* ClosureRegistry.swift */,
 				A103370F1C3AD2B80014C866 /* FutureBaseType.swift */,
 				A10337111C3AD2B80014C866 /* FutureType.swift */,
@@ -612,6 +630,7 @@
 				A18FE0101B46AF8C0094CD2A /* Info.plist */,
 				A10CB9351C15EAFC0019060A /* FutureLibTests-Bridging-Header.h */,
 				A1F8FCD01C3BB3DA008AC595 /* Helpers */,
+				A12403361D1CFDE7006A48C5 /* DispatchQueueTests.swift */,
 				A1F8FCCC1C3BB3A6008AC595 /* AggregateErrorTests.swift */,
 				A187F60C1C29DE3900D79268 /* ExecutionContextTests */,
 				A10CB91E1C15EAFC0019060A /* Cancellation */,
@@ -633,6 +652,8 @@
 				A10CB93C1C15EAFC0019060A /* schedule_after.swift */,
 				A10CB9411C15EAFC0019060A /* TestError.swift */,
 				A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */,
+				A124033A1D1D003A006A48C5 /* ExeceutionContextInfo.swift */,
+				A1D7DFB21D223ABE00B93E13 /* StopWatch.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -989,6 +1010,7 @@
 				A10E9DFE1C3BBD2300CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DC61C3BBD1400CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DAE1C3BBD0C00CD5B07 /* TaskQueue.swift in Sources */,
+				A1580AFF1D218EF7002B5D5C /* Logger.swift in Sources */,
 				A10E9DAC1C3BBD0C00CD5B07 /* Try.swift in Sources */,
 				A10E9E041C3BBD2300CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DAF1C3BBD0C00CD5B07 /* Timer.swift in Sources */,
@@ -1000,11 +1022,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A124033B1D1D003A006A48C5 /* ExeceutionContextInfo.swift in Sources */,
 				A10E9E691C3BBD8500CD5B07 /* AggregateErrorTests.swift in Sources */,
 				A1C8688A1C71F80B00E1107E /* FutureTransformTests.swift in Sources */,
 				A10E9E2A1C3BBD4A00CD5B07 /* PromiseTests.swift in Sources */,
 				A10E9E361C3BBD5D00CD5B07 /* FutureRecoverTests.swift in Sources */,
 				A16FC21B1C7E2D2E001A703D /* FutureTypeTests.swift in Sources */,
+				A12403371D1CFDE7006A48C5 /* DispatchQueueTests.swift in Sources */,
+				A1D7DFB31D223ABE00B93E13 /* StopWatch.swift in Sources */,
 				A10E9E661C3BBD7B00CD5B07 /* ExecutionContextTests.swift in Sources */,
 				A10E9E5F1C3BBD7200CD5B07 /* SharedCancellationStateTests.swift in Sources */,
 				A10E9E311C3BBD5D00CD5B07 /* FutureBaseTests.swift in Sources */,
@@ -1061,6 +1086,7 @@
 				A10E9E081C3BBD2300CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DD41C3BBD1500CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DB21C3BBD0D00CD5B07 /* TaskQueue.swift in Sources */,
+				A1580B001D218EF7002B5D5C /* Logger.swift in Sources */,
 				A10E9DB01C3BBD0D00CD5B07 /* Try.swift in Sources */,
 				A10E9E0E1C3BBD2300CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DB31C3BBD0D00CD5B07 /* Timer.swift in Sources */,
@@ -1072,11 +1098,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A124033C1D1D003A006A48C5 /* ExeceutionContextInfo.swift in Sources */,
 				A10E9E6A1C3BBD8600CD5B07 /* AggregateErrorTests.swift in Sources */,
 				A1C8688B1C71F80B00E1107E /* FutureTransformTests.swift in Sources */,
 				A10E9E2B1C3BBD4C00CD5B07 /* PromiseTests.swift in Sources */,
 				A10E9E441C3BBD5E00CD5B07 /* FutureRecoverTests.swift in Sources */,
 				A16FC21C1C7E2D2E001A703D /* FutureTypeTests.swift in Sources */,
+				A12403381D1CFDE7006A48C5 /* DispatchQueueTests.swift in Sources */,
+				A1D7DFB41D223ABE00B93E13 /* StopWatch.swift in Sources */,
 				A10E9E671C3BBD7E00CD5B07 /* ExecutionContextTests.swift in Sources */,
 				A10E9E621C3BBD7300CD5B07 /* SharedCancellationStateTests.swift in Sources */,
 				A10E9E3F1C3BBD5E00CD5B07 /* FutureBaseTests.swift in Sources */,
@@ -1133,6 +1162,7 @@
 				A10E9E121C3BBD2400CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DE21C3BBD1500CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DB61C3BBD0D00CD5B07 /* TaskQueue.swift in Sources */,
+				A1580B011D218EF7002B5D5C /* Logger.swift in Sources */,
 				A10E9DB41C3BBD0D00CD5B07 /* Try.swift in Sources */,
 				A10E9E181C3BBD2400CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DB71C3BBD0D00CD5B07 /* Timer.swift in Sources */,
@@ -1169,6 +1199,7 @@
 				A10E9E1C1C3BBD2500CD5B07 /* CancellationOperators.swift in Sources */,
 				A10E9DF01C3BBD1600CD5B07 /* PromiseExtensions.swift in Sources */,
 				A10E9DBA1C3BBD0E00CD5B07 /* TaskQueue.swift in Sources */,
+				A1580B021D218EF7002B5D5C /* Logger.swift in Sources */,
 				A10E9DB81C3BBD0E00CD5B07 /* Try.swift in Sources */,
 				A10E9E221C3BBD2500CD5B07 /* CancellationTokenType.swift in Sources */,
 				A10E9DBB1C3BBD0E00CD5B07 /* Timer.swift in Sources */,
@@ -1180,11 +1211,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A124033D1D1D003A006A48C5 /* ExeceutionContextInfo.swift in Sources */,
 				A10E9E6B1C3BBD8800CD5B07 /* AggregateErrorTests.swift in Sources */,
 				A1C8688C1C71F80B00E1107E /* FutureTransformTests.swift in Sources */,
 				A10E9E2C1C3BBD4D00CD5B07 /* PromiseTests.swift in Sources */,
 				A10E9E521C3BBD6000CD5B07 /* FutureRecoverTests.swift in Sources */,
 				A16FC21D1C7E2D2E001A703D /* FutureTypeTests.swift in Sources */,
+				A12403391D1CFDE7006A48C5 /* DispatchQueueTests.swift in Sources */,
+				A1D7DFB51D223ABE00B93E13 /* StopWatch.swift in Sources */,
 				A10E9E681C3BBD8000CD5B07 /* ExecutionContextTests.swift in Sources */,
 				A10E9E651C3BBD7500CD5B07 /* SharedCancellationStateTests.swift in Sources */,
 				A10E9E4D1C3BBD6000CD5B07 /* FutureBaseTests.swift in Sources */,

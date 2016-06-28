@@ -157,7 +157,7 @@ public class Promise<T> {
     public final var future: Future<T>? {
         return _syncQueue.sync {
             if let future = self._weakFuture {
-                _future = nil
+                self._future = nil
                 return future
             } else {
                 return nil
@@ -176,7 +176,7 @@ public class Promise<T> {
      */
     public final func fulfill(_ value: T) {
         _syncQueue.sync {
-            if let future = _weakFuture {
+            if let future = self._weakFuture {
                 future.complete(Try(value))
             }
         }
@@ -193,7 +193,7 @@ public class Promise<T> {
     */
     public final func reject(_ error: ErrorProtocol) {
         _syncQueue.sync {
-            if let future = _weakFuture {
+            if let future = self._weakFuture {
                 future.complete(Try(error: error))
             }
         }
@@ -213,7 +213,7 @@ public class Promise<T> {
      */
     public final func resolve(_ result: Try<T>) {
         _syncQueue.sync {
-            if let future = _weakFuture {
+            if let future = self._weakFuture {
                 future.complete(result)
             }
         }

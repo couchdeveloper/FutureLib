@@ -8,6 +8,48 @@
 import Dispatch
 
 
+internal struct HandlerRegistry<T> {
+    typealias ClosureType = (T) -> ()
+    typealias HandlerId = Int
+    typealias Handler = (HandlerId, ClosureType)
+    
+    private var handlers: [Handler] = []
+    private var _id: Int = 0
+
+    var count: Int { return self.handlers.count }
+    
+    mutating func register(_ f: ClosureType) -> HandlerId {
+        let id = _id
+        self.handlers.append((id, f))
+        _id += 1
+        return id
+    }
+
+    mutating func unregister(_ id: HandlerId) -> Handler? {
+        guard let callback = self.handlers.filter( { callback in
+            callback.0 == id
+        }).first else {
+            return nil
+        }
+        return callback
+    }
+
+    func resume(_ value: T) {
+        execute(withParameter: value)
+    }
+    
+    func execute(withParameter value: T) {
+        self.handlers.forEach { (_, f) in
+            f(value)
+        }
+    }
+    
+    mutating func invalidate() {
+        self.handlers = []
+    }
+}
+
+
 /**
  A BinaryFuture can have the following states:
   - pending, or
@@ -24,8 +66,8 @@ import Dispatch
  
  After completing `self` all handlers will run and will be subsequently released.
 */
-private enum BinaryFuture {
-    typealias ClosureRegistryType = ClosureRegistry<Bool>
+internal enum BinaryFuture {
+    internal typealias ClosureRegistryType = HandlerRegistry<Bool>
 
     case pending(_: ClosureRegistryType)
     case completed(_: Bool)
@@ -68,7 +110,8 @@ private enum BinaryFuture {
             result = cr.register(f)
             self = .pending(cr)
 
-        case .completed(let cancelled): f(cancelled)
+        case .completed(let cancelled): 
+            f(cancelled)
         }
         return result
     }
@@ -104,55 +147,75 @@ private func isSynchronized() -> Bool {
  A `CancellationState` represents the state of a cancellation request and its
  cancellation token. Both share the identical value which is wrapped into a
  `SharedCancellationState` object.
- 
 */
-internal final class SharedCancellationState {
+internal final class SharedCancellationState: ManagedBuffer<(), BinaryFuture> {
 
-    private let future = UnsafeMutablePointer<BinaryFuture>(allocatingCapacity: 1)
-
-    init() {
-        future.initialize(with: BinaryFuture())
+    final class func create() -> SharedCancellationState {
+        return SharedCancellationState.create(minimumCapacity: 1) { managedBuffer in
+            managedBuffer.withUnsafeMutablePointerToElements { future in                
+                future.initialize(with: BinaryFuture())
+            }
+        } as! SharedCancellationState
     }
     
     deinit {
-        // We cannot determine whether deinit is beeing called within syncQueue or any other context!
+        // Ensure members will be deinitialized on the sync queue. In most practical
+        // circumstances, this is effectively a no-op since almost always the future 
+        // has been completed and all handlers are deallocated already. Nonetheless
+        // this requires access to the future which must be synchronized. If the
+        // future is not completed, handlers may exists which will be released
+        // while the future is deinitialized.
+        // Since deinit requires synchronized access to future, we need to make
+        // deinitialization explicit.
+        // Since we cannot determine whether deinit is beeing called within syncQueue 
+        // or any other execution context - we need to check it explicitly and
+        // switch accordingly:
         if isSynchronized() {
-            future.deinitialize(count: 1)
-        } else {
-            let ptr = future
+            self.withUnsafeMutablePointerToElements { future in
+                future.deinitialize()
+            }
+        }   else {
             syncQueue.sync {      
-                ptr.deinitialize(count: 1)
+                self.withUnsafeMutablePointerToElements { future in
+                    future.deinitialize()
+                }
             }
         }
     }
     
     final var isCompleted: Bool {
         return syncQueue.sync {
-            self.future.pointee.isCompleted
+            return withUnsafeMutablePointerToElements { future in                
+                future.pointee.isCompleted
+            }
         }
     }
 
     final var isCancelled: Bool {
         return syncQueue.sync {
-            if let value = self.future.pointee.value {
-                return value == true
-            } else {
-                return false
-            } 
+            return withUnsafeMutablePointerToElements { future in
+                if let value = future.pointee.value {
+                    return value == true
+                } else {
+                    return false
+                } 
+            }
         }
     }
 
     final func cancel() {
-        let ptr = future
         syncQueue.async {
-            ptr.pointee.complete(value: true)
+            self.withUnsafeMutablePointerToElements { future in                 
+                future.pointee.complete(value: true)
+            }
         }
     }
 
     final func invalidate() {
-        let ptr = future
         syncQueue.async {
-            ptr.pointee.complete(value: false)
+            self.withUnsafeMutablePointerToElements { future in                 
+                future.pointee.complete(value: false)
+            }
         }
     }
 
@@ -166,11 +229,13 @@ internal final class SharedCancellationState {
      */
     final func register(on executor: ExecutionContext, f: (Bool)->()) -> Int {
         return syncQueue.sync {
-            return self.future.pointee.register { cancelled in
-                executor.execute {
-                    f(cancelled)
+            return self.withUnsafeMutablePointerToElements { future in 
+                return future.pointee.register { cancelled in
+                    executor.execute {
+                        f(cancelled)
+                    }
                 }
-            }
+            }                 
         }
     }
 
@@ -180,9 +245,10 @@ internal final class SharedCancellationState {
      - parameter id: The `id` representing the closure which has been obtained with `onCancel`.
      */
     final func unregister(_ id: Int) {
-        let ptr = future
         syncQueue.async {
-            ptr.pointee.unregister(id)
+            self.withUnsafeMutablePointerToElements { future in                 
+                future.pointee.unregister(id)
+            }
         }
     }
 
@@ -190,24 +256,28 @@ internal final class SharedCancellationState {
         cancelable: Cancelable,
         f: (Cancelable)->()) -> Int {
         return syncQueue.sync {
-            return self.future.pointee.register { cancelled in
-                if cancelled {
-                    executor.execute {
-                        f(cancelable)
+            return self.withUnsafeMutablePointerToElements { future in
+                return future.pointee.register { cancelled in
+                    if cancelled {
+                        executor.execute {
+                            f(cancelable)
+                        }
                     }
+                    _ = self // keep a reference in order to prevent from premature deinitialization
                 }
-                _ = self // keep a reference in order to prevent from premature deinitialization
-            }
+            }            
         }
     }
 
     final func onCancel(on executor: ExecutionContext, f: ()->()) -> Int {
         return syncQueue.sync {
-            return self.future.pointee.register { cancelled in
-                if cancelled {
-                    executor.execute(f)
+            return self.withUnsafeMutablePointerToElements { future in
+                return future.pointee.register { cancelled in
+                    if cancelled {
+                        executor.execute(f)
+                    }
+                    _ = self // keep a reference in order to prevent from premature deinitialization
                 }
-                _ = self // keep a reference in order to prevent from premature deinitialization
             }
         }
     }

@@ -30,7 +30,6 @@
 */
 public protocol CancellationRequestType {
 
-
     associatedtype CancellationTokenType
 
     /**

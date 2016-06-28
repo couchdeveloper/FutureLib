@@ -49,7 +49,7 @@ internal class Timer {
         tolerance: TimeInterval = 0, 
         f: TimerHandler) -> Timer
     {
-        let leeway: DispatchTimeInterval = .nanoseconds(Int(seconds * 1e9 + 0.5))
+        let leeway: DispatchTimeInterval = .nanoseconds(Int(tolerance * 1e9 + 0.5))
         let flags: DispatchSource.TimerFlags = seconds == 0 ? .strict : []  
         let timer = Timer(flags: flags, queue: queue) 
         timer._timer.setEventHandler {

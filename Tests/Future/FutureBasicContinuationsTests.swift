@@ -433,7 +433,6 @@ class FutureBasicContinuationsTests: XCTestCase {
         test().onSuccess { value -> () in
             XCTFail("unexpected success")
         }
-        usleep(100000)
     }
 
     func testGivenAFulfilledFutureWhenRegisteringSuccessHandlerItShouldExecuteHandler1() {
@@ -457,7 +456,6 @@ class FutureBasicContinuationsTests: XCTestCase {
         test().onSuccess { value -> () in
             XCTFail("unexpected success")
         }
-        usleep(100000)
     }
 
 
@@ -481,6 +479,7 @@ class FutureBasicContinuationsTests: XCTestCase {
 
     // FIXME: Thread Sanitizer fails    
     func testGivenAPendingFutureWithSuccessHandlerWhenRejectedItShouldNotExecutedHandler2() {
+        let expect = self.expectation(withDescription: "future should be fulfilled")
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
@@ -489,10 +488,14 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
             return promise.future!
         }
-        test().onSuccess(ct: cr.token) { value -> () in
+        let future = test()
+        future.onSuccess(ct: cr.token) { value -> () in
             XCTFail("unexpected success")
         }
-        usleep(100000)
+        future.onComplete { _ in
+            expect.fulfill()
+        }
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
     func testGivenAFulfilledFutureWhenRegisteringSuccessHandlerItShouldExecuteHandler2() {
@@ -506,7 +509,7 @@ class FutureBasicContinuationsTests: XCTestCase {
             XCTAssertEqual("OK", value)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
     func testGivenARejectedFutureWhenRegisteringSuccessHandlerItShouldNotExecuteHandler2() {
@@ -519,7 +522,6 @@ class FutureBasicContinuationsTests: XCTestCase {
         test().onSuccess(ct: cr.token) { value -> () in
             XCTFail("unexpected success")
         }
-        usleep(100000)
     }
 
 
@@ -538,7 +540,6 @@ class FutureBasicContinuationsTests: XCTestCase {
         }
         test()
         promise.fulfill("OK")
-        usleep(100000)
     }
 
     func testGivenAPendingFutureWithFailureHandlerWhenRejectedItShouldExecutedHandler1() {
@@ -565,7 +566,6 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
         }
         test()
-        usleep(100000)
     }
 
     func testGivenARejectedFutureWhenRegisteringFailureHandlerItShouldExecuteHandler1() {
@@ -594,7 +594,6 @@ class FutureBasicContinuationsTests: XCTestCase {
         }
         test()
         promise.fulfill("OK")
-        usleep(100000)
     }
 
     func testGivenAPendingFutureWithFailureHandlerWhenRejectedItShouldExecutedHandler2() {
@@ -623,7 +622,6 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
         }
         test()
-        usleep(100000)
     }
 
     func testGivenARejectedFutureWhenRegisteringFailureHandlerItShouldExecuteHandler2() {

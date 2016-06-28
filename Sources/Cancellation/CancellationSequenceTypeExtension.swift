@@ -22,7 +22,7 @@ extension Sequence where Iterator.Element: CancellationTokenType {
     public func allCancelled(
         on ec: ExecutionContext = ConcurrentAsync())
         -> CancellationTokenType {
-        let scs = SharedCancellationState()
+        let scs = SharedCancellationState.create()
         let ct = CancellationToken(sharedState: scs)
         let sync_queue = DispatchQueue(label: "private sync queue", attributes: [.serial, .qosUserInitiated])
         let private_ec = GCDAsyncExecutionContext(sync_queue)
@@ -63,7 +63,7 @@ extension Sequence where Iterator.Element: CancellationTokenType {
     public func anyCancelled(
         on ec: ExecutionContext = ConcurrentAsync())
         -> CancellationTokenType {
-        let scs = SharedCancellationState()
+        let scs = SharedCancellationState.create()
         let ct = CancellationToken(sharedState: scs)
         let sync_queue = DispatchQueue(label: "private sync queue", attributes: [.serial, .qosUserInitiated])
         let private_ec = GCDAsyncExecutionContext(sync_queue)

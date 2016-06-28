@@ -56,25 +56,28 @@ class SequenceTypeFutureTypeTests: XCTestCase {
     
     func testFindWithCancellation() {
         let expect1 = self.expectation(withDescription: "future should be completed")
-        let futures = [
-            Promise.resolveAfter(1.10) {1}.future!,
-            Promise.resolveAfter(1.12) {2}.future!,
-            Promise.resolveAfter(1.08) {3}.future!,
-            Promise.resolveAfter(1.01) {4}.future!,
-            Promise.resolveAfter(1.02) {5}.future!
-        ]
-        let cr = CancellationRequest()
-        schedule_after(0.1) {
-            cr.cancel()
+        func t() {
+            let futures = [
+                Promise.resolveAfter(1.10) {1}.future!,
+                Promise.resolveAfter(1.12) {2}.future!,
+                Promise.resolveAfter(1.08) {3}.future!,
+                Promise.resolveAfter(1.01) {4}.future!,
+                Promise.resolveAfter(1.02) {5}.future!
+            ]
+            let cr = CancellationRequest()
+            schedule_after(0.5) {
+                cr.cancel()
+            }
+            futures.find(ct: cr.token) { $0 == 3 }.map { value in
+                XCTFail("unexpected success: \(value)")
+                expect1.fulfill()
+                }.onFailure { error in
+                    XCTAssertTrue(CancellationError.cancelled == error)
+                    expect1.fulfill()
+            }
         }
-        futures.find(ct: cr.token) { $0 == 3 }.map { value in
-            XCTFail("unexpected success: \(value)")
-            expect1.fulfill()
-        }.onFailure { error in
-            XCTAssertTrue(CancellationError.cancelled == error)
-            expect1.fulfill()
-        }
-        self.waitForExpectations(withTimeout: 0.2, handler: nil)
+        t()
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
     
 
@@ -84,32 +87,35 @@ class SequenceTypeFutureTypeTests: XCTestCase {
     
     func testFirstCompleted() {
         let expect1 = self.expectation(withDescription: "future should be completed")
-        let futures = [
-            Promise<Int>.resolveAfter(0.30) {Log.Info("1"); return 1}.future!,
-            Promise<Int>.resolveAfter(0.40) {Log.Info("3"); return 3}.future!,
-            Promise<Int>.resolveAfter(0.20) {Log.Info("3"); return 3}.future!,
-            Promise<Int>.resolveAfter(0.30) {Log.Info("4"); return 4}.future!,
-            Promise<Int>.resolveAfter(0.40) {Log.Info("5"); return 5}.future!,
-            Promise<Int>.resolveAfter(0.50) {Log.Info("6"); return 6}.future!,
-            Promise<Int>.resolveAfter(0.60) {Log.Info("7"); return 7}.future!,
-            Promise<Int>.resolveAfter(0.70) {Log.Info("8"); return 8}.future!,
-            Promise<Int>.resolveAfter(0.80) {Log.Info("9"); return 9}.future!,
-            Promise<Int>.resolveAfter(0.20) {Log.Info("10"); return 10}.future!,
-            Promise<Int>.resolveAfter(0.30) {Log.Info("11"); return 11}.future!,
-            Promise<Int>.resolveAfter(0.40) {Log.Info("12"); return 12}.future!,
-            Promise<Int>.resolveAfter(0.01) {Log.Info("13"); return 13}.future!,
-            Promise<Int>.resolveAfter(0.50) {Log.Info("14"); return 14}.future!
-        ]
-        let cr = CancellationRequest()
-        futures.firstCompleted(cr.token).map { value in
-            XCTAssertNotNil(value)
-            XCTAssertEqual(13, value)
-            cr.cancel()
-            expect1.fulfill()
-        }.onFailure { error in
-            XCTFail("unexpected error: \(error)")
-            expect1.fulfill()
+        func t() {
+            let futures = [
+                Promise<Int>.resolveAfter(0.30) {Log.Info("1"); return 1}.future!,
+                Promise<Int>.resolveAfter(0.40) {Log.Info("3"); return 3}.future!,
+                Promise<Int>.resolveAfter(0.20) {Log.Info("3"); return 3}.future!,
+                Promise<Int>.resolveAfter(0.30) {Log.Info("4"); return 4}.future!,
+                Promise<Int>.resolveAfter(0.40) {Log.Info("5"); return 5}.future!,
+                Promise<Int>.resolveAfter(0.50) {Log.Info("6"); return 6}.future!,
+                Promise<Int>.resolveAfter(0.60) {Log.Info("7"); return 7}.future!,
+                Promise<Int>.resolveAfter(0.70) {Log.Info("8"); return 8}.future!,
+                Promise<Int>.resolveAfter(0.80) {Log.Info("9"); return 9}.future!,
+                Promise<Int>.resolveAfter(0.20) {Log.Info("10"); return 10}.future!,
+                Promise<Int>.resolveAfter(0.30) {Log.Info("11"); return 11}.future!,
+                Promise<Int>.resolveAfter(0.40) {Log.Info("12"); return 12}.future!,
+                Promise<Int>.resolveAfter(0.01) {Log.Info("13"); return 13}.future!,
+                Promise<Int>.resolveAfter(0.50) {Log.Info("14"); return 14}.future!
+            ]
+            let cr = CancellationRequest()
+            futures.firstCompleted(cr.token).map { value in
+                XCTAssertNotNil(value)
+                XCTAssertEqual(13, value)
+                cr.cancel()
+                expect1.fulfill()
+            }.onFailure { error in
+                XCTFail("unexpected error: \(error)")
+                expect1.fulfill()
+            }
         }
+        t()        
         self.waitForExpectations(withTimeout: 1, handler: nil)
     }
     
@@ -119,30 +125,33 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         schedule_after(0.1) {
             cr.cancel()
         }
-        let futures = [
-            Promise<Int>.resolveAfter(1.30) {Log.Info("1"); return 1}.future!,
-            Promise<Int>.resolveAfter(1.40) {Log.Info("3"); return 3}.future!,
-            Promise<Int>.resolveAfter(1.20) {Log.Info("3"); return 3}.future!,
-            Promise<Int>.resolveAfter(1.30) {Log.Info("4"); return 4}.future!,
-            Promise<Int>.resolveAfter(1.40) {Log.Info("5"); return 5}.future!,
-            Promise<Int>.resolveAfter(1.50) {Log.Info("6"); return 6}.future!,
-            Promise<Int>.resolveAfter(1.60) {Log.Info("7"); return 7}.future!,
-            Promise<Int>.resolveAfter(1.70) {Log.Info("8"); return 8}.future!,
-            Promise<Int>.resolveAfter(1.80) {Log.Info("9"); return 9}.future!,
-            Promise<Int>.resolveAfter(1.20) {Log.Info("10"); return 10}.future!,
-            Promise<Int>.resolveAfter(1.30) {Log.Info("11"); return 11}.future!,
-            Promise<Int>.resolveAfter(1.40) {Log.Info("12"); return 12}.future!,
-            Promise<Int>.resolveAfter(1.01) {Log.Info("13"); return 13}.future!,
-            Promise<Int>.resolveAfter(1.50) {Log.Info("14"); return 14}.future!
-        ]
-        futures.firstCompleted(cr.token).map { value in
-            XCTFail("unexpected success: \(value)")
-            expect1.fulfill()
-        }.onFailure { error in
-            XCTAssertTrue(CancellationError.cancelled == error)
-            expect1.fulfill()
+        func t() {
+            let futures = [
+                Promise<Int>.resolveAfter(1.30) {Log.Info("1"); return 1}.future!,
+                Promise<Int>.resolveAfter(1.40) {Log.Info("3"); return 3}.future!,
+                Promise<Int>.resolveAfter(1.20) {Log.Info("3"); return 3}.future!,
+                Promise<Int>.resolveAfter(1.30) {Log.Info("4"); return 4}.future!,
+                Promise<Int>.resolveAfter(1.40) {Log.Info("5"); return 5}.future!,
+                Promise<Int>.resolveAfter(1.50) {Log.Info("6"); return 6}.future!,
+                Promise<Int>.resolveAfter(1.60) {Log.Info("7"); return 7}.future!,
+                Promise<Int>.resolveAfter(1.70) {Log.Info("8"); return 8}.future!,
+                Promise<Int>.resolveAfter(1.80) {Log.Info("9"); return 9}.future!,
+                Promise<Int>.resolveAfter(1.20) {Log.Info("10"); return 10}.future!,
+                Promise<Int>.resolveAfter(1.30) {Log.Info("11"); return 11}.future!,
+                Promise<Int>.resolveAfter(1.40) {Log.Info("12"); return 12}.future!,
+                Promise<Int>.resolveAfter(1.01) {Log.Info("13"); return 13}.future!,
+                Promise<Int>.resolveAfter(1.50) {Log.Info("14"); return 14}.future!
+            ]
+            futures.firstCompleted(cr.token).map { value in
+                XCTFail("unexpected success: \(value)")
+                expect1.fulfill()
+            }.onFailure { error in
+                XCTAssertTrue(CancellationError.cancelled == error)
+                expect1.fulfill()
+            }
         }
-        self.waitForExpectations(withTimeout: 0.2, handler: nil)
+        t()
+        self.waitForExpectations(withTimeout: 1, handler: nil)
     }
 
 

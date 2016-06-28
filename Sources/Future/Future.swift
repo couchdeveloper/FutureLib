@@ -12,6 +12,7 @@ private let _sync = (0..<8).map { Synchronize(name: "future-sync-queue-\($0)") }
 private var _sync_id: Int32 = 0
     
 
+
 // MARK: - Class Future
 
 /**
@@ -37,10 +38,10 @@ public class Future<T>: FutureType {
 
     public typealias ValueType = T
     public typealias ResultType = Try<ValueType>
-    private typealias ClosureRegistryType = Continuations<Try<ValueType>>
+    private typealias ClosureRegistryType = ClosureRegistry<ResultType>
 
     private var _result: Try<ValueType>?
-    private var _cr: ClosureRegistryType! = ClosureRegistryType() 
+    private var _cr: ClosureRegistryType = ClosureRegistryType() 
     internal let sync = _sync[Int(OSAtomicIncrement32(&_sync_id) % 7)] // Synchronize(name: "future-sync-queue-\(OSAtomicIncrement32(&_sync_id))")//
 
 
@@ -48,9 +49,11 @@ public class Future<T>: FutureType {
      Designatated initializer which creates a pending future.
     */
     internal init() {
+        Log.Debug("\(Thread.current()): ")
     }
     
     deinit {
+        Log.Debug("\(Thread.current()): ")
     }
     
     /**
@@ -231,8 +234,7 @@ extension Future: CompletableFutureType {
         assert(self._result == nil)
         self._result = result
         _cr.resume(result)
-        //_cr = ClosureRegistryType.empty
-        _cr = nil  // TODO: using optional to avoid data race in deinit
+        _cr = ClosureRegistryType.empty
     }
 
     internal final func _complete(_ value: ValueType) {

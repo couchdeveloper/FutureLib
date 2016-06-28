@@ -17,7 +17,7 @@ public final class CancellationRequest: CancellationRequestType {
 
     public typealias CancellationToken = FutureLib.CancellationToken
 
-    private let _sharedState = SharedCancellationState()
+    private let _sharedState = SharedCancellationState.create()
 
     /**
      Designated initializer. Initializes a CancellationRequest object.

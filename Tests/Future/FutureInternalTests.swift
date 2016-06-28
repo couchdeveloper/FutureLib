@@ -24,25 +24,6 @@ struct SyncCurrent: ExecutionContext {
 }
 
 
-public struct Context {
-    public static func current() -> Context {
-        return Context(qname: DispatchQueue.currentLabel(), threadId: pthread_mach_thread_np(pthread_self()))
-    }
-    
-    private init(qname: String, threadId: mach_port_t) {
-        self.queueName = qname
-        self.threadId = threadId
-    }
-    var queueName: String 
-    var threadId: mach_port_t
-}
-
-extension Context: CustomStringConvertible {
-    public var description: String {
-        return "dispatch queue: \(self.queueName) - Thread \(threadId)"
-    }
-}
-
 
 //extension DispatchQueue: ExecutionContext {
 //    public func execute(_ f: () -> ()) {
@@ -51,12 +32,6 @@ extension Context: CustomStringConvertible {
 //}
 
 
-
-public extension DispatchQueue {
-    public static func currentLabel() -> String {
-        return String.init(cString: __dispatch_queue_get_label(nil))
-    }
-}
 
 
 class FutureInternalTests: XCTestCase {

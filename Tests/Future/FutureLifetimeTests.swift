@@ -10,7 +10,7 @@ import FutureLib
 
 
 
-class Dummy: CustomStringConvertible {
+private class Dummy: CustomStringConvertible {
     let expect: XCTestExpectation
     let name: String
     init(name: String, expect: XCTestExpectation) {
@@ -54,16 +54,6 @@ class FutureLifetimeTests: XCTestCase {
         super.tearDown()
     }
 
-    
-    func testGCD() {
-        let expect1 = self.expectation(withDescription: "cancellation handler should be unregistered")
-        DispatchQueue.global().after(when: .now() + .milliseconds(1000)) {
-            let d1 = Dummy(name: "d1", expect: expect1) // imported object should be deinitialized after executing.
-            print(d1)
-        }
-        waitForExpectations(withTimeout: 1000, handler: nil)
-    }
-    
     
     //    // Livetime
     
@@ -127,14 +117,19 @@ class FutureLifetimeTests: XCTestCase {
         let promise = Promise<Int>()
         let expect = self.expectation(withDescription: "future should deallocate")
         DispatchQueue.global().async {
-            let future = promise.future!
-            future.onComplete { result in
+            promise.future!.onComplete { result in
                 if case .failure = result {
                     XCTFail("unexpected")
-                }
-                // Note: all continuations must have been run, before future will be released
-                schedule_after(0.1) { [weak future] in
-                    if let _ = future {
+                }                
+                // FIXME: The given execution context for the following continuation
+                // should be allowed to be arbitrary, but the Thread Sanitizer fails 
+                // when it is not the same thread where the object referenced by 
+                // the weak reference (`promise.future`) has been allocated.
+                // This _may_ be a bug in the weak reference implementation - or 
+                // a false positive.
+                // schedule_after(0.1) {                 
+                schedule_after(0.1, queue: DispatchQueue.main) { 
+                    if case .some = promise.future {
                         XCTFail("future should be deallocated")
                     }
                     expect.fulfill()

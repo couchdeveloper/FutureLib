@@ -395,6 +395,8 @@ class FutureThenExtensionTests: XCTestCase {
 
 
     func testPendingFutureInvokesThenHandlerWhenCompletedSuccessfully3() {
+        // TODO: remove sleep
+        sleep(1)
         let expect = self.expectation(withDescription: "future should be fulfilled")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()

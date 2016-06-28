@@ -40,9 +40,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "FutureBasicContinuationsTests/testGivenAPendingFutureWithSuccessHandlerWhenRejectedItShouldNotExecutedHandler2()">
-               </Test>
-               <Test
                   Identifier = "FutureExtensionsTests/testCancellingClassMethodSucceededAfterReturnsAFutureWhichBecomesRejectedWithACancellationError()">
                </Test>
                <Test
