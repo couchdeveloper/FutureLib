@@ -77,7 +77,7 @@ public class Future<T>: FutureType {
      Designated initializer which creates a future completed with the given error.
      - parameter error: The error which is bound to the completed `self`.
     */
-    internal init(error: ErrorProtocol) {
+    internal init(error: Error) {
         _result = Try<ValueType>(error: error)
     }
 
@@ -205,7 +205,7 @@ extension Future: CompletableFutureType {
         complete(ResultType(value))
     }
 
-    internal final func complete(_ error: ErrorProtocol) {
+    internal final func complete(_ error: Error) {
         complete(ResultType(error: error))
     }
 
@@ -241,7 +241,7 @@ extension Future: CompletableFutureType {
         _complete(ResultType(value))
     }
 
-    internal final func _complete(_ error: ErrorProtocol) {
+    internal final func _complete(_ error: Error) {
         _complete(ResultType(error: error))
     }
 
@@ -462,7 +462,7 @@ internal final class RootFuture<T>: Future<T> {
         super.init(value: value)
     }
 
-    internal override init(error: ErrorProtocol) {
+    internal override init(error: Error) {
         super.init(error: error)
     }
 

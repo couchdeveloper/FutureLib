@@ -13,7 +13,7 @@ import Dispatch
 /**
  Defines errors which belong to the domain "Promise".
 */
-public enum PromiseError: Int, ErrorProtocol {
+public enum PromiseError: Int, Error {
 
     /// Specifies that the promise has been deinitialized before its associated future has been completed.
     case brokenPromise = -1
@@ -97,7 +97,7 @@ public class Promise<T> {
 
      - parameter error: The error which rejects the future.
      */
-    public init(error: ErrorProtocol) {
+    public init(error: Error) {
         _future = RootFuture<T>(error: error)
         _weakFuture = _future
     }
@@ -191,7 +191,7 @@ public class Promise<T> {
 
      - parameter error: The error which the promise will be bound to.
     */
-    public final func reject(_ error: ErrorProtocol) {
+    public final func reject(_ error: Error) {
         _syncQueue.sync {
             if let future = self._weakFuture {
                 future.complete(Try(error: error))

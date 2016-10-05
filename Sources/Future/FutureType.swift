@@ -15,7 +15,7 @@ Defines errors which belong to the domain "Future".
 There are only a few errors which can be raised from operations. Programmer
 errors are usually caught by assertions.
 */
-public enum FutureError: Int, ErrorProtocol {
+public enum FutureError: Int, Error {
     /// Specifies an invalid type conversion.
     case invalidCast = -1
     /// Specifies that a predicate or filter function didn't find any matching futures.
@@ -23,7 +23,7 @@ public enum FutureError: Int, ErrorProtocol {
 }
 
 /// Equality operator for `FutureError` and `ErrorType`.
-public func == (lhs: FutureError, rhs: ErrorProtocol) -> Bool {
+public func == (lhs: FutureError, rhs: Error) -> Bool {
     if let e = rhs as? FutureError {
         return lhs.rawValue == e.rawValue
     } else {
@@ -32,7 +32,7 @@ public func == (lhs: FutureError, rhs: ErrorProtocol) -> Bool {
 }
 
 /// Equality operator for `ErrorType` and `FutureError`.
-public func == (lhs: ErrorProtocol, rhs: FutureError) -> Bool {
+public func == (lhs: Error, rhs: FutureError) -> Bool {
     if let e = lhs as? FutureError {
         return e.rawValue == rhs.rawValue
     } else {
@@ -145,8 +145,8 @@ internal protocol CompletableFutureType: FutureType {
 
     func complete(_ value: ValueType)
     func _complete(_ value: ValueType)
-    func complete(_ error: ErrorProtocol)
-    func _complete(_ error: ErrorProtocol)
+    func complete(_ error: Error)
+    func _complete(_ error: Error)
 
 }
 
@@ -283,7 +283,7 @@ public extension FutureType where ResultType == Try<ValueType> {
     public final func onFailure(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: (ErrorProtocol) -> ()) {
+        f: (Error) -> ()) {
         onComplete(ec: ec, ct: ct) { result in
             if case .failure(let error) = result {
                 f(error)
@@ -421,7 +421,7 @@ public extension FutureType where ResultType == Try<ValueType> {
     public final func recover(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: (ErrorProtocol) throws -> ValueType)
+        f: (Error) throws -> ValueType)
         -> Future<ValueType> {
         let returnedFuture = Future<ValueType>()
         onComplete(ec: ConcurrentAsync(), ct: ct) { [weak returnedFuture] result in
@@ -465,7 +465,7 @@ public extension FutureType where ResultType == Try<ValueType> {
     public final func recoverWith(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: (ErrorProtocol) throws -> Future<ValueType>)
+        f: (Error) throws -> Future<ValueType>)
         -> Future<ValueType> {
         let returnedFuture = Future<ValueType>()
         onComplete(ec: ConcurrentAsync(), ct: ct) { [weak returnedFuture] result in
@@ -502,7 +502,7 @@ public extension FutureType where ResultType == Try<ValueType> {
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         s: (ValueType) throws -> U,
-        f: (ErrorProtocol) -> ErrorProtocol)
+        f: (Error) -> Error)
         -> Future<U> 
     {
         let returnedFuture = Future<U>()

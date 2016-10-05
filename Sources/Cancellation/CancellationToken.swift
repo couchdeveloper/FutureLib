@@ -8,8 +8,8 @@
 
 
 /**
-    The CancelationToken is passed from the client to a task when it creates the task
-    to let it know when the client has requested a cancellation.
+ The CancelationToken is passed from the client to a task when it creates the task 
+ to let it know when the client has requested a cancellation.
 */
 public struct CancellationToken: CancellationTokenType {
 
@@ -55,9 +55,8 @@ public struct CancellationToken: CancellationTokenType {
      - parameter f:  The closure which will be executed when a cancellation has
      been requested.
 
-     - returns: A unique id which represents the handler being registered.
+     - returns: A unique id which represents the handler being registered. Use the returned value to unregister the handler.
     */
-    @warn_unused_result (message:"Use the returned id to unregister the handler.")
     public func onCancel(
         on executor: ExecutionContext = ConcurrentAsync(),
         cancelable: Cancelable,
@@ -90,9 +89,8 @@ public struct CancellationToken: CancellationTokenType {
      - parameter f:  The closure which will be executed when a cancellation has
      been requested.
 
-     - returns: A unique id which represents the handler being registered.
+     - returns: A unique id which represents the handler being registered. Use the returned value to unregister the handler.
     */
-    @warn_unused_result (message:"Use the returned id to unregister the handler.")
     public func onCancel(
         on executor: ExecutionContext = ConcurrentAsync(),
         f: ()->())
@@ -110,9 +108,8 @@ public struct CancellationToken: CancellationTokenType {
      a cancellation has been requested, otherwise it has been completed with
      "not cancelled".
 
-     - returns: A unique id identifying the registered closure.
+     - returns: A unique id identifying the registered closure. Use the returned value to unregister the handler.
      */
-    @warn_unused_result (message:"Use the returned id to unregister the handler")
     public func register(on executor: ExecutionContext, f: (Bool)->()) -> Int {
         return _sharedState.register(on: executor, f: f)
     }

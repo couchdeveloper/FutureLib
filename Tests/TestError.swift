@@ -8,7 +8,7 @@
 
 // Error type
 
-enum TestError: Int, ErrorProtocol {
+enum TestError: Int, Error {
     case failed
     case failed2
     case failed3
@@ -16,7 +16,7 @@ enum TestError: Int, ErrorProtocol {
 
 //func == (lhs: TestError, rhs: TestError) -> Bool { return lhs.isEqual(rhs) }
 
-func == (lhs: TestError, rhs: ErrorProtocol) -> Bool {
+func == (lhs: TestError, rhs: Error) -> Bool {
     if let e = rhs as? TestError {
         return lhs.rawValue == e.rawValue
     }
@@ -25,7 +25,7 @@ func == (lhs: TestError, rhs: ErrorProtocol) -> Bool {
     }
 }
 
-func == (lhs: ErrorProtocol, rhs: TestError) -> Bool {
+func == (lhs: Error, rhs: TestError) -> Bool {
     if let e = lhs as? TestError {
         return e.rawValue == rhs.rawValue
     }

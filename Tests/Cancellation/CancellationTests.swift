@@ -14,7 +14,7 @@ class MyCancelable: Cancelable {
     func cancel() -> () {
     }
 
-    func cancel(_ error: ErrorProtocol) -> () {
+    func cancel(_ error: Error) -> () {
     }
 
 }

@@ -9,16 +9,16 @@ import Dispatch
 
 
 internal struct HandlerRegistry<T> {
-    typealias ClosureType = (T) -> ()
+    //typealias ClosureType = (T) -> ()
     typealias HandlerId = Int
-    typealias Handler = (HandlerId, ClosureType)
+    typealias Handler = (HandlerId, (T) -> ())
     
     private var handlers: [Handler] = []
     private var _id: Int = 0
 
     var count: Int { return self.handlers.count }
     
-    mutating func register(_ f: ClosureType) -> HandlerId {
+    mutating func register(_ f: @escaping (T) -> ()) -> HandlerId {
         let id = _id
         self.handlers.append((id, f))
         _id += 1
@@ -72,29 +72,29 @@ internal enum BinaryFuture {
     case pending(_: ClosureRegistryType)
     case completed(_: Bool)
 
-    private init() {
+    fileprivate init() {
         self = .pending(ClosureRegistryType())
     }
 
-    private init(value: Bool) {
+    fileprivate init(value: Bool) {
         self = .completed(value)
     }
 
-    private var isCompleted: Bool {
+    fileprivate var isCompleted: Bool {
         switch self {
         case .completed: return true
         default: return false
         }
     }
 
-    private var value: Bool? {
+    fileprivate var value: Bool? {
         switch self {
         case .completed(let v): return v
         default: return nil
         }
     }
 
-    private mutating func complete(value: Bool) {
+    fileprivate mutating func complete(value: Bool) {
         switch self {
         case .pending(let handlers):
             handlers.resume(value)
@@ -103,7 +103,7 @@ internal enum BinaryFuture {
         }
     }
 
-    private mutating func register(_ f: (Bool)->()) -> Int {
+    fileprivate mutating func register(_ f: @escaping (Bool)->()) -> Int {
         var result: Int = -1
         switch self {
         case .pending(var cr):
@@ -121,7 +121,7 @@ internal enum BinaryFuture {
 
      - parameter id: The `id` representing the closure which has been obtained with `onCancel`.
      */
-    private func unregister(_ id: Int) {
+    fileprivate func unregister(_ id: Int) {
         switch self {
         case .pending(var cr):
             _ = cr.unregister(id)
@@ -133,7 +133,7 @@ internal enum BinaryFuture {
 
 private var queueIDKey = DispatchSpecificKey<ObjectIdentifier>()
 private let syncQueue: DispatchQueue = {
-    let queue = DispatchQueue(label: "cancellation.sync_queue", attributes: DispatchQueueAttributes.serial)
+    let queue = DispatchQueue(label: "cancellation.sync_queue")
     queue.setSpecific(key: queueIDKey, value: ObjectIdentifier(queue))
     return queue
 }()
@@ -153,7 +153,7 @@ internal final class SharedCancellationState: ManagedBuffer<(), BinaryFuture> {
     final class func create() -> SharedCancellationState {
         return SharedCancellationState.create(minimumCapacity: 1) { managedBuffer in
             managedBuffer.withUnsafeMutablePointerToElements { future in                
-                future.initialize(with: BinaryFuture())
+                future.initialize(to: BinaryFuture())
             }
         } as! SharedCancellationState
     }
@@ -174,7 +174,7 @@ internal final class SharedCancellationState: ManagedBuffer<(), BinaryFuture> {
             self.withUnsafeMutablePointerToElements { future in
                 future.deinitialize()
             }
-        }   else {
+        } else {
             syncQueue.sync {      
                 self.withUnsafeMutablePointerToElements { future in
                     future.deinitialize()

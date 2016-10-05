@@ -40,8 +40,9 @@ public protocol CancellationTokenType {
      - parameter f: The closure which takes a booelan parameter. If it equals `true`
         a cancellation has been requested, otherwise it has been completed with
         "not cancelled".
+     
+     - returns: A unique id which represents the handler being registered. Use the returned id to unregister the handler.
     */
-    @warn_unused_result (message:"Use the returned id to unregister the handler")
     func register(on executor: ExecutionContext, f: (Bool)->()) -> Int
 
 
@@ -80,9 +81,8 @@ public protocol CancellationTokenType {
      - parameter f:  The closure which will be executed when a cancellation has
      been requested.
 
-     - returns: A unique id which represents the handler being registered.
+     - returns: A unique id which represents the handler being registered. Use the returned id to unregister the handler.
     */
-    @warn_unused_result (message:"Use the returned id to unregister the handler")
     func onCancel(on executor: ExecutionContext, cancelable: Cancelable, f: (Cancelable)->()) -> Int
 
 
@@ -109,9 +109,8 @@ public protocol CancellationTokenType {
      - parameter f:  The closure which will be executed when a cancellation has
      been requested.
 
-     - returns: A unique id which represents the handler being registered.
+     - returns: A unique id which represents the handler being registered. Use the returned value to unregister the handler.
     */
-    @warn_unused_result (message:"Use the returned id to unregister the handler")
     func onCancel(on executor: ExecutionContext, f: ()->()) -> Int
 
 

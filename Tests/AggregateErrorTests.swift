@@ -10,15 +10,15 @@ import XCTest
 import FutureLib
 
 
-private enum TestErrorA: ErrorProtocol {
+private enum TestErrorA: Error {
     case error
 }
 
-private enum TestErrorB: ErrorProtocol {
+private enum TestErrorB: Error {
     case error
 }
 
-private enum TestErrorC: ErrorProtocol {
+private enum TestErrorC: Error {
     case error
 }
 

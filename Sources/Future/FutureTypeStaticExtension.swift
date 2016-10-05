@@ -43,7 +43,7 @@ extension FutureType {
      - parameter error: The error with which the future will be completed.
      - returns: A completed future.
      */
-    static public func failed(_ error: ErrorProtocol) -> Future<ValueType> {
+    static public func failed(_ error: Error) -> Future<ValueType> {
         return Future<ValueType>(error: error)
     }
 
@@ -81,7 +81,7 @@ extension FutureType {
      */
     static public func failedAfter(_ delay: Double,
         cancellationToken: CancellationTokenType = CancellationTokenNone(),
-        error: ErrorProtocol)
+        error: Error)
         -> Future<ValueType> {
         let returnedFuture = Future<ValueType>()
         let cid = cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
