@@ -1,40 +1,72 @@
 //
 //  CancellationError.swift
-//  FutureLib
 //
-//  Copyright © 2015 Andreas Grosam. All rights reserved.
+//  Copyright © 2016 Andreas Grosam. All rights reserved.
 //
 
 
 
-/**
- Defines errors which belong to the domain "Cancellation". 
- This will be used when a task or operation has been cancelled.
-*/
-public enum CancellationError: Int, Error {
+
+/// Defines a "Cancellation Error". 
+/// This will be used when a task or operation has been cancelled.
+public struct CancellationError: Error, Equatable, CustomStringConvertible {
     
-    /// Specifies that the task or operation has been cancelled.
-    case cancelled = -1
+    /// The message `self` has been initialized with.
+    public var message: String
+
+    
+    /// Initializes a `CancellationError` with a given message string.
+    ///
+    /// - parameter message: A string describing the error. The default value equals `"Operation cancelled"`.
+    ///
+    /// - returns: A `CancellationError` instance.
+    public init(message: String = "Operation cancelled") {
+        self.message = message
+    }
+    
+    /// Returns a string representation of the error.
+    public var description: String {
+        return "CancellationError: \(self.message)"
+    }
 }
 
 
-/**
- Equality operator for `CancellationError` and `ErrorType`.
- */
-public func == (lhs: CancellationError, rhs: Error) -> Bool {
+/// Equality operator for `CancellationError`.
+/// 
+/// The operands are considered _equal_ if their descriptions compare equal. 
+/// - parameter lhs: The left-hand operand.
+/// - parameter rhs: The right-hand operand.
+///
+/// - returns: Returns `true` if the operands are equal.
+public func ==(lhs: CancellationError, rhs: CancellationError) -> Bool {
+    return lhs.message == rhs.message
+}
+
+
+///  Equality operator for `CancellationError` and `ErrorType`.
+/// 
+/// - parameter lhs: A cancellation error.
+/// - parameter rhs: An error.
+///
+/// - returns: `true` if `rhs` is a `CancellationError` and their descriptions compare equal.
+public func ==(lhs: CancellationError, rhs: Error) -> Bool {
     if let e = rhs as? CancellationError {
-        return lhs.rawValue == e.rawValue
+        return lhs == e
     } else {
         return false
     }
 }
 
-/**
- Equality operator for `ErrorType` and `CancellationError`.
- */
-public func == (lhs: Error, rhs: CancellationError) -> Bool {
+
+/// Equality operator for `ErrorType` and `CancellationError`.
+///
+/// - parameter lhs: An error.
+/// - parameter rhs: A cancellation error.
+///
+/// - returns: `true` if `lhs` is a `CancellationError` and their descriptions compare equal.
+public func ==(lhs: Error, rhs: CancellationError) -> Bool {
     if let e = lhs as? CancellationError {
-        return e.rawValue == rhs.rawValue
+        return e == rhs
     } else {
         return false
     }

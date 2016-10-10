@@ -2,27 +2,28 @@
 //  CancellationOperators.swift
 //  FutureLib
 //
-//  Copyright © 2015 Andreas Grosam. All rights reserved.
+//  Copyright © 2016 Andreas Grosam. All rights reserved.
 //
 
+import Dispatch
 
+
+private let syncQueue = DispatchQueue(label: "cancellation.operators.syncqueue")
 
 public func || (left: CancellationTokenType, right: CancellationTokenType)
-    -> CancellationTokenType {
-    let scs = SharedCancellationState.create()
-    let ec = ConcurrentAsync()
-    var rid = -1
-    let lid = left.register(on: ec) { cancelled in
-        if cancelled {
+    -> CancellationTokenType 
+{
+    let scs = CancellationState()
+    syncQueue.sync {
+        var rid: EventHandlerIdType?
+        let lid = left.onCancel(queue: syncQueue) {
             scs.cancel()
-            right.unregister(rid)
+            rid?.invalidate()
         }
-    }
-    rid = right.register(on: ec) { cancelled in
-        if cancelled {
+        rid = right.onCancel(queue: syncQueue) {
             scs.cancel()
-            left.unregister(lid)
-        }
+            lid?.invalidate()
+        }    
     }
     return CancellationToken(sharedState: scs)
 }
@@ -30,16 +31,12 @@ public func || (left: CancellationTokenType, right: CancellationTokenType)
 
 
 public func && (left: CancellationTokenType, right: CancellationTokenType)
-    -> CancellationTokenType {
-    let scs = SharedCancellationState.create()
-    let ec = ConcurrentAsync()
-    _ = left.register(on: ec) { cancelled in
-        if cancelled {
-            _ = right.register(on: ec) { cancelled in
-                if cancelled { //TODO: revert
-                    scs.cancel()
-                }
-            }
+    -> CancellationTokenType 
+{    
+    let scs = CancellationState()
+    _ = left.onCancel(queue: syncQueue) {
+        _ = right.onCancel(queue: syncQueue) {
+            scs.cancel()
         }
     }
     return CancellationToken(sharedState: scs)

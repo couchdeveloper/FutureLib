@@ -1,8 +1,7 @@
 //
 //  CancellationRequest.swift
-//  Future
 //
-//  Copyright © 2015 Andreas Grosam. All rights reserved.
+//  Copyright © 2016 Andreas Grosam. All rights reserved.
 //
 
 import Dispatch
@@ -13,11 +12,9 @@ import Dispatch
  that they are no more interested in the result. The task will be notified about the
  cancellation request signaled by its client and may now cancel its operation.
 */
-public final class CancellationRequest: CancellationRequestType {
+public final class CancellationRequest {
 
-    public typealias CancellationToken = FutureLib.CancellationToken
-
-    private let _sharedState = SharedCancellationState.create()
+    private let _sharedState = CancellationState()
 
     /**
      Designated initializer. Initializes a CancellationRequest object.
@@ -33,21 +30,21 @@ public final class CancellationRequest: CancellationRequestType {
         _sharedState.invalidate()
     }
 
-    internal final var sharedState: SharedCancellationState {
+    internal final var sharedState: CancellationState {
         return _sharedState
     }
 
 
     /**
-     - returns: A unique Id where this object can be identified.
+     Returns a unique Id whith which this object can be identified.
     */
     public final var id: UInt {
-        return UInt(ObjectIdentifier(self))
+        return UInt(bitPattern: ObjectIdentifier(self))
     }
 
 
     /**
-     - returns: `true` if a cancellation has been requested.
+     Returns `true` if a cancellation has been requested.
     */
     public final var isCancellationRequested: Bool {
         return _sharedState.isCancelled
@@ -70,11 +67,10 @@ public final class CancellationRequest: CancellationRequestType {
 
 
     /**
-     - returns: The associated "cancellation token" - an instance of a
-     CancellationTokenType.
+     Returns the associated "cancellation token".
     */
-    public final var token: CancellationToken {
-        return FutureLib.CancellationToken(sharedState: _sharedState)
+    public final var token: CancellationTokenType {
+        return CancellationToken(sharedState: _sharedState)
     }
 
 

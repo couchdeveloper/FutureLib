@@ -2,11 +2,11 @@
 //  CancellationOperatorsTests.swift
 //  FutureLib
 //
-//  Copyright © 2015 Andreas Grosam. All rights reserved.
+//  Copyright © 2016 Andreas Grosam. All rights reserved.
 //
 
 import XCTest
-@testable import FutureLib
+import Cancellation
 
 class CancellationOperatorsTests: XCTestCase {
 
@@ -21,7 +21,7 @@ class CancellationOperatorsTests: XCTestCase {
     }
 
     func testOred2CancellationToken1() {
-        let expect = self.expectation(withDescription: "handler shoulde be called")
+        let expect = self.expectation(description: "handler shoulde be called")
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let ct = cr1.token || cr2.token
@@ -29,13 +29,13 @@ class CancellationOperatorsTests: XCTestCase {
             expect.fulfill()
         }
         cr1.cancel()
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         XCTAssertTrue(ct.isCancellationRequested)
     }
 
 
     func testOred2CancellationToken2() {
-        let expect = self.expectation(withDescription: "handler shoulde be called")
+        let expect = self.expectation(description: "handler shoulde be called")
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let ct = cr1.token || cr2.token
@@ -43,12 +43,12 @@ class CancellationOperatorsTests: XCTestCase {
             expect.fulfill()
         }
         cr2.cancel()
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         XCTAssertTrue(ct.isCancellationRequested)
     }
 
     func testOred3CancellationToken1() {
-        let expect = self.expectation(withDescription: "handler shoulde be called")
+        let expect = self.expectation(description: "handler shoulde be called")
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let cr3 = CancellationRequest()
@@ -57,13 +57,13 @@ class CancellationOperatorsTests: XCTestCase {
             expect.fulfill()
         }
         cr1.cancel()
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         XCTAssertTrue(ct.isCancellationRequested)
     }
 
 
     func testOred3CancellationToken2() {
-        let expect = self.expectation(withDescription: "handler shoulde be called")
+        let expect = self.expectation(description: "handler shoulde be called")
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let cr3 = CancellationRequest()
@@ -72,26 +72,26 @@ class CancellationOperatorsTests: XCTestCase {
             expect.fulfill()
         }
         cr2.cancel()
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         XCTAssertTrue(ct.isCancellationRequested)
     }
 
 
     func testOred3CancellationToken3() {
-        let queue = DispatchQueue(label: "cancel-queue")
-        let expect = self.expectation(withDescription: "handler shoulde be called")
+        let expect = self.expectation(description: "handler shoulde be called")
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let cr3 = CancellationRequest()
-        
         let ct = cr1.token || cr2.token || cr3.token
-        _ = ct.onCancel(on: GCDAsyncExecutionContext(queue)) {
+        _ = ct.onCancel {
             expect.fulfill()
         }
         cr3.cancel()
-        self.waitForExpectations(withTimeout: 10000, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         XCTAssertTrue(ct.isCancellationRequested)
     }
+
+
 
 
     func testAnded2CancellationToken1() {
@@ -99,28 +99,25 @@ class CancellationOperatorsTests: XCTestCase {
         let cr2 = CancellationRequest()
         let ct = cr1.token && cr2.token
         cr1.cancel()
-        _ = ct.onCancel {
-            XCTFail("unexpected")
+        for _ in 1...3{
+            usleep(1000)
+            XCTAssertFalse(ct.isCancellationRequested)
         }
-        usleep(100_000)
-        XCTAssertFalse(ct.isCancellationRequested)
     }
-    
 
     func testAnded2CancellationToken2() {
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let ct = cr1.token && cr2.token
         cr2.cancel()
-        _ = ct.onCancel {
-            XCTFail("unexpected")
+        for _ in 1...3{
+            usleep(1000)
+            XCTAssertFalse(ct.isCancellationRequested)
         }
-        usleep(100_000)
-        XCTAssertFalse(ct.isCancellationRequested)
     }
 
     func testAnded2CancellationToken12() {
-        let expect = self.expectation(withDescription: "handler shoulde be called")
+        let expect = self.expectation(description: "handler shoulde be called")
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let ct = cr1.token && cr2.token
@@ -129,7 +126,7 @@ class CancellationOperatorsTests: XCTestCase {
         }
         cr1.cancel()
         cr2.cancel()
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         XCTAssertTrue(ct.isCancellationRequested)
     }
 
@@ -142,11 +139,10 @@ class CancellationOperatorsTests: XCTestCase {
         let cr3 = CancellationRequest()
         let ct = cr1.token && cr2.token && cr3.token
         cr1.cancel()
-        _ = ct.onCancel {
-            XCTFail("unexpected")
+        for _ in 1...3{
+            usleep(1000)
+            XCTAssertFalse(ct.isCancellationRequested)
         }
-        usleep(100_000)
-        XCTAssertFalse(ct.isCancellationRequested)
     }
 
     func testAnded3CancellationToken2() {
@@ -155,11 +151,10 @@ class CancellationOperatorsTests: XCTestCase {
         let cr3 = CancellationRequest()
         let ct = cr1.token && cr2.token && cr3.token
         cr2.cancel()
-        _ = ct.onCancel {
-            XCTFail("unexpected")
+        for _ in 1...3{
+            usleep(1000)
+            XCTAssertFalse(ct.isCancellationRequested)
         }
-        usleep(100_000)
-        XCTAssertFalse(ct.isCancellationRequested)
     }
 
     func testAnded3CancellationToken3() {
@@ -168,15 +163,14 @@ class CancellationOperatorsTests: XCTestCase {
         let cr3 = CancellationRequest()
         let ct = cr1.token && cr2.token && cr3.token
         cr3.cancel()
-        _ = ct.onCancel {
-            XCTFail("unexpected")
+        for _ in 1...3{
+            usleep(1000)
+            XCTAssertFalse(ct.isCancellationRequested)
         }
-        usleep(100_000)
-        XCTAssertFalse(ct.isCancellationRequested)
     }
 
     func testAnded3CancellationToken123() {
-        let expect = self.expectation(withDescription: "handler shoulde be called")
+        let expect = self.expectation(description: "handler shoulde be called")
         let cr1 = CancellationRequest()
         let cr2 = CancellationRequest()
         let cr3 = CancellationRequest()
@@ -187,7 +181,7 @@ class CancellationOperatorsTests: XCTestCase {
         cr1.cancel()
         cr2.cancel()
         cr3.cancel()
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         XCTAssertTrue(ct.isCancellationRequested)
     }
 
