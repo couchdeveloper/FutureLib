@@ -57,7 +57,7 @@ public protocol FutureBaseType: class {
      */
     func continueWith<U>(ec: ExecutionContext,
         ct: CancellationTokenType,
-        f: (FutureBaseType) throws -> U)
+        f: @escaping (FutureBaseType) throws -> U)
         -> Future<U>
 
 
@@ -86,7 +86,7 @@ public protocol FutureBaseType: class {
      */
     func continueWith<U>(ec: ExecutionContext,
         ct: CancellationTokenType,
-        f: (FutureBaseType) -> Future<U>)
+        f: @escaping (FutureBaseType) -> Future<U>)
         -> Future<U>
 
 
@@ -129,33 +129,33 @@ public protocol FutureBaseType: class {
 extension FutureBaseType {
 
     public final func continueWith<U>(ec: ExecutionContext,
-        f: (FutureBaseType) throws -> U)
+        f: @escaping (FutureBaseType) throws -> U)
         -> Future<U> {
         return self.continueWith(ec: ec, ct: CancellationTokenNone(), f: f)
     }
 
-    public final func continueWith<U>(_ f: (FutureBaseType) throws -> U) -> Future<U> {
+    public final func continueWith<U>(f: @escaping (FutureBaseType) throws -> U) -> Future<U> {
         return self.continueWith(ec: ConcurrentAsync(), ct: CancellationTokenNone(), f: f)
     }
 
     public final func continueWith<U>(ct: CancellationTokenType,
-        f: (FutureBaseType) throws -> U)
+        f: @escaping (FutureBaseType) throws -> U)
         -> Future<U> {
         return self.continueWith(ec: ConcurrentAsync(), ct: ct, f: f)
     }
 
     public final func continueWith<U>(ec: ExecutionContext,
-        f: (FutureBaseType) -> Future<U>)
+        f: @escaping (FutureBaseType) -> Future<U>)
         -> Future<U> {
         return self.continueWith(ec: ec, ct: CancellationTokenNone(), f: f)
     }
 
-    public final func continueWith<U>(_ f: (FutureBaseType) -> Future<U>) -> Future<U> {
+    public final func continueWith<U>(f: @escaping (FutureBaseType) -> Future<U>) -> Future<U> {
         return self.continueWith(ec: ConcurrentAsync(), ct: CancellationTokenNone(), f: f)
     }
 
     public final func continueWith<U>(ct: CancellationTokenType,
-        f: (FutureBaseType) -> Future<U>)
+        f: @escaping (FutureBaseType) -> Future<U>)
         -> Future<U> {
         return self.continueWith(ec: ConcurrentAsync(), ct: ct, f: f)
     }

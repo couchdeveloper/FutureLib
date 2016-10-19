@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import Cancellation
 
 class CancellationOperatorsTests: XCTestCase {
 

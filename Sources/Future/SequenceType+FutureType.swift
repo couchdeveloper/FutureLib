@@ -40,7 +40,7 @@ extension Sequence {
     public func traverse<U>(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        task: (Iterator.Element) throws -> Future<U>)
+        task: @escaping (Iterator.Element) throws -> Future<U>)
         -> Future<[U]> {
         typealias FutureArrayFuture = Future<[Future<U>]>
         let initial: FutureArrayFuture = FutureArrayFuture(value: [Future<U>]())
@@ -84,18 +84,20 @@ extension Sequence
     public func find(
         _ ec: ExecutionContext = ConcurrentAsync(), 
         ct: CancellationTokenType = CancellationTokenNone(),
-        pred: (T) -> Bool) -> Future<T?> 
+        pred: @escaping (T) -> Bool) -> Future<T?> 
     {
-        func searchNext(_ gen: inout Self.Iterator) -> Future<T?> {
+        // TODO: thread-safe?
+        var gen = self.makeIterator()
+        func searchNext() -> Future<T?> {
             if let elem = gen.next() {
                 return elem.transformWith(ec: ec, ct: ct) { result in 
                     switch result {
                     case .success(let value) where pred(value): return Future<T?>.succeeded(.some(value)) 
                     default:
                         if ct.isCancellationRequested {
-                            return Future(error: CancellationError.cancelled)
+                            return Future(error: CancellationError())
                         } else {
-                            return searchNext(&gen)
+                            return searchNext()
                         }
                     }
                 }
@@ -103,8 +105,7 @@ extension Sequence
                 return Future.succeeded(.none)
             }
         }
-        var gen = self.makeIterator()
-        return searchNext(&gen)
+        return searchNext()
     }
     
     
@@ -156,7 +157,7 @@ extension Sequence
     public func fold<U>(ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         initial: U,
-        combine: (U, Iterator.Element.ValueType) throws -> U)
+        combine: @escaping (U, Iterator.Element.ValueType) throws -> U)
         -> Future<U> {
         return self.reduce(Future.succeeded(initial)) { (combined, element) -> Future<U> in
             return combined.flatMap(ec: SynchronousCurrent(), ct: ct) { (combinedValue) -> Future<U> in

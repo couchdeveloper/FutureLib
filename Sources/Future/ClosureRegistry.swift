@@ -9,7 +9,7 @@
 internal struct Callback<T> {
     let continuation: (T) -> ()
     let id: Int
-    init(id: Int, f: (T)->()) {
+    init(id: Int, f: @escaping (T)->()) {
         self.id = id
         continuation = f
     }
@@ -22,7 +22,7 @@ final class Continuations<T> {
         _cr = .empty
     }
     
-    func register(_ f: (T)->()) -> Int {
+    func register(_ f: @escaping (T)->()) -> Int {
         return _cr.register(f)
     }
     
@@ -49,7 +49,7 @@ internal enum ClosureRegistry<T> {
     typealias CallbackType = Callback<T>
 
     init() {
-        self = empty
+        self = .empty
     }
 
     case empty
@@ -64,15 +64,15 @@ internal enum ClosureRegistry<T> {
         }
     }
 
-    mutating func register(_ f: (T)->()) -> Int {
+    mutating func register(_ f: @escaping (T)->()) -> Int {
         switch self {
             case .empty:
-                self = single(f)
+                self = .single(f)
                 return 0
 
             case .single(let first):
                 let cr = ClosureRegistryMultiple<T>(id: 0, f: first)
-                self = multiple(cr)
+                self = .multiple(cr)
                 return cr.register(f)
 
             case .multiple(let cr):
@@ -85,7 +85,7 @@ internal enum ClosureRegistry<T> {
         case .empty: return nil
         case .single(let first):
             let callback = CallbackType(id: 0, f: first)
-            self = empty
+            self = .empty
             return callback
         case .multiple(let cr):
             return cr.unregister(id)
@@ -118,7 +118,7 @@ internal final class ClosureRegistryMultiple<T> {
         _callbacks.reserveCapacity(2)
     }
 
-    init(id: Int, f: (T)->()) {
+    init(id: Int, f: @escaping (T)->()) {
         assert(id == 0)
         _callbacks.reserveCapacity(4)
         _callbacks.append(Callback(id: id, f: f))
@@ -130,7 +130,7 @@ internal final class ClosureRegistryMultiple<T> {
         return _callbacks.count
     }
 
-    final func register(_ f: (T)->()) -> Int {
+    final func register(_ f: @escaping (T)->()) -> Int {
         _id += 1
         let callback = Callback<T>(id: _id, f: f)
         _callbacks.append(callback)

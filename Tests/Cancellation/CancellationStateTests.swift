@@ -8,7 +8,6 @@
 import XCTest
 import Dispatch
 import Darwin.C
-@testable import Cancellation
 
 
 class CancellationStateTests: XCTestCase {

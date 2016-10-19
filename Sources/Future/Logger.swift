@@ -161,21 +161,23 @@ public protocol Flushable {
     func flush()
 }
 
-
+public protocol OStream {
+    func write(_ string: String)    
+}
 
 
 public protocol StreamEventTargetType: EventTargetType, Flushable {
 
     var eventOptions: EventOptions { get set }
 
-    var dateFormat: (timeval: timeval)-> String { get set }
+    var dateFormat: (timeval) -> String { get set }
 
     func flush()
 }
 
 
 
-public protocol FlushableOutputStreamType: OutputStream, Flushable {
+public protocol FlushableOutputStreamType: OStream, Flushable {
 }
 
 
@@ -197,7 +199,7 @@ private struct StdErrorStream: FlushableOutputStreamType {
 public class ConsoleEventTarget: StreamEventTarget {
 
     static private var stdOutputStream = StdOutputStream()
-    static private let _executionQueue = DispatchQueue(label: "ConsoleEventTarget queue", attributes: [.serial, .qosUserInteractive])
+    static private let _executionQueue = DispatchQueue(label: "ConsoleEventTarget queue")
 
     public init() {
         super.init(name: "Console", ostream: StdOutputStream(), executionQueue: ConsoleEventTarget._executionQueue)
@@ -215,15 +217,10 @@ public class StreamEventTarget: StreamEventTargetType {
     internal var _ostream: FlushableOutputStreamType
     private var _writeOptions: WriteOptions
     private var _eventOptions: EventOptions
-    private var _dateFormat: (timeval: timeval)-> String = DateTime.defaultDateTimeFormatter
+    private var _dateFormat: (_ timeval: timeval)-> String = DateTime.defaultDateTimeFormatter
 
 
-    public init(name: String,
-        ostream: FlushableOutputStreamType,
-        writeOptions: WriteOptions = WriteOptions(),
-        eventOptions: EventOptions = EventOptions([.TimeStamp, .ThreadId, .GCDQueue, .Category, .Severity, .Function]),
-        executionQueue eq: DispatchQueue = DispatchQueue(label: "", attributes: DispatchQueueAttributes.serial))
-    {
+    public init(name: String, ostream: FlushableOutputStreamType, writeOptions: WriteOptions = WriteOptions(), eventOptions: EventOptions = EventOptions([.TimeStamp, .ThreadId, .GCDQueue, .Category, .Severity, .Function]), executionQueue eq: DispatchQueue = DispatchQueue(label: "")) {
         self.name = name
         _ostream = ostream
         _writeOptions = writeOptions
@@ -245,22 +242,14 @@ public class StreamEventTarget: StreamEventTargetType {
     }
 
 
-    internal static func writeMessage<T>(
-        _ ostream: inout FlushableOutputStreamType,
-        message: T,
-        options: EventOptions)
-    {
-        let messageString = String(message)
+    internal static func writeMessage<T>(_ ostream: inout FlushableOutputStreamType, message: T, options: EventOptions) {
+        let messageString = String(describing: message)
         if !messageString.isEmpty {
             ostream.write(messageString)
         }
     }
 
-    internal static func writeVerboseMessage<T>(
-        _ ostream: inout FlushableOutputStreamType,
-        message: T,
-        options: EventOptions)
-    {
+    internal static func writeVerboseMessage<T>(_ ostream: inout FlushableOutputStreamType, message: T, options: EventOptions) {
         let messageString = String(reflecting: message)
         if !messageString.isEmpty {
             ostream.write(messageString)
@@ -269,18 +258,11 @@ public class StreamEventTarget: StreamEventTargetType {
 
 
 
-    internal static func writeEvent<T>(
-        _ ostream: inout FlushableOutputStreamType,
-        event: Event<T>,
-        writeOptions: WriteOptions,
-        eventOptions: EventOptions,
-        dateFormat: (timeval: timeval)-> String,
-        executionQueue eq: DispatchQueue)
-    {
+    internal static func writeEvent<T>(_ ostream: inout FlushableOutputStreamType, event: Event<T>, writeOptions: WriteOptions, eventOptions: EventOptions, dateFormat: @escaping (timeval)-> String, executionQueue eq: DispatchQueue) {
         let f: ()->() = {
             var hasSeparator = true
             if eventOptions.contains(.TimeStamp) {
-                ostream.write("\(dateFormat(timeval: event.timeStamp)) ")
+                ostream.write("\(dateFormat(event.timeStamp)) ")
                 hasSeparator = true
             }
             if eventOptions.contains(.ThreadId) {
@@ -381,9 +363,9 @@ public class StreamEventTarget: StreamEventTargetType {
     }
 
 
-    final public var dateFormat: (timeval: timeval)-> String {
+    final public var dateFormat: (_ timeval: timeval)-> String {
         get {
-            var result: (timeval: timeval)-> String = {_ in return ""}
+            var result: (_ timeval: timeval)-> String = {_ in return ""}
             executionQueue.sync {
                 result = self._dateFormat
             }
@@ -402,10 +384,8 @@ public class StreamEventTarget: StreamEventTargetType {
 
 public class Logger {
 
-    private let _syncQueue = DispatchQueue(label: "Logger sync_queue", attributes: DispatchQueueAttributes.concurrent)
-
-
-
+    private let _syncQueue = DispatchQueue.init(label: "Logger sync_queue", attributes: .concurrent)
+    
     public enum Severity: Int {
         case none, error, warning, info, debug, trace
     }

@@ -42,7 +42,7 @@ extension Promise {
      - returns: A `Future` whose `ValueType` equals `T`.
      */
     public static func future<T>(_ ec: ExecutionContext = GCDAsyncExecutionContext(),
-        f: () throws -> T) 
+        f: @escaping () throws -> T) 
         -> Future<T> 
     {
         let promise = Promise<T>()
@@ -63,12 +63,13 @@ extension Promise {
      */
     public static func resolveAfter(_ delay: Double, result: Try<T>) -> Promise {
         let promise = Promise<T>()
-        let timer = Timer.scheduleOneShot(deadline: .after(seconds: delay)) { _ in
+        let timer = Timer()
+        timer.scheduleOneShotAfter(delay: delay) {
             promise.resolve(result)
         }
         promise.onRevocation {
 #if DEBUG
-            Log.Debug("Target future disposed, timer will be cancelled")
+            //Log.Debug("Target future disposed, timer will be cancelled")
 #endif
             timer.cancel()
         }
@@ -87,15 +88,16 @@ extension Promise {
      - parameter f: A throwing function.
      - returns: A new promise.
      */
-    public static func resolveAfter(_ delay: Double, f: () throws -> ValueType) -> Promise {
+    public static func resolveAfter(_ delay: Double, f: @escaping () throws -> ValueType) -> Promise {
         let promise = Promise<T>()
-        let timer = Timer.scheduleOneShot(deadline: .after(seconds: delay)) { _ in
-            Log.Debug("\(Thread.current()): promise will be resolved")
+        let timer = Timer()
+        timer.scheduleOneShotAfter(delay: delay) { 
+            //Log.Debug("\(Thread.current()): promise will be resolved")
             promise.resolve(Try(f))
         }
         promise.onRevocation {
 #if DEBUG
-            Log.Debug("Target future disposed, timer will be cancelled")
+            //Log.Debug("Target future disposed, timer will be cancelled")
 #endif
             timer.cancel()
         }

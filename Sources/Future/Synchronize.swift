@@ -39,7 +39,7 @@ struct Synchronize {
         // - given as an argument - synchronously, it may unintentionally and unexpectedly
         // block or even dead-lock.
         // TODO: syncQueue = DispatchQueue(label: name, attributes: [.qosUserInteractive, .concurrent])
-        syncQueue = DispatchQueue(label: name, attributes: [.qosUserInteractive, .serial])
+        syncQueue = DispatchQueue(label: name)
         // Use the pointer value to syncQueue as the context in order to have
         // a unique context:
         let syncQueueId = ObjectIdentifier(syncQueue)
@@ -99,7 +99,7 @@ struct Synchronize {
     /// The closure can safely modify the objects associated to the context. No other
     /// concurrent read or write operation can interfere.
     /// - parameter f: The closure.
-    func writeAsync(_ f: () -> ()) {
+    func writeAsync(_ f: @escaping () -> ()) {
         // TODO: syncQueue.async(flags: .barrier, execute: f)
         syncQueue.async(execute: f)
     }

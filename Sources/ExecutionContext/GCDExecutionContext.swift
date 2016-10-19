@@ -25,7 +25,7 @@ public struct GCDSyncExecutionContext: ExecutionContext {
      
      - parameter q: A dispatch queue.
      */
-    public init(_ q: DispatchQueue = DispatchQueue.global(attributes: .qosDefault)) {
+    public init(_ q: DispatchQueue = DispatchQueue.global()) {
         queue = q
     }
 
@@ -35,7 +35,7 @@ public struct GCDSyncExecutionContext: ExecutionContext {
 
      - parameter f: A closure which is being scheduled.
      */
-    public func execute(_ f: ()->()) {
+    public func execute(f: @escaping ()->()) {
         queue.sync(execute: f)
     }
 
@@ -59,7 +59,7 @@ public struct GCDAsyncExecutionContext: ExecutionContext {
      
      - parameter q: A dispatch queue.
      */
-    public init(_ q: DispatchQueue = DispatchQueue.global(attributes: .qosDefault)) {
+    public init(_ q: DispatchQueue = DispatchQueue.global()) {
         queue = q
     }
 
@@ -69,7 +69,7 @@ public struct GCDAsyncExecutionContext: ExecutionContext {
 
      - parameter f: A closure which is being scheduled.
      */
-    public func execute(_ f: ()->()) {
+    public func execute(f: @escaping ()->()) {
         queue.async(execute: f)
     }
 
@@ -94,7 +94,7 @@ public struct GCDBarrierSyncExecutionContext: ExecutionContext {
      
      - parameter q: A dispatch queue.
     */
-    public init(_ q: DispatchQueue = DispatchQueue.global(attributes: .qosDefault)) {
+    public init(_ q: DispatchQueue = DispatchQueue.global()) {
         queue = q
     }
 
@@ -104,7 +104,7 @@ public struct GCDBarrierSyncExecutionContext: ExecutionContext {
 
      - parameter f: A closure which is being scheduled.
      */
-    public func execute(_ f: ()->()) {
+    public func execute(f: @escaping ()->()) {
         fatalError("Must not use flag .barrier: due to bug in Swfit3 and GCD when submitting closures with flag .barrier: captured variables will not be released")
         queue.sync(flags: .barrier, execute: f)
     }
@@ -129,7 +129,7 @@ public struct GCDBarrierAsyncExecutionContext: ExecutionContext {
      
      - parameter q: A dispatch queue.
      */
-    public init(_ q: DispatchQueue = DispatchQueue.global(attributes: .qosDefault)) {
+    public init(_ q: DispatchQueue = DispatchQueue.global()) {
         queue = q
     }
 
@@ -139,7 +139,7 @@ public struct GCDBarrierAsyncExecutionContext: ExecutionContext {
 
      - parameter f: A closure which is being scheduled.
      */
-    public func execute(_ f: ()->()) {
+    public func execute(f: @escaping ()->()) {
         fatalError("Must not use flag .barrier: due to bug in Swfit3 and GCD when submitting closures with flag .barrier: captured variables will not be released")
         queue.async(flags: .barrier, execute: f)
     }

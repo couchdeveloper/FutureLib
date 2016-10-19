@@ -5,7 +5,6 @@
 //
 
 import XCTest
-import Cancellation
 
 class MyCancelable: Cancelable {
 

@@ -69,7 +69,7 @@ public enum PromiseError: Int, Error {
 public class Promise<T> {
     public typealias ValueType = T
 
-    private let _syncQueue = DispatchQueue(label: "com.futurelib.promise-sync-queue", attributes: .serial)
+    private let _syncQueue = DispatchQueue(label: "com.futurelib.promise-sync-queue")
     private var _future: RootFuture<T>?
     private weak var _weakFuture: RootFuture<T>?
 
@@ -133,7 +133,7 @@ public class Promise<T> {
 
      - parameter f: The closure
      */
-    public final func onRevocation(_ f:()->()) {
+    public final func onRevocation(_ f: @escaping ()->()) {
         _syncQueue.sync {
             if let future = self._weakFuture {
                 future.onRevocation = f

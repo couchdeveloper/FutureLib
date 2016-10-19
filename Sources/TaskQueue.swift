@@ -29,7 +29,7 @@ public class TaskQueue {
     private var _maxConcurrentTasks: UInt = 1
     private var _concurrentTasks: UInt = 0
     private let _group = DispatchGroup()
-    private let _syncQueue = DispatchQueue(label: "task_queue.sync_queue", attributes: DispatchQueueAttributes.serial)
+    private let _syncQueue = DispatchQueue(label: "task_queue.sync_queue")
     private var _suspended = false
 
     /**
@@ -39,7 +39,7 @@ public class TaskQueue {
      concurrently.
     */
     public init(maxConcurrentTasks: UInt = 1) {
-        self.queue = DispatchQueue(label: "task_queue.queue", attributes: DispatchQueueAttributes.serial, target: _syncQueue)
+        self.queue = DispatchQueue(label: "task_queue.queue", target: _syncQueue)
         _maxConcurrentTasks = maxConcurrentTasks
     }
 
@@ -51,7 +51,7 @@ public class TaskQueue {
 
      - parameter task: The task which will be enqueued.
     */
-    public final func enqueue(_ task: TaskType) {
+    public final func enqueue(_ task: @escaping TaskType) {
         queue.async {
             self._enqueue(task)
         }
@@ -89,7 +89,7 @@ public class TaskQueue {
 
      - parameter task: The task which will be enqueued as a barrier task.
      */
-    public final func enqueueBarrier(_ task: TaskType) {
+    public final func enqueueBarrier(_ task: @escaping TaskType) {
         queue.async {
             self.queue.suspend()
             self._group.notify(queue: self._syncQueue) {

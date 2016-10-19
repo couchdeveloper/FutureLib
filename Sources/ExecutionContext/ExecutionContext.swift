@@ -74,7 +74,7 @@ public protocol ExecutionContext {
 
      - parameter f: A closure which is being submitted.
     */
-    func execute(_ f: () -> ())
+    func execute(f: @escaping () -> ())
 
 
     /**
@@ -88,10 +88,11 @@ public protocol ExecutionContext {
      - parameter task: A closure which is being scheduled. The closure may throw
      an error prior to returning the future.
 
-     - parameter onStart: A callback that is called when the task has been started
-     whose parameter is the future returned from the task.
+     - parameter onStart: A callback that is called on a private execution context
+     immediately after the task has been started. When called, its argument will 
+     be set to the future returned from task `task`.
      */
-    func schedule<T>(_ task: () throws -> Future<T>, onStart: (Future<T>) -> ())
+    func schedule<T>(task: @escaping () throws -> Future<T>, onStart: @escaping (Future<T>) -> ())
 
 }
 
@@ -111,12 +112,12 @@ public extension ExecutionContext {
      - parameter task: A closure which is being scheduled.
      - parameter onStart: A closure that is called when the `task` is being scheduled.
      */
-    public func schedule<T>(_ task: () throws -> Future<T>, onStart: (Future<T>) -> ()) {
+    public func schedule<T>(task: @escaping () throws -> Future<T>, onStart: @escaping (Future<T>) -> ()) {
         execute {
             do {
                 onStart(try task())
             }
-            catch let error {
+            catch {
                 onStart(Future<T>.failed(error))
             }
         }
@@ -135,9 +136,9 @@ public extension ExecutionContext {
      - return: A future which will be completed with the returned future,
      e.g. `Future<Future<T>>`
      */
-    public func schedule<T>(_ task: () throws -> Future<T>) -> Future<Future<T>> {
+    public func schedule<T>(task: @escaping () throws -> Future<T>) -> Future<Future<T>> {
         let returnedFuture = Future<Future<T>>()
-        schedule(task) { future in
+        schedule(task: task) { future in
             returnedFuture.complete(future)
         }
         return returnedFuture
@@ -161,7 +162,7 @@ public struct MainThreadAsync: ExecutionContext {
      
      - parameter f: A closure which is being submitted.
      */
-    public func execute(_ f: () -> ()) {
+    public func execute(f: @escaping () -> ()) {
         DispatchQueue.main.async(execute: f)
     }
 }
@@ -181,7 +182,7 @@ public struct MainThreadSync: ExecutionContext {
      
      - parameter f: A closure which is being submitted.
      */
-    public func execute(_ f: () -> ()) {
+    public func execute(f: @escaping () -> ()) {
         DispatchQueue.main.sync(execute: f)
     }
 }
@@ -201,8 +202,8 @@ public struct ConcurrentAsync: ExecutionContext {
      
      - parameter f: A closure which is being submitted.
      */
-    public func execute(_ f: () -> ()) {
-        DispatchQueue.global(attributes: .qosUserInteractive).async(execute: f)
+    public func execute(f: @escaping () -> ()) {
+        DispatchQueue.global().async(execute: f)
     }
 }
 
@@ -221,8 +222,8 @@ public struct ConcurrentSync: ExecutionContext {
      
      - parameter f: A closure which is being submitted.
      */
-    public func execute(_ f: () -> ()) {
-        DispatchQueue.global(attributes: .qosUserInteractive).sync(execute: f)
+    public func execute(f: @escaping () -> ()) {
+        DispatchQueue.global().sync(execute: f)
     }
 }
 
@@ -234,13 +235,12 @@ public struct ConcurrentSync: ExecutionContext {
 */
 internal struct SynchronousCurrent: ExecutionContext {
 
-
     /**
      Synchronously executes the given closure `f` on its execution context.
 
      - parameter f: The closure takeing no parameters and returning ().
     */
-    internal func execute(_ f: ()->()) {
+    internal func execute(f: @escaping ()->()) {
         f()
     }
 

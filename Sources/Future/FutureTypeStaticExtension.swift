@@ -5,7 +5,7 @@
 //  Copyright © 2015 Andreas Grosam. All rights reserved.
 //
 
-
+import Dispatch
 
 
 /**
@@ -27,7 +27,7 @@ extension FutureType {
      `f`.
      */
     static public func apply<ValueType>(_ ec: ExecutionContext = ConcurrentAsync(),
-        f: () throws -> ValueType)
+        f: @escaping () throws -> ValueType)
         -> Future<ValueType> 
     {
         let returnedFuture: Future<ValueType> = Future<ValueType>()
@@ -82,20 +82,18 @@ extension FutureType {
     static public func failedAfter(_ delay: Double,
         cancellationToken: CancellationTokenType = CancellationTokenNone(),
         error: Error)
-        -> Future<ValueType> {
+        -> Future<ValueType> 
+    {
         let returnedFuture = Future<ValueType>()
-        let cid = cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
-            returnedFuture.complete(Try<ValueType>(error: CancellationError.cancelled))
+        let timer = Timer()
+        let cid = cancellationToken.onCancel {
+            returnedFuture.complete(Try<ValueType>(error: CancellationError()))
+            timer.cancel()
         }
         // Perhaps, we should capture returnedFuture weakly?!
-        let timer = Timer.scheduleOneShot(deadline: .after(seconds: delay)) { _ in
+        timer.scheduleOneShotAfter(delay: delay) {
             returnedFuture.complete(Try<ValueType>(error: error))
-            cancellationToken.unregister(cid)
-        }
-        var cancellationId = -1
-        cancellationId = cancellationToken.onCancel {
-            timer.cancel()
-            cancellationToken.unregister(cancellationId)
+            cid?.invalidate()   
         }
         return returnedFuture
     }
@@ -114,20 +112,18 @@ extension FutureType {
     static public func succeededAfter(_ delay: Double,
         cancellationToken: CancellationTokenType = CancellationTokenNone(),
         value: ValueType)
-        -> Future<ValueType> {
+        -> Future<ValueType> 
+    {
         let returnedFuture = Future<ValueType>()
-        let cid = cancellationToken.onCancel(on: GCDAsyncExecutionContext()) {
-            returnedFuture.complete(Try<ValueType>(error: CancellationError.cancelled))
+        let timer = Timer()
+        let cid = cancellationToken.onCancel {
+            returnedFuture.complete(Try<ValueType>(error: CancellationError()))
+            timer.cancel()
         }
         // Perhaps, we should capture returnedFuture weakly?!
-        let timer = Timer.scheduleOneShot(deadline: .after(seconds: delay)) { _ in
+        timer.scheduleOneShotAfter(delay: delay) { _ in
             returnedFuture.complete(Try<ValueType>(value))
-            cancellationToken.unregister(cid)
-        }
-        var cancellationId = -1
-        cancellationId = cancellationToken.onCancel {
-            timer.cancel()
-            cancellationToken.unregister(cancellationId)
+            cid?.invalidate()
         }
         return returnedFuture
     }

@@ -19,8 +19,8 @@ extension TaskQueue: ExecutionContext {
      
      - parameter f: The closure.
     */
-    public func execute(_ f: ()->()) {
-        GCDAsyncExecutionContext(self.queue).execute(f)
+    public func execute(f: @escaping ()->()) {
+        GCDAsyncExecutionContext(self.queue).execute(f: f)
     }
 
     /**
@@ -35,7 +35,7 @@ extension TaskQueue: ExecutionContext {
      - parameter onStart: A closure which will be called when the task will be started
      with the task's returned future as its argument.
      */
-    public func schedule<T>(_ task: () throws -> Future<T>, onStart: (Future<T>) -> ()) {
+    public func schedule<T>(_ task: @escaping () throws -> Future<T>, onStart: @escaping (Future<T>) -> ()) {
         self.enqueue {
             var future: Future<T>?
             do {

@@ -27,7 +27,7 @@ extension FutureType where ResultType == Try<ValueType> {
     public final func then(
         ec: ExecutionContext = GCDAsyncExecutionContext(),
         cancellationToken: CancellationTokenType = CancellationTokenNone(),
-        f: (ValueType) -> ()) {
+        f: @escaping (ValueType) -> ()) {
         onSuccess(ec: ec, ct: cancellationToken, f: f)
     }
 
@@ -53,7 +53,7 @@ extension FutureType where ResultType == Try<ValueType> {
     public final func then<U>(
         ec: ExecutionContext = GCDAsyncExecutionContext(),
         cancellationToken: CancellationTokenType = CancellationTokenNone(),
-        f: (ValueType) throws -> U)
+        f: @escaping (ValueType) throws -> U)
         -> Future<U> {
         return map(ec: ec, ct: cancellationToken, f: f)
     }
@@ -82,7 +82,7 @@ extension FutureType where ResultType == Try<ValueType> {
     public final func then<U>(
         ec: ExecutionContext = GCDAsyncExecutionContext(),
         cancellationToken: CancellationTokenType = CancellationTokenNone(),
-        f: (ValueType) -> Future<U>)
+        f: @escaping (ValueType) -> Future<U>)
         -> Future<U> {
         return flatMap(ec: ec, ct: cancellationToken, f: f)
     }

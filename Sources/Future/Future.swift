@@ -38,10 +38,10 @@ public class Future<T>: FutureType {
 
     public typealias ValueType = T
     public typealias ResultType = Try<ValueType>
-    private typealias ClosureRegistryType = ClosureRegistry<ResultType>
+    fileprivate typealias ClosureRegistryType = ClosureRegistry<ResultType>
 
-    private var _result: Try<ValueType>?
-    private var _cr: ClosureRegistryType = ClosureRegistryType() 
+    fileprivate var _result: Try<ValueType>?
+    fileprivate var _cr: ClosureRegistryType = ClosureRegistryType() 
     internal let sync = _sync[Int(OSAtomicIncrement32(&_sync_id) % 7)] // Synchronize(name: "future-sync-queue-\(OSAtomicIncrement32(&_sync_id))")//
 
 
@@ -49,11 +49,11 @@ public class Future<T>: FutureType {
      Designatated initializer which creates a pending future.
     */
     internal init() {
-        Log.Debug("\(Thread.current()): ")
+        //Log.Debug("\(Thread.current): ")
     }
     
     deinit {
-        Log.Debug("\(Thread.current()): ")
+        //Log.Debug("\(Thread.current): ")
     }
     
     /**
@@ -88,7 +88,7 @@ public class Future<T>: FutureType {
      - returns: A unique Id representing `self`.
     */
     public final var id: UInt {
-        return UInt(ObjectIdentifier(self))
+        return UInt(bitPattern: ObjectIdentifier(self))
     }
 
 
@@ -126,11 +126,11 @@ public class Future<T>: FutureType {
     public final func onComplete<U>(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: (Try<ValueType>) -> U) {
+        f: @escaping (Try<ValueType>) -> U) {
         sync.writeAsync {
             if ct.isCancellationRequested {
                 ec.execute {
-                    _ = f(Try<ValueType>(error: CancellationError.cancelled))
+                    _ = f(Try<ValueType>(error: CancellationError()))
                 }
                 return
             }
@@ -140,7 +140,7 @@ public class Future<T>: FutureType {
                 }
                 return
             }
-            var cid: Int = -1
+            var cid: EventHandlerIdType?
             let id = self._cr.register { result in
                 assert(self.sync.isSynchronized())
                 ec.execute {
@@ -149,12 +149,12 @@ public class Future<T>: FutureType {
                 // import `self` into the closure in order to keep a strong
                 // reference to self until after self will be completed:
                 _ = self
-                ct.unregister(cid)
+                cid?.invalidate()
             }
             // TODO: Use GCDBarrierAsyncExecutionContext!
-            cid = ct.onCancel(on: GCDAsyncExecutionContext(self.sync.syncQueue)) { 
+            cid = ct.onCancel(queue: self.sync.syncQueue) { 
                 if let callback = self._cr.unregister(id) {
-                    callback.continuation(Try<ValueType>(error: CancellationError.cancelled))
+                    callback.continuation(Try<ValueType>(error: CancellationError()))
                 }
             }
         }
@@ -320,7 +320,7 @@ public extension Future {
     private final func _continueWith<U>(
         on ec: ExecutionContext,
         cancellationToken ct: CancellationTokenType,
-        f: (FutureBaseType) -> U) {
+        f: @escaping (FutureBaseType) -> U) {
         sync.writeAsync {
             if ct.isCancellationRequested {
                 ec.execute {
@@ -334,7 +334,7 @@ public extension Future {
                 }
                 return
             }
-            var cid: Int = -1
+            var cid: EventHandlerIdType?
             let id = self._cr.register { _ in
                 assert(self.sync.isSynchronized())
                 ec.execute {
@@ -343,11 +343,11 @@ public extension Future {
                 _ = self
                 // import `self` into the function in order to keep a strong
                 // reference to self until after self will be completed.
-                ct.unregister(cid)
+                cid?.invalidate()
             }
-            cid = ct.onCancel(on: GCDAsyncExecutionContext(self.sync.syncQueue)) { // TODO: Use GCDBarrierAsyncExecutionContext
+            cid = ct.onCancel(queue: self.sync.syncQueue) { // TODO: Use GCDBarrierAsyncExecutionContext
                 if let callback = self._cr.unregister(id) {
-                    callback.continuation(Try<ValueType>(error: CancellationError.cancelled))
+                    callback.continuation(Try<ValueType>(error: CancellationError()))
                 }
             }
         }
@@ -357,7 +357,7 @@ public extension Future {
     public final func continueWith<U>(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: (FutureBaseType) throws -> U)
+        f: @escaping (FutureBaseType) throws -> U)
         -> Future<U> {
         // Caution: the mapping function must be called even when the returned
         // future has been deinitialized prematurely!
@@ -373,7 +373,7 @@ public extension Future {
     public final func continueWith<U>(
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
-        f: (FutureBaseType) -> Future<U>)
+        f: @escaping (FutureBaseType) -> Future<U>)
         -> Future<U> {
         // Caution: the mapping function must be called even when the returned
         // future has been deinitialized prematurely!
@@ -402,8 +402,8 @@ extension Future: CustomStringConvertible {
             var stateString: String
             if let res = self._result {
                 switch res {
-                case .failure(let error): stateString = "Failed with: \(String(error))"
-                case .success(let value): stateString = "Succeeded with: \(String(value))"
+                case .failure(let error): stateString = "Failed with: \(String(describing: error))"
+                case .success(let value): stateString = "Succeeded with: \(String(describing: value))"
                 }
             } else {
                 stateString = "Pending with \(self._cr.count) continuations."
@@ -480,7 +480,7 @@ internal final class RootFuture<T>: Future<T> {
 extension RootFuture: CustomPlaygroundQuickLookable  {
     
     internal var customPlaygroundQuickLook: PlaygroundQuickLook {
-        return .text(String(self))
+        return .text(String(describing: self))
     }
 }
 
