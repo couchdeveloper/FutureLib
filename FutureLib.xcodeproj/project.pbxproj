@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		A10CB91C1C15EA060019060A /* FuturePerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB91B1C15EA060019060A /* FuturePerformanceTests.swift */; };
+		A10E72D41DB88E5C00B5FBD5 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1580AFE1D218EF7002B5D5C /* Logger.swift */; };
+		A10E72D51DB88E5D00B5FBD5 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1580AFE1D218EF7002B5D5C /* Logger.swift */; };
+		A10E72D61DB88E5D00B5FBD5 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1580AFE1D218EF7002B5D5C /* Logger.swift */; };
+		A10E72D71DB88E5E00B5FBD5 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1580AFE1D218EF7002B5D5C /* Logger.swift */; };
 		A10E9D491C3BB98800CD5B07 /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10E9D3F1C3BB98700CD5B07 /* FutureLib.framework */; };
 		A10E9D651C3BB9AE00CD5B07 /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10E9D5B1C3BB9AE00CD5B07 /* FutureLib.framework */; };
 		A10E9D9B1C3BBA3500CD5B07 /* FutureLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10E9D911C3BBA3400CD5B07 /* FutureLib.framework */; };
@@ -1032,6 +1036,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10E72D41DB88E5C00B5FBD5 /* Logger.swift in Sources */,
 				A1E140421DB493D9003A687B /* SequenceType+FutureType.swift in Sources */,
 				A1E1403F1DB493D9003A687B /* FutureTypeStaticExtension.swift in Sources */,
 				A1E140431DB493D9003A687B /* Synchronize.swift in Sources */,
@@ -1109,6 +1114,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10E72D51DB88E5D00B5FBD5 /* Logger.swift in Sources */,
 				A1E1404F1DB493D9003A687B /* SequenceType+FutureType.swift in Sources */,
 				A1E1404C1DB493D9003A687B /* FutureTypeStaticExtension.swift in Sources */,
 				A1E140501DB493D9003A687B /* Synchronize.swift in Sources */,
@@ -1186,6 +1192,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10E72D61DB88E5D00B5FBD5 /* Logger.swift in Sources */,
 				A1E1405C1DB493DA003A687B /* SequenceType+FutureType.swift in Sources */,
 				A1E140591DB493DA003A687B /* FutureTypeStaticExtension.swift in Sources */,
 				A1E1405D1DB493DA003A687B /* Synchronize.swift in Sources */,
@@ -1223,6 +1230,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10E72D71DB88E5E00B5FBD5 /* Logger.swift in Sources */,
 				A1E140691DB493DB003A687B /* SequenceType+FutureType.swift in Sources */,
 				A1E140661DB493DB003A687B /* FutureTypeStaticExtension.swift in Sources */,
 				A1E1406A1DB493DB003A687B /* Synchronize.swift in Sources */,
