@@ -24,67 +24,72 @@ class TimerTests: XCTestCase {
     }
 
     func testTimerShouldNotDeinitPrematurely() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
-        FutureLib.Timer.scheduleOneShotAfter(0.1) {  
+        let expect = self.expectation(description: "future should be fulfilled")
+        let timer = FutureLib.Timer()
+        timer.scheduleOneShotAfter(delay: 0.1) {  
             expect.fulfill()
         } 
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testTimerWith1000msDurationShouldHave1PercentAccuracy() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let stopWatch = StopWatch() 
         stopWatch.start()
-        FutureLib.Timer.scheduleOneShotAfter(1.0) {
+        let timer = FutureLib.Timer()
+        timer.scheduleOneShotAfter(delay: 1.0) {
             let elapsedSeconds = stopWatch.stop()
             XCTAssertEqualWithAccuracy(1.0, elapsedSeconds, accuracy: 0.01)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 2, handler: nil)
+        self.waitForExpectations(timeout: 2, handler: nil)
     }
     
     
     func testTimerWith100msDurationShouldHave1PercentAccuracy() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let stopWatch = StopWatch() 
         stopWatch.start()
-        FutureLib.Timer.scheduleOneShotAfter(0.1) {
+        let timer = FutureLib.Timer()
+        timer.scheduleOneShotAfter(delay: 0.1) {
             let elapsedSeconds = stopWatch.stop()
             XCTAssertEqualWithAccuracy(0.10, elapsedSeconds, accuracy: 0.001)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 2, handler: nil)
+        self.waitForExpectations(timeout: 2, handler: nil)
     }
 
     func testTimerWith10msDurationShouldHave10PercentAccuracy() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let stopWatch = StopWatch() 
         stopWatch.start()
-        FutureLib.Timer.scheduleOneShotAfter(0.01) { 
+        let timer = FutureLib.Timer()
+        timer.scheduleOneShotAfter(delay: 0.01) { 
             let elapsedSeconds = stopWatch.stop()
             XCTAssertEqualWithAccuracy(0.01, elapsedSeconds, accuracy: 0.001)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 2, handler: nil)
+        self.waitForExpectations(timeout: 2, handler: nil)
     }
     
 
     func testTwoTimersWith100msAnd10msDurationShouldHave2And30PercentAccuracy() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let stopWatch = StopWatch() 
+        let timer = FutureLib.Timer()
         stopWatch.start()
-        FutureLib.Timer.scheduleOneShotAfter(0.1) { 
+        timer.scheduleOneShotAfter(delay: 0.1) { 
             let elapsedSeconds = stopWatch.time()
             XCTAssertEqualWithAccuracy(0.10, elapsedSeconds, accuracy: 0.001)
             expect1.fulfill()
         }
-        FutureLib.Timer.scheduleOneShotAfter(0.01) { 
+        timer.scheduleOneShotAfter(delay: 0.01) { 
             let elapsedSeconds = stopWatch.time()
             XCTAssertEqualWithAccuracy(0.01, elapsedSeconds, accuracy: 0.001)
             expect2.fulfill()
         }
-        self.waitForExpectations(withTimeout: 2, handler: nil)
+        self.waitForExpectations(timeout: 2, handler: nil)
     }
     
     

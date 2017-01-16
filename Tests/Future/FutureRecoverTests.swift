@@ -26,7 +26,7 @@ class FutureRecoverTests: XCTestCase {
     // MARK: recover(_:)
 
     func testRecoverReturnsSuccesFutureWithPendingFuturePropagatesSuccessValueWhenCompletedWithSuccessValue() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
@@ -42,13 +42,13 @@ class FutureRecoverTests: XCTestCase {
             XCTAssertEqual("OK", value)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
     func testRecoverReturnsSucceededFutureWithPendingFutureInvokesRecoverHandlerWhenCompletedWithError() {
-        let expect1 = self.expectation(withDescription: "future1 should be completed")
-        let expect2 = self.expectation(withDescription: "future2 should be completed")
+        let expect1 = self.expectation(description: "future1 should be completed")
+        let expect2 = self.expectation(description: "future2 should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
@@ -65,12 +65,12 @@ class FutureRecoverTests: XCTestCase {
             XCTAssertEqual("Failed", value)
             expect2.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
     func testRecoverReturnsFailedFutureWithPendingFutureInvokesRecoverHandlerWhichThrowsErrorWhenCompletedWithError() {
-        let expect1 = self.expectation(withDescription: "future1 should be completed")
+        let expect1 = self.expectation(description: "future1 should be completed")
         let expect2 = self.expectation(withDescription: "future2 should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
@@ -88,7 +88,7 @@ class FutureRecoverTests: XCTestCase {
             XCTAssertTrue(TestError.failed == error)
             expect2.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
@@ -96,7 +96,7 @@ class FutureRecoverTests: XCTestCase {
     // MARK: recoeverWith(_:)
 
     func testRecoverWithReturnsSuccesFutureWithPendingFuturePropagatesSuccessValueWhenCompletedWithSuccessValue() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
@@ -112,13 +112,13 @@ class FutureRecoverTests: XCTestCase {
             XCTAssertEqual("OK", value)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
     func testRecoverWithReturnsSucceededFutureWithPendingFutureInvokesRecoverHandlerWhenCompletedWithDeferredError() {
-        let expect1 = self.expectation(withDescription: "future1 should be completed")
-        let expect2 = self.expectation(withDescription: "future2 should be completed")
+        let expect1 = self.expectation(description: "future1 should be completed")
+        let expect2 = self.expectation(description: "future2 should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
@@ -135,7 +135,7 @@ class FutureRecoverTests: XCTestCase {
             XCTAssertEqual("Deferred Failed", value)
             expect2.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 

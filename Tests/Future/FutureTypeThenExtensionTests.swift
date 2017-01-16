@@ -26,7 +26,7 @@ class FutureThenExtensionTests: XCTestCase {
     
     
     func testGivenAPendingFutureWithRegisteredSuccessHandlerWhenFulfilledItShouldRunItsSuccessHandler() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.1) {
@@ -38,12 +38,12 @@ class FutureThenExtensionTests: XCTestCase {
             XCTAssertEqual("OK", str)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     func testGivenAFulfilledFutureWithRegisteredSuccessHandlerItShouldExecuteItsSuccessHandler() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>(value: "OK")
             return promise.future!
@@ -52,12 +52,12 @@ class FutureThenExtensionTests: XCTestCase {
             XCTAssertEqual("OK", str)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     func testGivenAPendingFutureWithRegisteredFailureHandlerWhenRejectedItShouldRunItsFailureHandler() {
-        let expect = self.expectation(withDescription: "future should be rejected")
+        let expect = self.expectation(description: "future should be rejected")
         let test: ()->Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.1) {
@@ -69,11 +69,11 @@ class FutureThenExtensionTests: XCTestCase {
             XCTAssertTrue(TestError.failed == error)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testGivenARejectedFutureWhenRegisteringFailureHandlerItShouldRunItsFailureHandler() {
-        let expect = self.expectation(withDescription: "future should be rejected")
+        let expect = self.expectation(description: "future should be rejected")
         let test:()->Future<String> = {
             let promise = Promise<String>(error: TestError.failed)
             return promise.future!
@@ -82,12 +82,12 @@ class FutureThenExtensionTests: XCTestCase {
             XCTAssertTrue(TestError.failed == error)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 10, handler: nil)
+        self.waitForExpectations(timeout: 10, handler: nil)
     }
     
     
     func testGivenAPendingFutureWithRegisteredSuccessHandlerItShouldExecuteItsSuccessHandlerOnTheMainThread() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.1) {
@@ -96,33 +96,33 @@ class FutureThenExtensionTests: XCTestCase {
             return promise.future!
         }
         test().then(ec: GCDAsyncExecutionContext(DispatchQueue.main)) { str in
-            XCTAssertTrue(Thread.isMainThread())
+            XCTAssertTrue(Thread.isMainThread)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testGivenAFulfilledFutureWithRegisteredSuccessHandlerItShouldExecuteItsSuccessHandlerOnTheMainThread() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>(value: "OK")
             return promise.future!
         }
         test().then(ec: GCDAsyncExecutionContext(DispatchQueue.main)) { str in
-            XCTAssertTrue(Thread.isMainThread())
+            XCTAssertTrue(Thread.isMainThread)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     
     func testExample3() {
-        let expect1 = self.expectation(withDescription: "future1 should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future2 should be fulfilled")
-        let expect3 = self.expectation(withDescription: "future3 should be fulfilled")
-        let expect4 = self.expectation(withDescription: "future4 should be fulfilled")
-        let expect5 = self.expectation(withDescription: "future5 should be fulfilled")
+        let expect1 = self.expectation(description: "future1 should be fulfilled")
+        let expect2 = self.expectation(description: "future2 should be fulfilled")
+        let expect3 = self.expectation(description: "future3 should be fulfilled")
+        let expect4 = self.expectation(description: "future4 should be fulfilled")
+        let expect5 = self.expectation(description: "future5 should be fulfilled")
         let promise = Promise<String>()
         let future = promise.future!
         future.then { str -> Int in
@@ -154,12 +154,12 @@ class FutureThenExtensionTests: XCTestCase {
         }
         
         promise.fulfill("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     func testExample5() {
-        let expect = self.expectation(withDescription: "future should be rejected")
+        let expect = self.expectation(description: "future should be rejected")
         let promise = Promise<String>()
         let future = promise.future!
         future.then { str -> Int in
@@ -187,12 +187,12 @@ class FutureThenExtensionTests: XCTestCase {
                 expect.fulfill()
         }
         promise.fulfill("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     func testExample6() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let future = promise.future!
         future.then { str -> Int in
@@ -215,12 +215,12 @@ class FutureThenExtensionTests: XCTestCase {
                 expect.fulfill()
         }
         promise.fulfill("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     func testExample7() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let future = promise.future!
         future.then { str -> Int in
@@ -240,12 +240,12 @@ class FutureThenExtensionTests: XCTestCase {
                 expect.fulfill()
         }
         promise.fulfill("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     func testExample8() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let future = promise.future!
         future.then { str -> Int in
@@ -267,26 +267,26 @@ class FutureThenExtensionTests: XCTestCase {
                 expect.fulfill()
         }
         promise.fulfill("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     func testPromiseFulfillingAPromiseShouldInvokeSuccessHandler() {
         let promise = Promise<String>()
         let future = promise.future!
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         future.then { str -> () in
             XCTAssertEqual("OK", str, "Input value should be equal \"OK\"")
             expect.fulfill()
         }
         promise.fulfill("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testPromiseFulfillingAPromiseShouldNotInvokeFailureHandler() {
         let promise = Promise<String>()
         let future = promise.future!
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         future.recover { str -> String in
             XCTFail("Not expected")
             expect.fulfill()
@@ -297,13 +297,13 @@ class FutureThenExtensionTests: XCTestCase {
                 expect.fulfill()
         }
         promise.fulfill("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testContinuationReturnsFulfilledResultAndThenInvokesNextContinuation() {
         let promise = Promise<String>()
         let future = promise.future!
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let _ = future.then { result -> String in
             if result == "OK" {
                 return "OK"
@@ -322,7 +322,7 @@ class FutureThenExtensionTests: XCTestCase {
         }
         
         promise.fulfill("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     
@@ -331,7 +331,7 @@ class FutureThenExtensionTests: XCTestCase {
     // MARK: then()
 
     func testPendingFutureInvokesThenHandlerWhenCompletedSuccessfully1() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
@@ -343,7 +343,7 @@ class FutureThenExtensionTests: XCTestCase {
             XCTAssertEqual("OK", value)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testPendingFutureDoesNotInvokeThenHandlerWhenCompletedWithError1() {
@@ -362,7 +362,7 @@ class FutureThenExtensionTests: XCTestCase {
 
 
     func testPendingFutureInvokesThenHandlerWhenCompletedSuccessfully2() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
@@ -375,7 +375,7 @@ class FutureThenExtensionTests: XCTestCase {
             expect.fulfill()
             return 0
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testPendingFutureDoesNotInvokeThenHandlerWhenCompletedWithError2() {
@@ -397,7 +397,7 @@ class FutureThenExtensionTests: XCTestCase {
     func testPendingFutureInvokesThenHandlerWhenCompletedSuccessfully3() {
         // TODO: remove sleep
         sleep(1)
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {
@@ -410,7 +410,7 @@ class FutureThenExtensionTests: XCTestCase {
             expect.fulfill()
             return Promise<Int>(value: 0).future!
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testPendingFutureDoesNotInvokeThenHandlerWhenCompletedWithError3() {

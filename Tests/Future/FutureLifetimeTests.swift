@@ -70,7 +70,7 @@ class FutureLifetimeTests: XCTestCase {
     
     func testContinuationShouldDeallocateAfterComplete() {
         let promise = Promise<Int>()
-        let expect = self.expectation(withDescription: "continuation should deallocate")
+        let expect = self.expectation(description: "continuation should deallocate")
         DispatchQueue.global().async {
             let future = promise.future!
             future.onComplete { result in
@@ -84,13 +84,13 @@ class FutureLifetimeTests: XCTestCase {
         schedule_after(0.1) {
             promise.resolve(Try(0))
         }
-        waitForExpectations(withTimeout: 0.2, handler: nil)
+        waitForExpectations(timeout: 0.2, handler: nil)
     }
     
     func testImportedVariableShouldDeallocateAfterComplete() {
         let promise = Promise<Int>()
-        let expect = self.expectation(withDescription: "imported variable should deallocate")
-        let expect1 = self.expectation(withDescription: "onComplete handler should be called")
+        let expect = self.expectation(description: "imported variable should deallocate")
+        let expect1 = self.expectation(description: "onComplete handler should be called")
         DispatchQueue.global().async {
             let future = promise.future!
             let importedVariable = Dummy(name: "Imported variable", expect: expect)
@@ -108,14 +108,14 @@ class FutureLifetimeTests: XCTestCase {
         schedule_after(0.1) {
             promise.resolve(Try(0))
         }
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     // FIXME: Thread Sanitizer fails    
     func testFutureShouldDeallocateAfterThereAreNoObservers() {
         let promise = Promise<Int>()
-        let expect = self.expectation(withDescription: "future should deallocate")
+        let expect = self.expectation(description: "future should deallocate")
         DispatchQueue.global().async {
             promise.future!.onComplete { result in
                 if case .failure = result {
@@ -139,13 +139,13 @@ class FutureLifetimeTests: XCTestCase {
         schedule_after(0.1) { 
             promise.resolve(Try(0))
         }
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     func test1() {
-        let expect = self.expectation(withDescription: "dummy should deallocate")
-        let expect2 = self.expectation(withDescription: "finished")
+        let expect = self.expectation(description: "dummy should deallocate")
+        let expect2 = self.expectation(description: "finished")
         DispatchQueue.global().async {
             let d = Dummy(name: "imported variable", expect: expect)
             schedule_after(0.1) { 
@@ -159,7 +159,7 @@ class FutureLifetimeTests: XCTestCase {
                 }
             }
         }
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
 
@@ -169,7 +169,7 @@ class FutureLifetimeTests: XCTestCase {
         let cr = CancellationRequest()
         let ct = cr.token
         let promise = Promise<Int>()
-        let expect1 = self.expectation(withDescription: "cancellation handler should be unregistered")
+        let expect1 = self.expectation(description: "cancellation handler should be unregistered")
         
         DispatchQueue.global().async {
             let future = promise.future!
@@ -183,18 +183,18 @@ class FutureLifetimeTests: XCTestCase {
             }
         }
         
-        DispatchQueue.global().after(when: .now() + .milliseconds(100)) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
             cr.cancel()
         }
-        waitForExpectations(withTimeout: 1000, handler: nil)
+        waitForExpectations(timeout: 1000, handler: nil)
     }
     
     func testFutureShouldDeallocateIfThereAreNoObservers3() {
         let cr = CancellationRequest()
         let ct = cr.token
         let promise = Promise<Int>()
-        let expect1 = self.expectation(withDescription: "cancellation handler should be unregistered")
-        let expect2 = self.expectation(withDescription: "cancellation handler should be unregistered")
+        let expect1 = self.expectation(description: "cancellation handler should be unregistered")
+        let expect2 = self.expectation(description: "cancellation handler should be unregistered")
         
         DispatchQueue.global().async {
             let future = promise.future!
@@ -210,10 +210,10 @@ class FutureLifetimeTests: XCTestCase {
                 print(d2)
             }
         }
-        DispatchQueue.global().after(when: .now() + 0.01) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
             cr.cancel()
         }
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     // FIXME: Thread Sanitizer fails    
@@ -221,11 +221,11 @@ class FutureLifetimeTests: XCTestCase {
         let cr = CancellationRequest()
         let ct = cr.token
         let promise = Promise<Int>()
-        let expect1 = self.expectation(withDescription: "cancellation handler should be unregistered")
-        let expect2 = self.expectation(withDescription: "cancellation handler should be unregistered")
-        let expect3 = self.expectation(withDescription: "cancellation handler should be unregistered")
+        let expect1 = self.expectation(description: "cancellation handler should be unregistered")
+        let expect2 = self.expectation(description: "cancellation handler should be unregistered")
+        let expect3 = self.expectation(description: "cancellation handler should be unregistered")
         
-        DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes(rawValue: UInt64(0))).async {
+        DispatchQueue.global().async {
             let future = promise.future!
             let d1 = Dummy(name: "d1", expect: expect1)
             let d2 = Dummy(name: "d2", expect: expect2)
@@ -238,9 +238,9 @@ class FutureLifetimeTests: XCTestCase {
                 XCTFail("unexpected")
                 print(d2)
             }
-            DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes(rawValue: UInt64(0))).after(when: DispatchTime.now() + Double((Int64)(10 * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC)) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 cr.cancel()
-                DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes(rawValue: UInt64(0))).after(when: DispatchTime.now() + Double((Int64)(10 * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC)) {
+                DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                     let d3 = Dummy(name: "d3", expect: expect3)
                     future.onSuccess(ct: cr.token) { i -> () in
                         XCTFail("unexpected")
@@ -250,7 +250,7 @@ class FutureLifetimeTests: XCTestCase {
             }
         }
         
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     
@@ -275,29 +275,26 @@ class FutureLifetimeTests: XCTestCase {
     }
     
     func testFutureShouldCompleteWithBrokenPromiseIfPromiseDeallocatesPrematurely() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         DispatchQueue.global().async {
             let promise = Promise<String>()
             promise.future!.onFailure { error in
-                if case PromiseError.brokenPromise = error where error is PromiseError {
-                } else {
+                guard case PromiseError.brokenPromise = error else {
                     XCTFail("Invalid kind of error: \(String(reflecting: error)))")
                 }
                 expect.fulfill()
             }
-            let delay = DispatchTime.now() + 0.05
-            DispatchQueue.global().after(when: delay) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(5)) {
                 _ = promise
             }
         }
-        waitForExpectations(withTimeout: 0.4, handler: nil)
+        waitForExpectations(timeout: 0.4, handler: nil)
     }
     
     
     
     func testPromiseChainShouldNotDeallocatePrematurely() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
-        let delay = DispatchTime.now() + Double(Int64(0.2 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        let expect = self.expectation(description: "future should be fulfilled")
         DispatchQueue.global().async {
             let promise = Promise<String>()
             let future = promise.future!
@@ -312,11 +309,11 @@ class FutureLifetimeTests: XCTestCase {
                 expect.fulfill()
             }
             
-            DispatchQueue.global().after(when: delay) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(200)) {
                 promise.fulfill("OK")
             }
         }
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
 

@@ -44,20 +44,20 @@ class DispatchQueueTests: XCTestCase {
     }
 
     func testCapturedVariableShouldDeinitialize1() {
-        let expect1 = self.expectation(withDescription: "captured variable should be deinitialized")
+        let expect1 = self.expectation(description: "captured variable should be deinitialized")
         func f() {
             let d1 = Dummy(name: "d1", expect: expect1)
-            DispatchQueue.global().after(when: .now() + .milliseconds(10)) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 print(d1) // captured object should deinitialize after executing.
             }
         }
         f()
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testDispatchQueueSerialCapturedVariableShouldDeinitializeWithAsync() {
-        let queue = DispatchQueue(label: "com.me.test.test-queue", attributes: .serial)
-        let expect1 = self.expectation(withDescription: "captured variable should be deinitialized")
+        let queue = DispatchQueue(label: "com.me.test.test-queue")
+        let expect1 = self.expectation(description: "captured variable should be deinitialized")
         func f() {
             let d1 = Dummy(name: "d1", expect: expect1) 
             queue.async {
@@ -65,12 +65,12 @@ class DispatchQueueTests: XCTestCase {
             }
         }
         f()
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testDispatchQueueSerialCapturedVariableShouldDeinitializeWithAsyncBarrier() {
-        let queue = DispatchQueue(label: "com.me.test.test-queue", attributes: .serial)
-        let expect1 = self.expectation(withDescription: "captured variable should be deinitialized")
+        let queue = DispatchQueue(label: "com.me.test.test-queue")
+        let expect1 = self.expectation(description: "captured variable should be deinitialized")
         func f() {
             let d1 = Dummy(name: "d1", expect: expect1) 
             queue.async(flags: .barrier) {
@@ -78,14 +78,14 @@ class DispatchQueueTests: XCTestCase {
             }
         }
         f()
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     
     
     func testDispatchQueueConcurrentCapturedVariableShouldDeinitializeWithAsync() {
         let queue = DispatchQueue(label: "com.me.test.test-queue", attributes: .concurrent)
-        let expect1 = self.expectation(withDescription: "captured variable should be deinitialized")
+        let expect1 = self.expectation(description: "captured variable should be deinitialized")
         func f() {
             let d1 = Dummy(name: "d1", expect: expect1) 
             queue.async {
@@ -93,12 +93,12 @@ class DispatchQueueTests: XCTestCase {
             }
         }
         f()
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testDispatchQueueConcurrentCapturedVariableShouldDeinitializeWithAsyncBarrier() {
         let queue = DispatchQueue(label: "com.me.test.test-queue", attributes: .concurrent)
-        let expect1 = self.expectation(withDescription: "captured variable should be deinitialized")
+        let expect1 = self.expectation(description: "captured variable should be deinitialized")
         func f() {
             let d1 = Dummy(name: "d1", expect: expect1) 
             queue.async(flags: .barrier) {
@@ -106,7 +106,7 @@ class DispatchQueueTests: XCTestCase {
             }
         }
         f()
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
 }

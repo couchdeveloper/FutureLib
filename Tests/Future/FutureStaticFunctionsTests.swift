@@ -122,7 +122,7 @@ class FutureExtensionsTests: XCTestCase {
 
     // FIXME: Thread Sanitizer fails    
     func testClassMethodFailedAfterReturnsAFutureWhichBecomesFailedAfterTheDelay() {
-        let expect1 = self.expectation(withDescription: "continuation should be called")
+        let expect1 = self.expectation(description: "continuation should be called")
         let future = Future<Int>.failedAfter(0.1, error: TestError.failed)
         future.onComplete { r in
             if let r = future.result {
@@ -139,14 +139,14 @@ class FutureExtensionsTests: XCTestCase {
             }
             expect1.fulfill()
         }
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
 
     // MARK: Future<T>.succeededAfter(delay:, value:) -> Future<T>
 
     func testClassMethodSucceededAfterReturnsAFutureWhichBecomesSucceededAfterTheDelay() {
-        let expect1 = self.expectation(withDescription: "continuation should be called")
+        let expect1 = self.expectation(description: "continuation should be called")
         let future = Future<Int>.succeededAfter(0.1, value: 1)
         future.onComplete { r in
             if let r = future.result {
@@ -161,7 +161,7 @@ class FutureExtensionsTests: XCTestCase {
             }
             expect1.fulfill()
         }
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
 
@@ -169,7 +169,7 @@ class FutureExtensionsTests: XCTestCase {
 
     // FIXME: Thread Sanitizer fails    
     func testCancellingClassMethodFailedAfterReturnsAFutureWhichBecomesRejectedWithACancellationError() {
-        let expect1 = self.expectation(withDescription: "continuation should be called")
+        let expect1 = self.expectation(description: "continuation should be called")
         let cr1 = CancellationRequest()
         let future = Future<Int>.failedAfter(10, cancellationToken: cr1.token, error: TestError.failed)
         future.onComplete { r in
@@ -179,7 +179,7 @@ class FutureExtensionsTests: XCTestCase {
                     let _ = try r.get()
                     XCTFail("unexpected success")
                 }
-                catch CancellationError.cancelled {
+                catch is CancellationError {
                 }
                 catch {
                     XCTFail("unexpected error")
@@ -188,14 +188,14 @@ class FutureExtensionsTests: XCTestCase {
             expect1.fulfill()
         }
         cr1.cancel()
-        waitForExpectations(withTimeout: 0.1, handler: nil)
+        waitForExpectations(timeout: 0.1, handler: nil)
     }
 
 
     // MARK: Future<T>.succeededAfter(delay:, cancellationToken:, value:) -> Future<T>
     // FIXME: Thread Sanitizer fails    
     func testCancellingClassMethodSucceededAfterReturnsAFutureWhichBecomesRejectedWithACancellationError() {
-        let expect1 = self.expectation(withDescription: "continuation should be called")
+        let expect1 = self.expectation(description: "continuation should be called")
         let cr1 = CancellationRequest()
         let future = Future<Int>.succeededAfter(10, cancellationToken: cr1.token, value: 1)
         future.onComplete { r in
@@ -205,7 +205,7 @@ class FutureExtensionsTests: XCTestCase {
                     let _ = try r.get()
                     XCTFail("unexpected success")
                 }
-                catch CancellationError.cancelled {
+                catch is CancellationError {
                 }
                 catch {
                     XCTFail("unexpected error")
@@ -214,7 +214,7 @@ class FutureExtensionsTests: XCTestCase {
             expect1.fulfill()
         }
         cr1.cancel()
-        waitForExpectations(withTimeout: 0.1, handler: nil)
+        waitForExpectations(timeout: 0.1, handler: nil)
     }
 
 
@@ -223,7 +223,7 @@ class FutureExtensionsTests: XCTestCase {
 
     
     func testApply() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let future = Future<String>.apply { "OK" }
         future.onComplete { result in
             switch result {
@@ -234,11 +234,11 @@ class FutureExtensionsTests: XCTestCase {
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testApplyWithThrowingFunction() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let future: Future<String> = Future<String>.apply { throw TestError.failed }
         future.onComplete { result in
             switch result {
@@ -249,7 +249,7 @@ class FutureExtensionsTests: XCTestCase {
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
 

@@ -27,7 +27,7 @@ class FutureTransformTests: XCTestCase {
     // MARK: transform(ec:ct:s:f:)
     
     func testTransform1WithSucceedFuture() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         
         let future = Future.succeeded(0)
         
@@ -41,7 +41,7 @@ class FutureTransformTests: XCTestCase {
     
     
     func testTransform1WithFailedFuture() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         
         let future = Future<Int>.failed(TestError.failed)
         
@@ -54,7 +54,7 @@ class FutureTransformTests: XCTestCase {
     }
     
     func testTransform1WithSucceedFutureWithThrowingFunction() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         
         let future = Future.succeeded(0)
         
@@ -71,7 +71,7 @@ class FutureTransformTests: XCTestCase {
     
 
     func testTransform1WithPendingFutureWithCancellation() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         let cr = CancellationRequest()
         schedule_after(0.1) {
             cr.cancel()
@@ -95,7 +95,7 @@ class FutureTransformTests: XCTestCase {
     // MARK: transform(ec:ct:f:)
     
     func testTransform2WithSucceedFuture() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         
         let future = Future.succeeded(0)
         
@@ -117,7 +117,7 @@ class FutureTransformTests: XCTestCase {
     
     
     func testTransform2WithFailedFuture() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         
         let future = Future<Int>.failed(TestError.failed)
         
@@ -162,7 +162,7 @@ class FutureTransformTests: XCTestCase {
     }
     
     func testTransform2WithPendingFutureWithCancellation() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         let cr = CancellationRequest()
         schedule_after(0.1) {
             cr.cancel()
@@ -197,7 +197,7 @@ class FutureTransformTests: XCTestCase {
     // MARK: transformWith(ec:ct:f:)
     
     func testTransformWith_WithSucceedFuture() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         
         let future = Future.succeeded(0)
         
@@ -219,7 +219,7 @@ class FutureTransformTests: XCTestCase {
     
     
     func testTransformWith_WithFailedFuture() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         
         let future = Future<Int>.failed(TestError.failed)
         
@@ -265,7 +265,7 @@ class FutureTransformTests: XCTestCase {
     
 
     func testTransformWith_WithPendingFutureWithPrematureCancellation() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         
         let future = Promise.resolveAfter(1.0) { 0 }.future!
         let cr = CancellationRequest()

@@ -161,14 +161,14 @@ public protocol StreamEventTargetType: EventTargetType, Flushable {
 
     var eventOptions: EventOptions { get set }
 
-    var dateFormat: (timeval: timeval)-> String { get set }
+    var dateFormat: (_ timeval: timeval)-> String { get set }
 
     func flush()
 }
 
 
 
-public protocol FlushableOutputStreamType: OutputStream, Flushable {
+public protocol FlushableOutputStreamType: class, OutputStream, Flushable {
 }
 
 
@@ -190,7 +190,7 @@ private struct StdErrorStream: FlushableOutputStreamType {
 public class ConsoleEventTarget: StreamEventTarget {
 
     static private var stdOutputStream = StdOutputStream()
-    static private let _executionQueue = DispatchQueue(label: "ConsoleEventTarget queue", attributes: [.serial, .qosUserInteractive])
+    static private let _executionQueue = DispatchQueue(label: "ConsoleEventTarget queue")
 
     public init() {
         super.init(name: "Console", ostream: StdOutputStream(), executionQueue: ConsoleEventTarget._executionQueue)
@@ -208,14 +208,14 @@ public class StreamEventTarget: StreamEventTargetType {
     internal var _ostream: FlushableOutputStreamType
     private var _writeOptions: WriteOptions
     private var _eventOptions: EventOptions
-    private var _dateFormat: (timeval: timeval)-> String = DateTime.defaultDateTimeFormatter
+    private var _dateFormat: (_ timeval: timeval)-> String = DateTime.defaultDateTimeFormatter
 
 
     public init(name: String,
         ostream: FlushableOutputStreamType,
         writeOptions: WriteOptions = WriteOptions(),
         eventOptions: EventOptions = EventOptions([.TimeStamp, .ThreadId, .GCDQueue, .Category, .Severity, .Function]),
-        executionQueue eq: DispatchQueue = DispatchQueue(label: "", attributes: DispatchQueueAttributes.serial))
+        executionQueue eq: DispatchQueue = DispatchQueue(label: "StreamEventTarget-queue"))
     {
         self.name = name
         _ostream = ostream
@@ -243,7 +243,7 @@ public class StreamEventTarget: StreamEventTargetType {
         message: T,
         options: EventOptions)
     {
-        let messageString = String(message)
+        let messageString = String(describing: message)
         if !messageString.isEmpty {
             ostream.write(messageString)
         }
@@ -267,7 +267,7 @@ public class StreamEventTarget: StreamEventTargetType {
         event: Event<T>,
         writeOptions: WriteOptions,
         eventOptions: EventOptions,
-        dateFormat: (timeval: timeval)-> String,
+        dateFormat: (_ timeval: timeval)-> String,
         executionQueue eq: DispatchQueue)
     {
         let f: ()->() = {
@@ -374,9 +374,9 @@ public class StreamEventTarget: StreamEventTargetType {
     }
 
 
-    final public var dateFormat: (timeval: timeval)-> String {
+    final public var dateFormat: (_ timeval: timeval)-> String {
         get {
-            var result: (timeval: timeval)-> String = {_ in return ""}
+            var result: (_ timeval: timeval)-> String = {_ in return ""}
             executionQueue.sync {
                 result = self._dateFormat
             }

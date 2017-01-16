@@ -9,10 +9,12 @@
 import Dispatch
 
 
+
+
 public struct ExecutionContextInfo {
     
     public static var current: ExecutionContextInfo {
-        return ExecutionContextInfo(qname: DispatchQueue.currentLabel(), threadId: pthread_mach_thread_np(pthread_self()))
+        return ExecutionContextInfo(qname: DispatchQueue.currentLabel, threadId: pthread_mach_thread_np(pthread_self()))
     }
     
     private init(qname: String, threadId: mach_port_t) {
@@ -32,9 +34,9 @@ extension ExecutionContextInfo: CustomStringConvertible {
 }
 
 
-private extension DispatchQueue {
-    private static func currentLabel() -> String {
-        return String.init(cString: __dispatch_queue_get_label(nil))
+fileprivate extension DispatchQueue {
+    fileprivate static var currentLabel: String {
+        return String(cString: __dispatch_queue_get_label(nil))
     }
 }
 
