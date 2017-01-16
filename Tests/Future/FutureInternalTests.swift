@@ -18,7 +18,7 @@ _current_ execution context. This class is used to test private behavior of Futu
 */
 struct SyncCurrent: ExecutionContext {
 
-    internal func execute(_ f:()->()) {
+    internal func execute(f: @escaping ()->()) {
         f()
     }
 }
@@ -50,28 +50,28 @@ class FutureInternalTests: XCTestCase {
     func example(n: Int) {
         func t(_ i: Int) {
             //print("Start on \(Context.current())")
-            let expect1 = self.expectation(withDescription: "continuation ran")
-            let expect2 = self.expectation(withDescription: "last reference ran")
-            let createQueue = DispatchQueue(label: "com.test.create-queue-\(i)", attributes: .serial)
-            let registerQueue = DispatchQueue(label: "com.test.register-queue-\(i)", attributes: .serial)
-            let completeQueue = DispatchQueue(label: "com.test.complete-queue-\(i)", attributes: .serial)
-            let continuationQueue = DispatchQueue(label: "com.test.continuation-queue-\(i)", attributes: .serial)
-            let otherQueue = DispatchQueue(label: "com.test.other-queue-\(i)", attributes: .serial)
+            let expect1 = self.expectation(description: "continuation ran")
+            let expect2 = self.expectation(description: "last reference ran")
+            let createQueue = DispatchQueue(label: "com.test.create-queue-\(i)")
+            let registerQueue = DispatchQueue(label: "com.test.register-queue-\(i)")
+            let completeQueue = DispatchQueue(label: "com.test.complete-queue-\(i)")
+            let continuationQueue = DispatchQueue(label: "com.test.continuation-queue-\(i)")
+            let otherQueue = DispatchQueue(label: "com.test.other-queue-\(i)")
             createQueue.async {
                 let promise = Promise<Int>()   
                 let future = promise.future!
-                registerQueue.after(when: .now() + Double(arc4random_uniform(2000))/10000.0) {
+                registerQueue.asyncAfter(deadline: .now() + Double(arc4random_uniform(2000))/10000.0) {
                     future.onComplete(ec: GCDAsyncExecutionContext(continuationQueue)) { value in 
-                        //print("executing continuation with value: \(value) on \"\(Context.current())\"") 
+                        //print("executing continuation with value: \(value) on \"\(Context.current())\"")
                         expect1.fulfill()                 
                     }
                 }
-                otherQueue.after(when: .now() + Double(arc4random_uniform(2000))/10000.0) {
+                otherQueue.asyncAfter(deadline: .now() + Double(arc4random_uniform(2000))/10000.0) {
                     _ = future
                     expect2.fulfill()                 
                 }
-                completeQueue.after(when: .now() + 0.2) {
-                    assert(!Thread.isMainThread())
+                completeQueue.asyncAfter(deadline: .now() + 0.2) {
+                    assert(!Thread.isMainThread)
                     //print("Complete on \"\(Context.current())\"...") 
                     promise.fulfill(i)
                 }
@@ -81,24 +81,24 @@ class FutureInternalTests: XCTestCase {
             t(i)
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     func example2(n: Int) {
         func t(_ i: Int) {
             //print("Start on \(Context.current())")
-            let expect1 = self.expectation(withDescription: "continuation ran")
-            let createQueue = DispatchQueue(label: "com.test.create-queue-\(i)", attributes: .serial)
-            let completeQueue = DispatchQueue(label: "com.test.complete-queue-\(i)", attributes: .serial)
-            let continuationQueue = DispatchQueue(label: "com.test.continuation-queue-\(i)", attributes: .serial)
+            let expect1 = self.expectation(description: "continuation ran")
+            let createQueue = DispatchQueue(label: "com.test.create-queue-\(i)")
+            let completeQueue = DispatchQueue(label: "com.test.complete-queue-\(i)")
+            let continuationQueue = DispatchQueue(label: "com.test.continuation-queue-\(i)")
             createQueue.async {
                 let promise = Promise<Int>()   
                 promise.future!.onComplete(ec: GCDAsyncExecutionContext(continuationQueue)) { value in 
                     //print("executing continuation with value: \(value) on \"\(Context.current())\"") 
                     expect1.fulfill()                 
                 }
-                completeQueue.after(when: .now() + 0.2) {
-                    assert(!Thread.isMainThread())
+                completeQueue.asyncAfter(deadline: .now() + 0.2) {
+                    assert(!Thread.isMainThread)
                     //print("Complete on \"\(Context.current())\"...") 
                     promise.fulfill(i)
                 }
@@ -108,7 +108,7 @@ class FutureInternalTests: XCTestCase {
             t(i)
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testDataRaces() {
@@ -122,7 +122,7 @@ class FutureInternalTests: XCTestCase {
     //
 
     func testFutureInternalsExecuteOnTheSynchronizationQueue1() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let test:()->() = {            
             let future = promise.future!
@@ -133,12 +133,12 @@ class FutureInternalTests: XCTestCase {
         }
         test()
         promise.fulfill("OK")
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
 
     func testFutureInternalsExecuteOnTheSynchronizationQueue2() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let cr = CancellationRequest()
         let test:()->() = {
@@ -150,12 +150,12 @@ class FutureInternalTests: XCTestCase {
         }
         test()
         cr.cancel()
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
 
     func testFutureInternalsExecuteOnTheSynchronizationQueue3() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let cr = CancellationRequest()
         cr.cancel()
@@ -167,7 +167,7 @@ class FutureInternalTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
 
