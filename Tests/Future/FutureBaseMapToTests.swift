@@ -21,7 +21,7 @@ class FutureBaseMapToTests: XCTestCase {
     }
 
     func testMapTo() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
 
         let task: () -> Future<String> = {
             let promise = Promise<String>()
@@ -43,7 +43,7 @@ class FutureBaseMapToTests: XCTestCase {
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
 

@@ -36,7 +36,7 @@ class FutureTransformTests: XCTestCase {
             expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     
@@ -50,7 +50,7 @@ class FutureTransformTests: XCTestCase {
             expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testTransform1WithSucceedFutureWithThrowingFunction() {
@@ -66,7 +66,7 @@ class FutureTransformTests: XCTestCase {
             expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
 
@@ -83,11 +83,11 @@ class FutureTransformTests: XCTestCase {
             XCTFail("unexpected success")
             expect.fulfill()
         }.onFailure { error in
-            XCTAssertTrue(CancellationError.cancelled == error, "Error: \(String(reflecting: error))")
+            XCTAssertTrue(error is CancellationError, "Error: \(String(reflecting: error))")
             expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     
@@ -112,7 +112,7 @@ class FutureTransformTests: XCTestCase {
             expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     
@@ -134,12 +134,12 @@ class FutureTransformTests: XCTestCase {
             expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     func testTransform2WithSucceedFutureWithThrowingFunction() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         
         let future = Future.succeeded(0)
         
@@ -158,7 +158,7 @@ class FutureTransformTests: XCTestCase {
             expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testTransform2WithPendingFutureWithCancellation() {
@@ -174,7 +174,7 @@ class FutureTransformTests: XCTestCase {
             switch result {
             case .success(let value) where value == 0:
                 throw TestError.failed
-            case .failure(let error) where CancellationError.cancelled == error:
+            case .failure(let error) where error is CancellationError:
                 return Try(error: error)
             default:
                 return Try(error: TestError.failed2)
@@ -184,11 +184,11 @@ class FutureTransformTests: XCTestCase {
             XCTFail("unexpected success")
             expect.fulfill()
         }.onFailure { error in
-            XCTAssertTrue(CancellationError.cancelled == error, "Error: \(String(reflecting: error))")
+            XCTAssertTrue(error is CancellationError, "Error: \(String(reflecting: error))")
             expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     
@@ -214,7 +214,7 @@ class FutureTransformTests: XCTestCase {
                 expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     
@@ -236,12 +236,12 @@ class FutureTransformTests: XCTestCase {
             expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     
     func testTransformWith_WithSucceedFutureWithThrowingFunction() {
-        let expect = self.expectation(withDescription: "future should be completed")
+        let expect = self.expectation(description: "future should be completed")
         
         let future = Future.succeeded(0)
         
@@ -260,7 +260,7 @@ class FutureTransformTests: XCTestCase {
             expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
 
@@ -277,7 +277,7 @@ class FutureTransformTests: XCTestCase {
             switch result {
             case .success(let value) where value == 0:
                 throw TestError.failed
-            case .failure(let error) where CancellationError.cancelled == error:
+            case .failure(let error) where error is CancellationError:
                 return Future.failed(error)
             default:
                 return Future.failed(TestError.failed2)
@@ -286,11 +286,11 @@ class FutureTransformTests: XCTestCase {
             XCTFail("unexpected success")
             expect.fulfill()
         }.onFailure { error in
-            XCTAssertTrue(CancellationError.cancelled == error, "Error: \(String(reflecting: error))")
+            XCTAssertTrue(error is CancellationError, "Error: \(String(reflecting: error))")
             expect.fulfill()
         }
         
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
 

@@ -140,7 +140,7 @@ class ClosureRegistryTests: XCTestCase {
     func testRegistredHandlersWillExecuteOnRun1() {
         var registry = ClosureRegistry<String>()
 
-        let expect1 = self.expectation(withDescription: "handler1 should be called")
+        let expect1 = self.expectation(description: "handler1 should be called")
 
         _ = registry.register({ s in
             XCTAssertEqual("OK", s)
@@ -148,14 +148,14 @@ class ClosureRegistryTests: XCTestCase {
         })
 
         registry.resume("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testRegistredHandlersWillExecuteOnRun2() {
         var registry = ClosureRegistry<String>()
 
-        let expect1 = self.expectation(withDescription: "handler1 should be called")
-        let expect2 = self.expectation(withDescription: "handler2 should be called")
+        let expect1 = self.expectation(description: "handler1 should be called")
+        let expect2 = self.expectation(description: "handler2 should be called")
 
         _ = registry.register({ s in
             XCTAssertEqual("OK", s)
@@ -168,7 +168,7 @@ class ClosureRegistryTests: XCTestCase {
         })
 
         registry.resume("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
 
@@ -176,9 +176,9 @@ class ClosureRegistryTests: XCTestCase {
     func testRegistredHandlersWillExecuteOnRun3() {
         var registry = ClosureRegistry<String>()
 
-        let expect1 = self.expectation(withDescription: "handler1 should be called")
-        let expect2 = self.expectation(withDescription: "handler2 should be called")
-        let expect3 = self.expectation(withDescription: "handler2 should be called")
+        let expect1 = self.expectation(description: "handler1 should be called")
+        let expect2 = self.expectation(description: "handler2 should be called")
+        let expect3 = self.expectation(description: "handler2 should be called")
 
 
         _ = registry.register({ s in
@@ -197,7 +197,7 @@ class ClosureRegistryTests: XCTestCase {
         })
 
         registry.resume("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
 
@@ -205,9 +205,9 @@ class ClosureRegistryTests: XCTestCase {
     func testUnregistredHandlersWillNotExecuteOnRun1() {
         var registry = ClosureRegistry<String>()
 
-        let expect1 = self.expectation(withDescription: "handler1 should be called")
-        let expect2 = self.expectation(withDescription: "handler2 should be called")
-        let expect3 = self.expectation(withDescription: "handler3 should be called")
+        let expect1 = self.expectation(description: "handler1 should be called")
+        let expect2 = self.expectation(description: "handler2 should be called")
+        let expect3 = self.expectation(description: "handler3 should be called")
 
 
         let id0 = registry.register({ s in
@@ -233,16 +233,16 @@ class ClosureRegistryTests: XCTestCase {
         _ = registry.unregister(id0)
 
         registry.resume("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
 
     func testUnregistredHandlersWillNotExecuteOnRun2() {
         var registry = ClosureRegistry<String>()
 
-        let expect1 = self.expectation(withDescription: "handler1 should be called")
-        let expect2 = self.expectation(withDescription: "handler2 should be called")
-        let expect3 = self.expectation(withDescription: "handler3 should be called")
+        let expect1 = self.expectation(description: "handler1 should be called")
+        let expect2 = self.expectation(description: "handler2 should be called")
+        let expect3 = self.expectation(description: "handler3 should be called")
 
 
         let _ = registry.register({ s in
@@ -268,15 +268,15 @@ class ClosureRegistryTests: XCTestCase {
         _ = registry.unregister(id0)
 
         registry.resume("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testUnregistredHandlersWillNotExecuteOnRun3() {
         var registry = ClosureRegistry<String>()
 
-        let expect1 = self.expectation(withDescription: "handler1 should be called")
-        let expect2 = self.expectation(withDescription: "handler2 should be called")
-        let expect3 = self.expectation(withDescription: "handler3 should be called")
+        let expect1 = self.expectation(description: "handler1 should be called")
+        let expect2 = self.expectation(description: "handler2 should be called")
+        let expect3 = self.expectation(description: "handler3 should be called")
 
 
         let _ = registry.register({ s in
@@ -302,7 +302,7 @@ class ClosureRegistryTests: XCTestCase {
         _ = registry.unregister(id0)
 
         registry.resume("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
 
@@ -310,9 +310,9 @@ class ClosureRegistryTests: XCTestCase {
     func testUnregistredHandlersWillNotExecuteOnRun4() {
         var registry = ClosureRegistry<String>()
 
-        let expect1 = self.expectation(withDescription: "handler1 should be called")
-        let expect2 = self.expectation(withDescription: "handler2 should be called")
-        let expect3 = self.expectation(withDescription: "handler3 should be called")
+        let expect1 = self.expectation(description: "handler1 should be called")
+        let expect2 = self.expectation(description: "handler2 should be called")
+        let expect3 = self.expectation(description: "handler3 should be called")
 
 
         let _ = registry.register({ s in
@@ -338,7 +338,7 @@ class ClosureRegistryTests: XCTestCase {
         _ = registry.unregister(id0)
 
         registry.resume("OK")
-        waitForExpectations(withTimeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
 

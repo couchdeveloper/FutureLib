@@ -5,6 +5,8 @@
 //
 
 import XCTest
+import FutureLib
+
 
 class MyCancelable: Cancelable {
 

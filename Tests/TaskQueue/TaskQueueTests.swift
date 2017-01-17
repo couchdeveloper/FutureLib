@@ -23,7 +23,7 @@ class TaskQueueTests: XCTestCase {
 
     // FIXME: Thread Sanitizer fails
     func testMaxConcurrentTaskEquals1() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 1
         let g = DispatchGroup()
         var i: Int32 = 0
@@ -43,12 +43,12 @@ class TaskQueueTests: XCTestCase {
         g.notify(queue: DispatchQueue.main) {
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
     // FIXME: Thread Sanitizer fails    
     func testMaxConcurrentTaskEquals2() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 2
         let g = DispatchGroup()
         var i: Int32 = 0
@@ -68,12 +68,12 @@ class TaskQueueTests: XCTestCase {
         g.notify(queue: DispatchQueue.main) {
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     // FIXME: Thread Sanitizer fails    
     func testMaxConcurrentTaskEquals3() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 3
         let g = DispatchGroup()
         var i: Int32 = 0
@@ -93,12 +93,12 @@ class TaskQueueTests: XCTestCase {
         g.notify(queue: DispatchQueue.main) {
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
     // FIXME: Thread Sanitizer fails        
     func testMaxConcurrentTaskEquals4() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let maxConcurrentTasks: Int32 = 4
         let g = DispatchGroup()
         var i: Int32 = 0
@@ -118,7 +118,7 @@ class TaskQueueTests: XCTestCase {
         g.notify(queue: DispatchQueue.main) {
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
 

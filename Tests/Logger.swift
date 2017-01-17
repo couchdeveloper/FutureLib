@@ -168,19 +168,19 @@ public protocol StreamEventTargetType: EventTargetType, Flushable {
 
 
 
-public protocol FlushableOutputStreamType: class, OutputStream, Flushable {
+public protocol FlushableOutputStreamType: TextOutputStream, Flushable {
 }
 
 
 
-private struct StdOutputStream: FlushableOutputStreamType {
+private class StdOutputStream: FlushableOutputStreamType {
     func write(_ string: String) { fputs(string, stdout) }
     func flush() { fflush(stdout)}
 }
 
 
 
-private struct StdErrorStream: FlushableOutputStreamType {
+private class StdErrorStream: FlushableOutputStreamType {
     func write(_ string: String) { fputs(string, stdout) }
     func flush() { fflush(stderr)}
 }
@@ -267,13 +267,14 @@ public class StreamEventTarget: StreamEventTargetType {
         event: Event<T>,
         writeOptions: WriteOptions,
         eventOptions: EventOptions,
-        dateFormat: (_ timeval: timeval)-> String,
+        dateFormat: @escaping (timeval) -> String,
         executionQueue eq: DispatchQueue)
     {
-        let f: ()->() = {
+
+        func format() {
             var hasSeparator = true
             if eventOptions.contains(.TimeStamp) {
-                ostream.write("\(dateFormat(timeval: event.timeStamp)) ")
+                ostream.write("\(dateFormat(event.timeStamp)) ")
                 hasSeparator = true
             }
             if eventOptions.contains(.ThreadId) {
@@ -335,10 +336,10 @@ public class StreamEventTarget: StreamEventTargetType {
             ostream.write("\n")
         }
         if writeOptions.contains(.Sync) {
-            eq.sync(execute: f)
+            eq.sync(execute: { format() })
         }
         else {
-            eq.async(execute: f)
+            eq.async(execute: { format() } )
         }
     }
 
@@ -395,7 +396,7 @@ public class StreamEventTarget: StreamEventTargetType {
 
 public class Logger {
 
-    private let _syncQueue = DispatchQueue(label: "Logger sync_queue", attributes: DispatchQueueAttributes.concurrent)
+    private let _syncQueue = DispatchQueue(label: "Logger sync_queue", attributes: .concurrent)
 
 
 

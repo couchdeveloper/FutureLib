@@ -23,7 +23,7 @@ class PromiseTests: XCTestCase {
 
 
     func testPromiseVoidDefaultCtorCreatesPendingFuture() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
         let p = Promise<Void>()
 
         let future = p.future!
@@ -35,11 +35,11 @@ class PromiseTests: XCTestCase {
         }
 
         p.fulfill()
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testPromiseVoidCtorWithValueCreatesFulfilledFuture() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
         let p = Promise<Void>(value: ())
 
         let future = p.future!
@@ -50,11 +50,11 @@ class PromiseTests: XCTestCase {
             expect1.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testPromiseVoidCtorWithErrorCreatesRejectedFuture() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
         let p = Promise<Void>(error: TestError.failed)
 
         let future = p.future!
@@ -65,7 +65,7 @@ class PromiseTests: XCTestCase {
             expect1.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
 

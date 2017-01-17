@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import FutureLib
 
 class CancellationOperatorsTests: XCTestCase {
 

@@ -29,7 +29,7 @@ class FutureBasicContinuationsTests: XCTestCase {
 
     // MARK: onComplete(_:)
     func testGivenAPendingFutureWithCompletionHandlerWhenFulfilledItShouldExecuteHandler1() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.01) {
@@ -44,11 +44,11 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithCompletionHandlerWhenRejectedItShouldExecuteHandler1() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.01) {
@@ -64,11 +64,11 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAFulfilledFutureWhenRegisteringCompletionHandlerItShouldExecuteHandler1() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>(value: "OK")
             return promise.future!
@@ -76,11 +76,11 @@ class FutureBasicContinuationsTests: XCTestCase {
         test().onComplete { r in
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenARejectedFutureWhenRegisteringCompletionHandlerItShouldExecuteHandler1() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>(error: TestError.failed)
             return promise.future!
@@ -93,13 +93,13 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     // MARK: onComplete(cancellationToken:_:)
     func testGivenAPendingFutureWithCompletionHandlerWhenFulfilledItShouldExecutedHandler2() {
         // with cancellation token
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
@@ -115,11 +115,11 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithCompletionHandlerWhenRejectedItShouldExecuteHandler2() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
@@ -136,11 +136,11 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAFulfilledFutureWhenRegisteringCompletionHandlerItShouldExecuteHandler2() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>(value: "OK")
@@ -153,11 +153,11 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenARejectedFutureWhenRegisteringCompletionHandlerItShouldExecuteHandler2() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>(error: TestError.failed)
@@ -171,7 +171,7 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
@@ -179,7 +179,7 @@ class FutureBasicContinuationsTests: XCTestCase {
 
     func testGivenAPendingFutureWithCompletionHandlerAndCancellationTokenWhenCancelledItShouldExecutedHandlerWithCancellationError() {
         // with cancellation token
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
@@ -192,20 +192,20 @@ class FutureBasicContinuationsTests: XCTestCase {
             switch (r) {
             case .success(let value): XCTFail("unexpected success: \(value)")
             case .failure(let error):
-                XCTAssertTrue(CancellationError.cancelled == error)
+                XCTAssertTrue(error is CancellationError, String(reflecting: error))
             }
             expect.fulfill()
         }
         schedule_after(0.01) {
             cr.cancel()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
     func testGivenAFulfilledFutureWithCompletionHandlerAndCancellationTokenWhenCancelledItShouldExecuteHandlerWithResult() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "cancellation should be requested")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "cancellation should be requested")
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>(value: "OK")
@@ -222,12 +222,12 @@ class FutureBasicContinuationsTests: XCTestCase {
             cr.cancel()
             expect2.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenARejectedFutureWithCompletionHandlerAndCancellationTokenWhenCancelledItShouldExecuteHandlerWithResult() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "cancellation should be requested")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "cancellation should be requested")
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>(error: TestError.failed)
@@ -245,7 +245,7 @@ class FutureBasicContinuationsTests: XCTestCase {
             cr.cancel()
             expect2.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
@@ -253,7 +253,7 @@ class FutureBasicContinuationsTests: XCTestCase {
 
     func testGivenAPendingFutureWithCompletionHandlerAndCancellationTokenWithCancellationRequestedItShouldExecutedHandlerWithCancellationError() {
         // with cancellation token
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         cr.cancel()
         let test: ()->Future<String> = {
@@ -267,16 +267,16 @@ class FutureBasicContinuationsTests: XCTestCase {
             switch (r) {
             case .success(let value): XCTFail("unexpected success: \(value)")
             case .failure(let error):
-                XCTAssertTrue(CancellationError.cancelled == error)
+                XCTAssertTrue(error is CancellationError, String(reflecting: error))
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
     func testGivenAFulfilledFutureWithCompletionHandlerAndCancellationTokenWithCancellationRequestedItShouldExecutedHandlerWithCancellationError() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         cr.cancel()
         let test: ()->Future<String> = {
@@ -287,15 +287,15 @@ class FutureBasicContinuationsTests: XCTestCase {
             switch (r) {
             case .success(let value): XCTFail("unexpected success: \(value)")
             case .failure(let error):
-                XCTAssertTrue(CancellationError.cancelled == error)
+                XCTAssertTrue(error is CancellationError, String(reflecting: error))
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenARejectedFutureWithCompletionHandlerAndCancellationTokenWithCancellationRequestedItShouldExecutedHandlerWithCancellationError() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         cr.cancel()
         let test: ()->Future<String> = {
@@ -306,11 +306,11 @@ class FutureBasicContinuationsTests: XCTestCase {
             switch (r) {
             case .success(let value): XCTFail("unexpected success: \(value)")
             case .failure(let error):
-                XCTAssertTrue(CancellationError.cancelled == error)
+                XCTAssertTrue(error is CancellationError, String(reflecting: error))
             }
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
@@ -318,8 +318,8 @@ class FutureBasicContinuationsTests: XCTestCase {
     // MARK: onComplete(on:_:)
     func testGivenAPendingFutureWithCompletionHandlerWhenFulfilledItShouldExecutedHandlerOnGivenExecutionContext() {
         // with cancellation token
-        let expect = self.expectation(withDescription: "future should be fulfilled")
-        let queue = DispatchQueue(label: "test_queue", attributes: DispatchQueueAttributes.serial)
+        let expect = self.expectation(description: "future should be fulfilled")
+        let queue = DispatchQueue(label: "test_queue")
         let ec = GCDAsyncExecutionContext(queue)
         let test: ()->Future<String> = {
             let promise = Promise<String>()
@@ -338,12 +338,12 @@ class FutureBasicContinuationsTests: XCTestCase {
             XCTAssertEqual("test_queue", label)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithCompletionHandlerWhenRejectedItShouldExecuteHandlerOnGivenExecutionContext() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
-        let queue = DispatchQueue(label: "test_queue", attributes: DispatchQueueAttributes.serial)
+        let expect = self.expectation(description: "future should be fulfilled")
+        let queue = DispatchQueue(label: "test_queue")
         let ec = GCDAsyncExecutionContext(queue)
         let test: ()->Future<String> = {
             let promise = Promise<String>()
@@ -362,12 +362,12 @@ class FutureBasicContinuationsTests: XCTestCase {
             XCTAssertEqual("test_queue", label)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAFulfilledFutureWhenRegisteringCompletionHandlerItShouldExecuteHandlerOnGivenExecutionContext() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
-        let queue = DispatchQueue(label: "test_queue", attributes: DispatchQueueAttributes.serial)
+        let expect = self.expectation(description: "future should be fulfilled")
+        let queue = DispatchQueue(label: "test_queue")
         let ec = GCDAsyncExecutionContext(queue)
         let test: ()->Future<String> = {
             let promise = Promise<String>(value: "OK")
@@ -378,12 +378,12 @@ class FutureBasicContinuationsTests: XCTestCase {
             XCTAssertEqual("test_queue", label)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenARejectedFutureWhenRegisteringCompletionHandlerItShouldExecuteHandlerOnGivenExecutionContext() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
-        let queue = DispatchQueue(label: "test_queue", attributes: DispatchQueueAttributes.serial)
+        let expect = self.expectation(description: "future should be fulfilled")
+        let queue = DispatchQueue(label: "test_queue")
         let ec = GCDAsyncExecutionContext(queue)
         let test: ()->Future<String> = {
             let promise = Promise<String>(error: TestError.failed)
@@ -399,7 +399,7 @@ class FutureBasicContinuationsTests: XCTestCase {
             XCTAssertEqual("test_queue", label)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
@@ -407,7 +407,7 @@ class FutureBasicContinuationsTests: XCTestCase {
     // MARK: onSuccess(_:)
 
     func testGivenAPendingFutureWithSuccessHandlerWhenFulfilledItShouldExecuteHandler1() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.01) {
@@ -419,7 +419,7 @@ class FutureBasicContinuationsTests: XCTestCase {
             XCTAssertEqual("OK", value)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithSuccessHandlerWhenRejectedItShouldNotExecuteHandler1() {
@@ -436,7 +436,7 @@ class FutureBasicContinuationsTests: XCTestCase {
     }
 
     func testGivenAFulfilledFutureWhenRegisteringSuccessHandlerItShouldExecuteHandler1() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>(value: "OK")
             return promise.future!
@@ -445,7 +445,7 @@ class FutureBasicContinuationsTests: XCTestCase {
             XCTAssertEqual("OK", value)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenARejectedFutureWhenRegisteringSuccessHandlerItShouldNotExecutedHandler1() {
@@ -461,7 +461,7 @@ class FutureBasicContinuationsTests: XCTestCase {
 
     // MARK: onSuccess(cancellationToken:_:)
     func testGivenAPendingFutureWithSuccessHandlerWhenFulfilledItShouldExecuteHandler2() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
@@ -474,12 +474,12 @@ class FutureBasicContinuationsTests: XCTestCase {
             XCTAssertEqual("OK", value)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     // FIXME: Thread Sanitizer fails    
     func testGivenAPendingFutureWithSuccessHandlerWhenRejectedItShouldNotExecutedHandler2() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
@@ -495,11 +495,11 @@ class FutureBasicContinuationsTests: XCTestCase {
         future.onComplete { _ in
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testGivenAFulfilledFutureWhenRegisteringSuccessHandlerItShouldExecuteHandler2() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>(value: "OK")
@@ -509,7 +509,7 @@ class FutureBasicContinuationsTests: XCTestCase {
             XCTAssertEqual("OK", value)
             expect.fulfill()
         }
-        self.waitForExpectations(withTimeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testGivenARejectedFutureWhenRegisteringSuccessHandlerItShouldNotExecuteHandler2() {
@@ -543,7 +543,7 @@ class FutureBasicContinuationsTests: XCTestCase {
     }
 
     func testGivenAPendingFutureWithFailureHandlerWhenRejectedItShouldExecutedHandler1() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let test:()->() = {
             let future = promise.future!
@@ -554,7 +554,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         }
         test()
         promise.reject(TestError.failed)
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAFulfilledFutureWhenRegisteringFailureHandlerItShouldNotExecuteHandler1() {
@@ -569,7 +569,7 @@ class FutureBasicContinuationsTests: XCTestCase {
     }
 
     func testGivenARejectedFutureWhenRegisteringFailureHandlerItShouldExecuteHandler1() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>(error: TestError.failed)
         let test:()->() = {
             let future = promise.future!
@@ -579,7 +579,7 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
@@ -597,7 +597,7 @@ class FutureBasicContinuationsTests: XCTestCase {
     }
 
     func testGivenAPendingFutureWithFailureHandlerWhenRejectedItShouldExecutedHandler2() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let cr = CancellationRequest()
         let test:()->() = {
@@ -609,7 +609,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         }
         test()
         promise.reject(TestError.failed)
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAFulfilledFutureWhenRegisteringFailureHandlerItShouldNotExecuteHandler2() {
@@ -625,7 +625,7 @@ class FutureBasicContinuationsTests: XCTestCase {
     }
 
     func testGivenARejectedFutureWhenRegisteringFailureHandlerItShouldExecuteHandler2() {
-        let expect = self.expectation(withDescription: "future should be fulfilled")
+        let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>(error: TestError.failed)
         let cr = CancellationRequest()
         let test:()->() = {
@@ -636,7 +636,7 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
         }
         test()
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 

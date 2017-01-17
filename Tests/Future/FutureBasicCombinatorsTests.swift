@@ -50,8 +50,8 @@ class FutureBasicCombinatorsTests: XCTestCase {
 
 
     func testGivenAPendingFutureWithMapFunctionWhenFulfilledItShouldExecuteHandler1() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let test:()->Future<Int> = {
             let future = promise.future!
@@ -68,12 +68,12 @@ class FutureBasicCombinatorsTests: XCTestCase {
         }
 
         promise.fulfill("OK")
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithThrowingMapFunctionWhenFulfilledItShouldExecuteHandler1() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let test:()->Future<Int> = {
             let future = promise.future!
@@ -90,12 +90,12 @@ class FutureBasicCombinatorsTests: XCTestCase {
         }
 
         promise.fulfill("OK")
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
     func testGivenAPendingFutureWithMapFunctionWhenRejectedItShouldPropagateError1() {
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let test:()->Future<Int> = {
             let future = promise.future!
@@ -111,12 +111,12 @@ class FutureBasicCombinatorsTests: XCTestCase {
         }
 
         promise.reject(TestError.failed)
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithMapFunctionWhenFulfilledItShouldExecuteHandler2() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let promise = Promise<String>()
         let test:()->Future<Int> = {
@@ -134,12 +134,12 @@ class FutureBasicCombinatorsTests: XCTestCase {
         }
 
         promise.fulfill("OK")
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithThrowingMapFunctionWhenFulfilledItShouldExecuteHandler2() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let promise = Promise<String>()
         let test:()->Future<Int> = {
@@ -157,11 +157,11 @@ class FutureBasicCombinatorsTests: XCTestCase {
         }
 
         promise.fulfill("OK")
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithMapFunctionWhenRejectedItShouldPropagateError2() {
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let cr = CancellationRequest()
         let test:()->Future<Int> = {
@@ -178,13 +178,13 @@ class FutureBasicCombinatorsTests: XCTestCase {
         }
 
         promise.reject(TestError.failed)
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
     func testGivenAFulfilledFutureWithMapFunctionItShouldExecuteHandler1() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>(value: "OK")
         let test:()->Future<Int> = {
             let future = promise.future!
@@ -200,12 +200,12 @@ class FutureBasicCombinatorsTests: XCTestCase {
             expect2.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAFulfilledFutureWithThrowingMapFunctionItShouldExecuteHandler1() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>(value: "OK")
         let test:()->Future<Int> = {
             let future = promise.future!
@@ -221,11 +221,11 @@ class FutureBasicCombinatorsTests: XCTestCase {
             expect2.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenARejectededFutureWithMapFunctionItShouldPropagateError1() {
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>(error: TestError.failed)
         let test:()->Future<Int> = {
             let future = promise.future!
@@ -240,12 +240,12 @@ class FutureBasicCombinatorsTests: XCTestCase {
             expect2.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAFulfilledFutureWithMapFunctionItShouldExecuteHandler2() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let promise = Promise<String>(value: "OK")
         let test:()->Future<Int> = {
@@ -262,12 +262,12 @@ class FutureBasicCombinatorsTests: XCTestCase {
             expect2.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAFulfilledFutureWithThrowingMapFunctionItShouldExecuteHandler2() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let promise = Promise<String>(value: "OK")
         let test:()->Future<Int> = {
@@ -284,11 +284,11 @@ class FutureBasicCombinatorsTests: XCTestCase {
             expect2.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenARejectedFutureWithMapFunctionItShouldPropagateError2() {
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>(error: TestError.failed)
         let cr = CancellationRequest()
         let test:()->Future<Int> = {
@@ -304,7 +304,7 @@ class FutureBasicCombinatorsTests: XCTestCase {
             expect2.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
@@ -334,8 +334,8 @@ class FutureBasicCombinatorsTests: XCTestCase {
 
 
     func testGivenAPendingFutureWithFlatMapFunctionWhenFulfilledItShouldExecuteHandler1() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         //let future = promise.future!
         promise.future!.flatMap { value -> Future<Int> in
@@ -349,11 +349,11 @@ class FutureBasicCombinatorsTests: XCTestCase {
         }
 
         promise.fulfill("OK")
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithFlatMapFunctionWhenRejectedItShouldPropagateError1() {
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         promise.future!.flatMap { value -> Future<Int> in
             XCTFail("unexpected success")
@@ -365,12 +365,12 @@ class FutureBasicCombinatorsTests: XCTestCase {
         }
 
         promise.reject(TestError.failed)
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithFlatMapFunctionWhenFulfilledItShouldExecuteHandler2() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let promise = Promise<String>()
         promise.future!.flatMap(ct: cr.token) { value -> Future<Int> in
@@ -384,11 +384,11 @@ class FutureBasicCombinatorsTests: XCTestCase {
         }
 
         promise.fulfill("OK")
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAPendingFutureWithFlatMapFunctionWhenRejectedItShouldPropagateError2() {
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
         let cr = CancellationRequest()
         promise.future!.flatMap(ct: cr.token) { value -> Future<Int> in
@@ -401,13 +401,13 @@ class FutureBasicCombinatorsTests: XCTestCase {
         }
 
         promise.reject(TestError.failed)
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 
     func testGivenAFulfilledFutureWithFlatMapFunctionItShouldExecuteHandler1() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>(value: "OK")
         promise.future!.flatMap { value -> Future<Int> in
             XCTAssertEqual("OK", value)
@@ -419,11 +419,11 @@ class FutureBasicCombinatorsTests: XCTestCase {
             expect2.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenARejectededFutureWithFlatMapFunctionItShouldPropagateError1() {
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>(error: TestError.failed)
         promise.future!.flatMap { value -> Future<Int> in
             XCTFail("unexpected success")
@@ -434,12 +434,12 @@ class FutureBasicCombinatorsTests: XCTestCase {
             expect2.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenAFulfilledFutureWithFlatMapFunctionItShouldExecuteHandler2() {
-        let expect1 = self.expectation(withDescription: "future should be fulfilled")
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect1 = self.expectation(description: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         let promise = Promise<String>(value: "OK")
         promise.future!.flatMap(ct: cr.token) { value -> Future<Int> in
@@ -452,11 +452,11 @@ class FutureBasicCombinatorsTests: XCTestCase {
             expect2.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testGivenARejectedFutureWithFlatMapFunctionItShouldPropagateError2() {
-        let expect2 = self.expectation(withDescription: "future should be fulfilled")
+        let expect2 = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>(error: TestError.failed)
         let cr = CancellationRequest()
         promise.future!.flatMap(ct: cr.token) { value -> Future<Int> in
@@ -468,7 +468,7 @@ class FutureBasicCombinatorsTests: XCTestCase {
             expect2.fulfill()
         }
 
-        self.waitForExpectations(withTimeout: timeout, handler: nil)
+        self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
 

@@ -47,7 +47,7 @@ internal class Timer {
         _ seconds: TimeInterval, 
         queue: DispatchQueue = DispatchQueue.global(), 
         tolerance: TimeInterval = 0, 
-        f: TimerHandler) -> Timer
+        f: @escaping TimerHandler) -> Timer
     {
         let leeway: DispatchTimeInterval = .nanoseconds(Int(tolerance * 1e9 + 0.5))
         let flags: DispatchSource.TimerFlags = seconds == 0 ? .strict : []  
@@ -63,7 +63,7 @@ internal class Timer {
     
     
     private init(flags: DispatchSource.TimerFlags, queue: DispatchQueue) {
-        _timer = DispatchSource.timer(flags: flags, queue: queue)
+        _timer = DispatchSource.makeTimerSource(flags: flags, queue: queue)
     }
     
     deinit {
@@ -95,6 +95,6 @@ internal class Timer {
  Submits the block on the specifie queue and executed it after the specified delay.
  The delay is as accurate as possible.
  */
-internal func schedule_after(_ delay: Timer.TimeInterval, queue: DispatchQueue = DispatchQueue.global(), f: () -> ()) {
+internal func schedule_after(_ delay: Timer.TimeInterval, queue: DispatchQueue = DispatchQueue.global(), f: @escaping () -> ()) {
     Timer.scheduleAfter(delay, queue: queue, f: f)
 }

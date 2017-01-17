@@ -71,7 +71,7 @@ class FutureRecoverTests: XCTestCase {
 
     func testRecoverReturnsFailedFutureWithPendingFutureInvokesRecoverHandlerWhichThrowsErrorWhenCompletedWithError() {
         let expect1 = self.expectation(description: "future1 should be completed")
-        let expect2 = self.expectation(withDescription: "future2 should be completed")
+        let expect2 = self.expectation(description: "future2 should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
             schedule_after(0.001) {

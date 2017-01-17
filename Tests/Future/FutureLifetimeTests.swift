@@ -281,6 +281,7 @@ class FutureLifetimeTests: XCTestCase {
             promise.future!.onFailure { error in
                 guard case PromiseError.brokenPromise = error else {
                     XCTFail("Invalid kind of error: \(String(reflecting: error)))")
+                    return
                 }
                 expect.fulfill()
             }
