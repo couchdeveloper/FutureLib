@@ -23,7 +23,7 @@ private var queueIDKey = DispatchSpecificKey<ObjectIdentifier>()
 */
 struct Synchronize {
 
-    let syncQueue: DispatchQueue
+    internal let syncQueue: DispatchQueue
     static let name: StaticString = "sync-queue"
 
     /**
@@ -48,7 +48,7 @@ struct Synchronize {
 
 
     /**
-        Returns true if the current thread is synchronized with the syncQueue.
+        Returns true if the current thread is synchronized with `self`'s synchronization context.
     */
     func isSynchronized() -> Bool {
         let syncQueueId = ObjectIdentifier(syncQueue)
@@ -64,15 +64,12 @@ struct Synchronize {
     //    return v
     //}
 
-    /// The function readSyncSafe executes the closure on the synchronization execution
-    /// context and waits for completion.
-    /// The closure can safely read the objects associated to the context. However,
-    /// the closure must not modify the objects associated to the context.
-    /// If the current execution context is already the synchronization context the
-    /// function directly calls the closure. Otherwise it dispatches it on the synchronization
-    /// context.
+    /// The function `readSyncSafe` ensures that the nonescaping closure `f` will be
+    /// synchronoulsy executed on the synchronization context.
+    /// The closure can safely read the objects associated with the context. However,
+    /// the closure must not modify the objects associated with the context.
     /// - parameter f: The closure.
-    func readSyncSafe(/*@noescape*/ _ f: () -> ()) {
+    func readSyncSafe( _ f: () -> ()) {
         if isSynchronized() {
             f()
         } else {
@@ -80,27 +77,25 @@ struct Synchronize {
         }
     }
 
-    /// The function readSync executes the closure on the synchronization execution
-    /// context and waits for completion.
-    /// The current execution context must not already be the synchronization context,
+    /// The function `readSync` synchronously executes the closure `f` on the 
+    /// synchronization context.
+    /// The current execution context MUST NOT already be the synchronization context,
     /// otherwise the function will dead lock.
     /// The closure can safely read the objects associated to the context. However,
     /// the closure must not modify the objects associated to the context.
-    /// The closure will be dispatched on the synchronization context and waits for completion.
     /// - parameter f: The closure.
-    func readSync(/*@noescape*/ _ f: () -> ()) {
+    func readSync(_ f: () -> ()) {
         assert(!isSynchronized(), "Will deadlock")
-        //dispatchPrecondition(condition: .notOnQueue(syncQueue))
         syncQueue.sync(execute: f)
     }
 
-    /// The function writeAsync asynchronously executes the closure on the synchronization
-    /// execution context and returns immediately.
+    /// The function `writeAsync` asynchronously executes the closure on the synchronization
+    /// context and returns immediately.
     /// The closure can safely modify the objects associated to the context. No other
     /// concurrent read or write operation can interfere.
     /// - parameter f: The closure.
     func writeAsync(_ f: @escaping () -> ()) {
-        // TODO: syncQueue.async(flags: .barrier, execute: f)
+        //FIXME: syncQueue.async(flags: .barrier, execute: f)
         syncQueue.async(execute: f)
     }
 
@@ -111,10 +106,9 @@ struct Synchronize {
     /// The current execution context must not already be the synchronization context,
     /// otherwise the function will dead lock.
     /// - parameter f: The closure.
-    func writeSync(/*@noescape*/ _ f: () -> ()) {
+    func writeSync(_ f: () -> ()) {
         assert(!isSynchronized(), "Will deadlock")
-        //dispatchPrecondition(condition: .notOnQueue(syncQueue))
-        // TODO: syncQueue.sync(flags: .barrier, execute: f)
+        // FIXME: syncQueue.sync(flags: .barrier, execute: f)
         syncQueue.sync(execute: f)
     }
 
