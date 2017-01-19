@@ -160,7 +160,7 @@ extension Sequence
         combine: @escaping (U, Iterator.Element.ValueType) throws -> U)
         -> Future<U> {
         return self.reduce(Future.succeeded(initial)) { (combined, element) -> Future<U> in
-            return combined.flatMap(ec: SynchronousCurrent(), ct: ct) { (combinedValue) -> Future<U> in
+            return combined.flatMap(ct: ct) { (combinedValue) -> Future<U> in
                 return element.map(ec: ec, ct: ct) { (elementValue) -> U in
                     return try combine(combinedValue, elementValue)
                 }
@@ -179,7 +179,7 @@ extension Sequence
      */
     public func sequence(ct: CancellationTokenType = CancellationTokenNone())
         -> Future<[Iterator.Element.ValueType]> {
-        return fold(ec: SynchronousCurrent(), ct: ct, initial: ()) { _, _ -> Void in }
+        return fold(ct: ct, initial: ()) { _, _ -> Void in }
         .map {
             return self.map {
                 if let r = $0.result {
