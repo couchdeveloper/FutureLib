@@ -127,7 +127,7 @@ let future2 = downloadRecentImagesFromFollowers2(cr.token).map { arrayImages in
 }
 
 //: Later, if we need to cancel for some reason, we call `cancel`:
-schedule_after(3) {
+DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(3000)) {
     cr.cancel()
 }
 future2.onFailure { error in
