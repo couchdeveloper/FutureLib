@@ -59,13 +59,10 @@
 		A10E9E6A1C3BBD8600CD5B07 /* AggregateErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F8FCCC1C3BB3A6008AC595 /* AggregateErrorTests.swift */; };
 		A10E9E6B1C3BBD8800CD5B07 /* AggregateErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F8FCCC1C3BB3A6008AC595 /* AggregateErrorTests.swift */; };
 		A10E9E6C1C3BBD9100CD5B07 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
-		A10E9E6D1C3BBD9100CD5B07 /* schedule_after.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93C1C15EAFC0019060A /* schedule_after.swift */; };
 		A10E9E6E1C3BBD9100CD5B07 /* TestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9411C15EAFC0019060A /* TestError.swift */; };
 		A10E9E6F1C3BBD9300CD5B07 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
-		A10E9E701C3BBD9300CD5B07 /* schedule_after.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93C1C15EAFC0019060A /* schedule_after.swift */; };
 		A10E9E711C3BBD9300CD5B07 /* TestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9411C15EAFC0019060A /* TestError.swift */; };
 		A10E9E721C3BBD9500CD5B07 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1421F4F1C2B384E00B8D9BF /* Logger.swift */; };
-		A10E9E731C3BBD9500CD5B07 /* schedule_after.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB93C1C15EAFC0019060A /* schedule_after.swift */; };
 		A10E9E741C3BBD9500CD5B07 /* TestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10CB9411C15EAFC0019060A /* TestError.swift */; };
 		A12403371D1CFDE7006A48C5 /* DispatchQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12403361D1CFDE7006A48C5 /* DispatchQueueTests.swift */; };
 		A12403381D1CFDE7006A48C5 /* DispatchQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12403361D1CFDE7006A48C5 /* DispatchQueueTests.swift */; };
@@ -677,11 +674,19 @@
 			path = Tests;
 			sourceTree = "<group>";
 		};
+		A19E8CD51E2E8C310087E7A4 /* unused */ = {
+			isa = PBXGroup;
+			children = (
+				A10CB93C1C15EAFC0019060A /* schedule_after.swift */,
+			);
+			name = unused;
+			sourceTree = "<group>";
+		};
 		A1F8FCD01C3BB3DA008AC595 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				A1421F4F1C2B384E00B8D9BF /* Logger.swift */,
-				A10CB93C1C15EAFC0019060A /* schedule_after.swift */,
+				A19E8CD51E2E8C310087E7A4 /* unused */,
 				A10CB9411C15EAFC0019060A /* TestError.swift */,
 				A12FC0FA1C3BD9D900C83057 /* StringExtension.swift */,
 				A124033A1D1D003A006A48C5 /* ExeceutionContextInfo.swift */,
@@ -1089,7 +1094,6 @@
 				A1E140371DB493A5003A687B /* PromiseTests.swift in Sources */,
 				A12FC0FB1C3BD9D900C83057 /* StringExtension.swift in Sources */,
 				A1E140031DB4939D003A687B /* FutureTransformTests.swift in Sources */,
-				A10E9E6D1C3BBD9100CD5B07 /* schedule_after.swift in Sources */,
 				A1E13FFE1DB4939D003A687B /* FutureBaseMapToTests.swift in Sources */,
 				A10E9E6E1C3BBD9100CD5B07 /* TestError.swift in Sources */,
 				A1D3E5191DA4C2990011A533 /* CancellationTests.swift in Sources */,
@@ -1167,7 +1171,6 @@
 				A1E140381DB493A6003A687B /* PromiseTests.swift in Sources */,
 				A12FC0FC1C3BD9D900C83057 /* StringExtension.swift in Sources */,
 				A1E140121DB4939E003A687B /* FutureTransformTests.swift in Sources */,
-				A10E9E701C3BBD9300CD5B07 /* schedule_after.swift in Sources */,
 				A1E1400D1DB4939E003A687B /* FutureBaseMapToTests.swift in Sources */,
 				A10E9E711C3BBD9300CD5B07 /* TestError.swift in Sources */,
 				A1D3E51A1DA4C2990011A533 /* CancellationTests.swift in Sources */,
@@ -1283,7 +1286,6 @@
 				A1E140391DB493A7003A687B /* PromiseTests.swift in Sources */,
 				A12FC0FD1C3BD9D900C83057 /* StringExtension.swift in Sources */,
 				A1E140211DB4939F003A687B /* FutureTransformTests.swift in Sources */,
-				A10E9E731C3BBD9500CD5B07 /* schedule_after.swift in Sources */,
 				A1E1401C1DB4939F003A687B /* FutureBaseMapToTests.swift in Sources */,
 				A10E9E741C3BBD9500CD5B07 /* TestError.swift in Sources */,
 				A1D3E51B1DA4C2990011A533 /* CancellationTests.swift in Sources */,
@@ -1649,6 +1651,7 @@
 				OTHER_SWIFT_FLAGS = "-DDEBUG";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1691,6 +1694,7 @@
 				OTHER_SWIFT_FLAGS = "-DNDEBUG";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
