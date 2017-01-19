@@ -77,14 +77,15 @@ class TimerTests: XCTestCase {
         let expect1 = self.expectation(description: "future should be fulfilled")
         let expect2 = self.expectation(description: "future should be fulfilled")
         let stopWatch = StopWatch() 
-        let timer = FutureLib.Timer()
+        let timer1 = FutureLib.Timer()
+        let timer2 = FutureLib.Timer()
         stopWatch.start()
-        timer.scheduleOneShotAfter(delay: 0.1) { 
+        timer1.scheduleOneShotAfter(delay: 0.1) {
             let elapsedSeconds = stopWatch.time()
             XCTAssertEqualWithAccuracy(0.10, elapsedSeconds, accuracy: 0.001)
             expect1.fulfill()
         }
-        timer.scheduleOneShotAfter(delay: 0.01) { 
+        timer2.scheduleOneShotAfter(delay: 0.01) {
             let elapsedSeconds = stopWatch.time()
             XCTAssertEqualWithAccuracy(0.01, elapsedSeconds, accuracy: 0.001)
             expect2.fulfill()

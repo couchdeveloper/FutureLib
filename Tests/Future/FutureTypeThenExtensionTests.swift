@@ -29,7 +29,7 @@ class FutureThenExtensionTests: XCTestCase {
         let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.1) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -60,7 +60,7 @@ class FutureThenExtensionTests: XCTestCase {
         let expect = self.expectation(description: "future should be rejected")
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.1) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -90,7 +90,7 @@ class FutureThenExtensionTests: XCTestCase {
         let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.1) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -334,7 +334,7 @@ class FutureThenExtensionTests: XCTestCase {
         let expect = self.expectation(description: "future should be fulfilled")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.001) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -349,7 +349,7 @@ class FutureThenExtensionTests: XCTestCase {
     func testPendingFutureDoesNotInvokeThenHandlerWhenCompletedWithError1() {
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.001) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -365,7 +365,7 @@ class FutureThenExtensionTests: XCTestCase {
         let expect = self.expectation(description: "future should be fulfilled")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.001) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -381,7 +381,7 @@ class FutureThenExtensionTests: XCTestCase {
     func testPendingFutureDoesNotInvokeThenHandlerWhenCompletedWithError2() {
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.001) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -400,7 +400,7 @@ class FutureThenExtensionTests: XCTestCase {
         let expect = self.expectation(description: "future should be fulfilled")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.001) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -416,7 +416,7 @@ class FutureThenExtensionTests: XCTestCase {
     func testPendingFutureDoesNotInvokeThenHandlerWhenCompletedWithError3() {
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.001) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -435,7 +435,7 @@ class FutureThenExtensionTests: XCTestCase {
 //        let expect = self.expectationWithDescription("future should be fulfilled")
 //        let asyncTask: ()-> Future<String> = {
 //            let promise = Promise<String>()
-//            schedule_after(0.001) {
+//            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
 //                promise.fulfill("OK")
 //            }
 //            return promise.future!
@@ -455,7 +455,7 @@ class FutureThenExtensionTests: XCTestCase {
 //        let expect = self.expectationWithDescription("future should be fulfilled")
 //        let asyncTask: ()-> Future<String> = {
 //            let promise = Promise<String>()
-//            schedule_after(0.001) {
+//            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
 //                promise.reject(TestError.Failed)
 //            }
 //            return promise.future!

@@ -73,7 +73,7 @@ class FutureTransformTests: XCTestCase {
     func testTransform1WithPendingFutureWithCancellation() {
         let expect = self.expectation(description: "future should be completed")
         let cr = CancellationRequest()
-        schedule_after(0.1) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
             cr.cancel()
         }
         
@@ -164,7 +164,7 @@ class FutureTransformTests: XCTestCase {
     func testTransform2WithPendingFutureWithCancellation() {
         let expect = self.expectation(description: "future should be completed")
         let cr = CancellationRequest()
-        schedule_after(0.1) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
             cr.cancel()
         }
         
@@ -269,7 +269,7 @@ class FutureTransformTests: XCTestCase {
         
         let future = Promise.resolveAfter(1.0) { 0 }.future!
         let cr = CancellationRequest()
-        schedule_after(0.1) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
             cr.cancel()
         }
         

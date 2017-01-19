@@ -29,7 +29,7 @@ class FutureRecoverTests: XCTestCase {
         let expect = self.expectation(description: "future should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.001) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -51,7 +51,7 @@ class FutureRecoverTests: XCTestCase {
         let expect2 = self.expectation(description: "future2 should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.001) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -74,7 +74,7 @@ class FutureRecoverTests: XCTestCase {
         let expect2 = self.expectation(description: "future2 should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.001) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -99,7 +99,7 @@ class FutureRecoverTests: XCTestCase {
         let expect = self.expectation(description: "future should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.001) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -121,7 +121,7 @@ class FutureRecoverTests: XCTestCase {
         let expect2 = self.expectation(description: "future2 should be completed")
         let asyncTask: ()-> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.001) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(1)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!

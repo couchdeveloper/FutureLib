@@ -56,7 +56,7 @@ class FutureBaseContinueWithTests: XCTestCase {
 
         let task: () -> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -69,6 +69,7 @@ class FutureBaseContinueWithTests: XCTestCase {
             expect.fulfill()
         }
         self.waitForExpectations(timeout: 1, handler: nil)
+        sleep(1)
     }
 
     func testPendingFutureShouldExecuteContinuationWhenRejected() {
@@ -76,7 +77,7 @@ class FutureBaseContinueWithTests: XCTestCase {
 
         let task: () -> Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -98,7 +99,7 @@ class FutureBaseContinueWithTests: XCTestCase {
         Log.Info("1")
         func task() -> Future<String> {
             let promise = Promise<String>()
-            schedule_after(0.5) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(500)) {
                 Log.Info("2")
                 promise.fulfill("OK")
             }
@@ -113,7 +114,7 @@ class FutureBaseContinueWithTests: XCTestCase {
             expect.fulfill()
         }
 
-        schedule_after(0.01) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
             cr.cancel()
         }
         self.waitForExpectations(timeout: 1, handler: nil)

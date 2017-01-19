@@ -81,7 +81,7 @@ class FutureLifetimeTests: XCTestCase {
                 }
             }
         }
-        schedule_after(0.1) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
             promise.resolve(Try(0))
         }
         waitForExpectations(timeout: 0.2, handler: nil)
@@ -100,19 +100,18 @@ class FutureLifetimeTests: XCTestCase {
                 if case .failure = result {
                     XCTFail("unexpected failure")
                 }
-                schedule_after(0.1) {
+                DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
                     expect1.fulfill()
                 }
             }
         }
-        schedule_after(0.1) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
             promise.resolve(Try(0))
         }
         waitForExpectations(timeout: 1, handler: nil)
     }
     
     
-    // FIXME: Thread Sanitizer fails    
     func testFutureShouldDeallocateAfterThereAreNoObservers() {
         let promise = Promise<Int>()
         let expect = self.expectation(description: "future should deallocate")
@@ -121,14 +120,7 @@ class FutureLifetimeTests: XCTestCase {
                 if case .failure = result {
                     XCTFail("unexpected")
                 }                
-                // FIXME: The given execution context for the following continuation
-                // should be allowed to be arbitrary, but the Thread Sanitizer fails 
-                // when it is not the same thread where the object referenced by 
-                // the weak reference (`promise.future`) has been allocated.
-                // This _may_ be a bug in the weak reference implementation - or 
-                // a false positive.
-                // schedule_after(0.1) {                 
-                schedule_after(0.1, queue: DispatchQueue.main) { 
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
                     if case .some = promise.future {
                         XCTFail("future should be deallocated")
                     }
@@ -136,7 +128,7 @@ class FutureLifetimeTests: XCTestCase {
                 }
             }
         }
-        schedule_after(0.1) { 
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
             promise.resolve(Try(0))
         }
         waitForExpectations(timeout: 1, handler: nil)
@@ -148,9 +140,9 @@ class FutureLifetimeTests: XCTestCase {
         let expect2 = self.expectation(description: "finished")
         DispatchQueue.global().async {
             let d = Dummy(name: "imported variable", expect: expect)
-            schedule_after(0.1) { 
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
                 let _ = d
-                schedule_after(0.1) { [weak d] in
+                DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) { [weak d] in
                     print("========test========")
                     if let _ = d {
                         XCTFail("dummy should be deallocated")

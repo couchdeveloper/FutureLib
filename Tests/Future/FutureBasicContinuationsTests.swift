@@ -30,14 +30,16 @@ class FutureBasicContinuationsTests: XCTestCase {
     // MARK: onComplete(_:)
     func testGivenAPendingFutureWithCompletionHandlerWhenFulfilledItShouldExecuteHandler1() {
         let expect = self.expectation(description: "future should be fulfilled")
-        let test: ()->Future<String> = {
+        let expect2 = self.expectation(description: "should be finished")
+        func task()->Future<String> {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.fulfill("OK")
+                expect2.fulfill()
             }
             return promise.future!
         }
-        test().onComplete { r in
+        task().onComplete { r in
             switch (r) {
             case .success(let value): XCTAssert(value=="OK")
             case .failure(let error): XCTFail("unexpected error: \(error)")
@@ -51,7 +53,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -103,7 +105,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -123,7 +125,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -139,6 +141,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
+    // FIXME: Thread Sanitizer fails
     func testGivenAFulfilledFutureWhenRegisteringCompletionHandlerItShouldExecuteHandler2() {
         let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
@@ -156,6 +159,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
+    // FIXME: thread sanitizer fails
     func testGivenARejectedFutureWhenRegisteringCompletionHandlerItShouldExecuteHandler2() {
         let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
@@ -183,7 +187,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.5) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(500)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -196,7 +200,7 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
             expect.fulfill()
         }
-        schedule_after(0.01) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
             cr.cancel()
         }
         self.waitForExpectations(timeout: timeout, handler: nil)
@@ -218,13 +222,14 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
             expect1.fulfill()
         }
-        schedule_after(0.01) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
             cr.cancel()
             expect2.fulfill()
         }
         self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
+    // FIXME: Thread Sanitizer Fails
     func testGivenARejectedFutureWithCompletionHandlerAndCancellationTokenWhenCancelledItShouldExecuteHandlerWithResult() {
         let expect1 = self.expectation(description: "future should be fulfilled")
         let expect2 = self.expectation(description: "cancellation should be requested")
@@ -241,7 +246,7 @@ class FutureBasicContinuationsTests: XCTestCase {
             }
             expect1.fulfill()
         }
-        schedule_after(0.01) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
             cr.cancel()
             expect2.fulfill()
         }
@@ -258,7 +263,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         cr.cancel()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.5) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(500)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -294,15 +299,16 @@ class FutureBasicContinuationsTests: XCTestCase {
         self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
+    // FIXME: Thread Sanitizer Fails
     func testGivenARejectedFutureWithCompletionHandlerAndCancellationTokenWithCancellationRequestedItShouldExecutedHandlerWithCancellationError() {
         let expect = self.expectation(description: "future should be fulfilled")
         let cr = CancellationRequest()
         cr.cancel()
-        let test: ()->Future<String> = {
+        func task()->Future<String> {
             let promise = Promise<String>(error: TestError.failed)
             return promise.future!
         }
-        test().onComplete(ct: cr.token) { r -> () in
+        task().onComplete(ct: cr.token) { r -> () in
             switch (r) {
             case .success(let value): XCTFail("unexpected success: \(value)")
             case .failure(let error):
@@ -323,7 +329,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         let ec = GCDAsyncExecutionContext(queue)
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -347,7 +353,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         let ec = GCDAsyncExecutionContext(queue)
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -410,7 +416,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         let expect = self.expectation(description: "future should be fulfilled")
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -425,7 +431,7 @@ class FutureBasicContinuationsTests: XCTestCase {
     func testGivenAPendingFutureWithSuccessHandlerWhenRejectedItShouldNotExecuteHandler1() {
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -465,7 +471,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.fulfill("OK")
             }
             return promise.future!
@@ -483,7 +489,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         let cr = CancellationRequest()
         let test: ()->Future<String> = {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.reject(TestError.failed)
             }
             return promise.future!
@@ -582,7 +588,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         self.waitForExpectations(timeout: timeout, handler: nil)
     }
 
-
+    // FIXME: Thread Sanitizer Fails
     func testGivenAPendingFutureWithFailureHandlerWhenFulfilledItShouldNotExecuteHandler2() {
         let promise = Promise<String>()
         let cr = CancellationRequest()
@@ -596,6 +602,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         promise.fulfill("OK")
     }
 
+    // FIXME: Thread Sanitizer Fails
     func testGivenAPendingFutureWithFailureHandlerWhenRejectedItShouldExecutedHandler2() {
         let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>()
@@ -624,6 +631,7 @@ class FutureBasicContinuationsTests: XCTestCase {
         test()
     }
 
+    // FIXME: Thread Sanitizer Fails
     func testGivenARejectedFutureWhenRegisteringFailureHandlerItShouldExecuteHandler2() {
         let expect = self.expectation(description: "future should be fulfilled")
         let promise = Promise<String>(error: TestError.failed)

@@ -23,9 +23,9 @@ class FutureBaseMapToTests: XCTestCase {
     func testMapTo() {
         let expect = self.expectation(description: "future should be fulfilled")
 
-        let task: () -> Future<String> = {
+        func task() -> Future<String> {
             let promise = Promise<String>()
-            schedule_after(0.01) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(10)) {
                 promise.fulfill("OK")
             }
             return promise.future!

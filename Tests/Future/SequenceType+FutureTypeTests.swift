@@ -65,7 +65,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
                 Promise.resolveAfter(1.02) {5}.future!
             ]
             let cr = CancellationRequest()
-            schedule_after(0.5) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(500)) {
                 cr.cancel()
             }
             futures.find(ct: cr.token) { $0 == 3 }.map { value in
@@ -122,7 +122,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
     func testFirstCompletedWithCancellation() {
         let expect1 = self.expectation(description: "future should be completed")
         let cr = CancellationRequest()
-        schedule_after(0.1) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
             cr.cancel()
         }
         func t() {
@@ -200,13 +200,13 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTAssertTrue(error is CancellationError)
             expect1.fulfill()
         }
-        schedule_after(0.1) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
             cr.cancel()
         }
         self.waitForExpectations(timeout: 1, handler: nil)
     }
 
-
+    // FIXME: deadlock on sync queue
     func testTraverseCompletesWithErrorFromTask() {
         let expect1 = self.expectation(description: "future should be completed")
         let inputs = [0.05, 0.08, 0.01, 0.3]
@@ -224,7 +224,7 @@ class SequenceTypeFutureTypeTests: XCTestCase {
             XCTAssertTrue(TestError.failed == error, String(describing: error))
             expect1.fulfill()
         }
-        self.waitForExpectations(timeout: 2, handler: nil)
+        self.waitForExpectations(timeout: 20000, handler: nil)
     }
 
 
@@ -261,9 +261,13 @@ class SequenceTypeFutureTypeTests: XCTestCase {
         var i: Int32 = 0
         // The tasks confirms that only maxConcurrentTasks executing concurrently:
         let task: (String) -> Future<String> = { s in
-            XCTAssertTrue(OSAtomicIncrement32(&i) <= maxConcurrentTasks)
+            let countTasks = OSAtomicIncrement32(&i)
+            print("=== Start. Active tasks: \(countTasks)")
+
+            XCTAssertTrue(countTasks <= maxConcurrentTasks, "reason: \(i) >= \(maxConcurrentTasks)")
             return Promise<String>.resolveAfter(0.02, f: {
-                OSAtomicDecrement32(&i)
+                let countTasks = OSAtomicDecrement32(&i)
+                print("=== End. Active tasks: \(countTasks)")
                 return s.uppercased()
             }).future!
         }
