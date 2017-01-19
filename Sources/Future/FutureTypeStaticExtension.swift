@@ -80,20 +80,33 @@ extension FutureType {
      - returns: A new future.
      */
     static public func failedAfter(_ delay: Double,
-        cancellationToken: CancellationTokenType = CancellationTokenNone(),
+        cancellationToken: CancellationTokenType,
         error: Error)
         -> Future<ValueType> 
     {
         let returnedFuture = Future<ValueType>()
-        let timer = Timer()
+        let timer = DispatchSource.makeTimerSource()
         let cid = cancellationToken.onCancel {
             returnedFuture.complete(Try<ValueType>(error: CancellationError()))
             timer.cancel()
         }
-        // Perhaps, we should capture returnedFuture weakly?!
-        timer.scheduleOneShotAfter(delay: delay) {
+        timer.setEventHandler {
             returnedFuture.complete(Try<ValueType>(error: error))
-            cid?.invalidate()   
+            cid?.invalidate()
+            timer.cancel()
+        }
+        timer.scheduleOneshot(deadline: .now() + delay)
+        timer.resume()
+        return returnedFuture
+    }
+
+
+    static public func failedAfter(_ delay: Double, error: Error)
+        -> Future<ValueType>
+    {
+        let returnedFuture = Future<ValueType>()
+        DispatchQueue.global().asyncAfter(deadline: .now() + delay) { [weak returnedFuture] in
+            returnedFuture?.complete(Try<ValueType>(error: error))
         }
         return returnedFuture
     }
@@ -115,16 +128,18 @@ extension FutureType {
         -> Future<ValueType> 
     {
         let returnedFuture = Future<ValueType>()
-        let timer = Timer()
+        let timer = DispatchSource.makeTimerSource()
         let cid = cancellationToken.onCancel {
             returnedFuture.complete(Try<ValueType>(error: CancellationError()))
             timer.cancel()
         }
-        // Perhaps, we should capture returnedFuture weakly?!
-        timer.scheduleOneShotAfter(delay: delay) { _ in
+        timer.setEventHandler {
             returnedFuture.complete(Try<ValueType>(value))
             cid?.invalidate()
+            timer.cancel()
         }
+        timer.scheduleOneshot(deadline: .now() + delay)
+        timer.resume()
         return returnedFuture
     }
 
