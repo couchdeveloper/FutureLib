@@ -41,7 +41,7 @@ public class Future<T>: FutureType {
     fileprivate typealias ClosureRegistryType = ClosureRegistry<ResultType>
 
     fileprivate var _result: Try<ValueType>?
-    fileprivate var _cr: ClosureRegistryType = ClosureRegistryType() 
+    fileprivate var _cr: ClosureRegistryType? = ClosureRegistryType()
     internal let sync = _sync[Int(OSAtomicIncrement32(&_sync_id) % 7)] // Synchronize(name: "future-sync-queue-\(OSAtomicIncrement32(&_sync_id))")//
 
 
@@ -53,7 +53,22 @@ public class Future<T>: FutureType {
     }
     
     deinit {
-        //Log.Debug("\(Thread.current): ")
+        // FIXME: remove test code
+        if let r = self._result {
+            switch r {
+            case .failure(let error): error; break
+            case .success(let value): value; break
+            }
+        }
+
+        if let cr = self._cr {
+            switch cr {
+            case .empty: break
+            case .single: break
+            case .multiple: break
+            }
+        }
+        //Log.Debug("***** \(Thread.current): ")
     }
     
     /**
@@ -127,6 +142,7 @@ public class Future<T>: FutureType {
         ec: ExecutionContext = ConcurrentAsync(),
         ct: CancellationTokenType = CancellationTokenNone(),
         f: @escaping (Try<ValueType>) -> U) {
+
         sync.writeAsync {
             if ct.isCancellationRequested {
                 ec.execute {
@@ -141,24 +157,26 @@ public class Future<T>: FutureType {
                 return
             }
             var cid: EventHandlerIdType?
-            let id = self._cr.register { result in
+            let id = self._cr!.register { result in
                 assert(self.sync.isSynchronized())
                 ec.execute {
                     _ = f(result)
                 }  
+                cid?.invalidate()
                 // import `self` into the closure in order to keep a strong
                 // reference to self until after self will be completed:
                 _ = self
-                cid?.invalidate()
             }
-            // TODO: Use GCDBarrierAsyncExecutionContext!
-            cid = ct.onCancel(queue: self.sync.syncQueue) { 
-                if let callback = self._cr.unregister(id) {
-                    callback.continuation(Try<ValueType>(error: CancellationError()))
+            cid = ct.onCancel {
+                self.sync.writeSync {
+                    if let callback = self._cr?.unregister(id) {
+                        callback.continuation(Try<ValueType>(error: CancellationError()))
+                    }
                 }
             }
         }
     }
+
 
 
     /**
@@ -176,6 +194,7 @@ public class Future<T>: FutureType {
     public final func mapTo<S>(_ ct: CancellationTokenType = CancellationTokenNone())
         -> Future<S> {
         let returnedFuture = Future<S>()
+        assert(!self.sync.isSynchronized())
         self.onComplete(ec: SynchronousCurrent(), ct: ct) { [weak returnedFuture] result in
             returnedFuture?.complete(result.map {
                 guard case let mappedValue as S = $0 else { throw FutureError.invalidCast }
@@ -195,16 +214,25 @@ public class Future<T>: FutureType {
 extension Future: CompletableFutureType {
 
 
+    /// Completes `self` with the given result unless it's already completed.
+    ///
+    /// - Parameter result: The value with which `self` will be completed.
     internal final func complete(_ result: ResultType) {
-        sync.writeAsync {
+        sync.writeSync {
             self._complete(result)
         }
     }
 
+    /// Completes `self` with the given value unless it's already completed.
+    ///
+    /// - Parameter value: The value with which `self` will be completed.
     internal final func complete(_ value: ValueType) {
         complete(ResultType(value))
     }
 
+    /// Completes `self` with the given error unless it's already completed.
+    ///
+    /// - Parameter error: The error with which `self` will be completed.
     internal final func complete(_ error: Error) {
         complete(ResultType(error: error))
     }
@@ -230,11 +258,15 @@ extension Future: CompletableFutureType {
     }
 
     internal final func _complete(_ result: ResultType) {
-        assert(sync.isSynchronized())
-        assert(self._result == nil)
+        assert(sync.isSynchronized(), "access not synchronized")
+        assert(self._result == nil, "future alread completed")
+        guard self._result == nil else {
+            // Calling `complete` more than once has "no effect".
+            return
+        }
         self._result = result
-        _cr.resume(result)
-        _cr = ClosureRegistryType.empty
+        _cr!.resume(result)
+        _cr = nil   // MUST NOT be removed, otherwise the cyclic reference for `self` will not be broken
     }
 
     internal final func _complete(_ value: ValueType) {
@@ -281,11 +313,12 @@ extension Future {
     @discardableResult
     public final func wait() -> Self {
         // wait until completed or a cancellation has been requested
-        let sem: DispatchSemaphore = DispatchSemaphore(value: 0)
+        let grp = DispatchGroup()
+        grp.enter()
         onComplete(ec: ConcurrentAsync(), ct: CancellationTokenNone()) { _ in
-            sem.signal()
+            grp.leave()
         }
-        _ = sem.wait(timeout: DispatchTime.distantFuture)
+        _ = grp.wait(timeout: DispatchTime.distantFuture)
         return self
     }
 
@@ -321,6 +354,9 @@ public extension Future {
         on ec: ExecutionContext,
         cancellationToken ct: CancellationTokenType,
         f: @escaping (FutureBaseType) -> U) {
+
+
+
         sync.writeAsync {
             if ct.isCancellationRequested {
                 ec.execute {
@@ -335,19 +371,21 @@ public extension Future {
                 return
             }
             var cid: EventHandlerIdType?
-            let id = self._cr.register { _ in
+            let id = self._cr!.register { _ in
                 assert(self.sync.isSynchronized())
                 ec.execute {
                     _ = f(self)
                 }  
-                _ = self
+                cid?.invalidate()
                 // import `self` into the function in order to keep a strong
                 // reference to self until after self will be completed.
-                cid?.invalidate()
+                _ = self
             }
-            cid = ct.onCancel(queue: self.sync.syncQueue) { // TODO: Use GCDBarrierAsyncExecutionContext
-                if let callback = self._cr.unregister(id) {
-                    callback.continuation(Try<ValueType>(error: CancellationError()))
+            cid = ct.onCancel {
+                self.sync.writeSync {
+                    if let callback = self._cr?.unregister(id) {
+                        callback.continuation(Try<ValueType>(error: CancellationError()))
+                    }
                 }
             }
         }
@@ -406,7 +444,7 @@ extension Future: CustomStringConvertible {
                 case .success(let value): stateString = "Succeeded with: \(String(describing: value))"
                 }
             } else {
-                stateString = "Pending with \(self._cr.count) continuations."
+                stateString = "Pending with \(self._cr?.count) continuations."
             }
             s = "future<\(T.self)> \(stateString)"
         }
@@ -436,7 +474,7 @@ extension Future: CustomDebugStringConvertible {
                     stateString = "Succeeded with: \(String(reflecting: value))"
                 }
             } else {
-                stateString = "Pending with \(self._cr.count) continuations."
+                stateString = "Pending with \(self._cr?.count) continuations."
             }
             s = "future<\(T.self)> id: \(self.id) \(stateString)"
         }
