@@ -35,7 +35,7 @@ extension TaskQueue: ExecutionContext {
      - parameter onStart: A closure which will be called when the task will be started
      with the task's returned future as its argument.
      */
-    public func schedule<T>(_ task: @escaping () throws -> Future<T>, onStart: @escaping (Future<T>) -> ()) {
+    public func schedule<T>(task: @escaping () throws -> Future<T>, onStart: @escaping (Future<T>) -> ()) {
         self.enqueue {
             var future: Future<T>?
             do {
