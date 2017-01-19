@@ -69,7 +69,6 @@ public enum PromiseError: Int, Error {
 public class Promise<T> {
     public typealias ValueType = T
 
-    private let _syncQueue = DispatchQueue(label: "com.futurelib.promise-sync-queue")
     private var _future: RootFuture<T>?
     private weak var _weakFuture: RootFuture<T>?
 
@@ -109,11 +108,15 @@ public class Promise<T> {
      */
     deinit {
         if let future = _weakFuture {
-            if future.sync.isSynchronized() {
-                future._tryComplete(Try(error: PromiseError.brokenPromise))
-            } else {
-                future.tryComplete(Try(error: PromiseError.brokenPromise))
+            DispatchQueue.global().async {
+                let _ = future.tryComplete(Try(error: PromiseError.brokenPromise))
             }
+//
+//            if future.sync.isSynchronized() {
+//                future._tryComplete(Try(error: PromiseError.brokenPromise))
+//            } else {
+//                future.tryComplete(Try(error: PromiseError.brokenPromise))
+//            }
         }
     }
 
@@ -134,12 +137,10 @@ public class Promise<T> {
      - parameter f: The closure
      */
     public final func onRevocation(_ f: @escaping ()->()) {
-        _syncQueue.sync {
-            if let future = self._weakFuture {
-                future.onRevocation = f
-            } else {
-                DispatchQueue.global().async(execute: f)
-            }
+        if let future = self._weakFuture {
+            future.onRevocation = f
+        } else {
+            DispatchQueue.global().async(execute: f)
         }
     }
 
@@ -155,13 +156,13 @@ public class Promise<T> {
      TODO: must be thread-safe
      */
     public final var future: Future<T>? {
-        return _syncQueue.sync {
-            if let future = self._weakFuture {
+        if let future = self._weakFuture {
+            future.sync.writeSync {
                 self._future = nil
-                return future
-            } else {
-                return nil
             }
+            return future
+        } else {
+            return nil
         }
     }
 
@@ -169,16 +170,15 @@ public class Promise<T> {
     /**
      Fulfill the promise with the given value.
      Subsequently completes `self`'s associated future with the same value.
+     
      If the promise is already resolved or if its associated future has been
      prematurely deinitialized, the method has no effect.
 
      - parameter value: The value which the promise will be bound to.
      */
     public final func fulfill(_ value: T) {
-        _syncQueue.sync {
-            if let future = self._weakFuture {
-                future.complete(Try(value))
-            }
+        if let future = self._weakFuture {
+            future.complete(Try(value))
         }
     }
 
@@ -186,16 +186,15 @@ public class Promise<T> {
     /**
      Reject the promise with the given error.
      Subsequently completes `self`'s associated future with the same error.
+     
      If the promise is already resolved or if its associated future has been
      prematurely deinitialized, the method has no effect.
 
      - parameter error: The error which the promise will be bound to.
     */
     public final func reject(_ error: Error) {
-        _syncQueue.sync {
-            if let future = self._weakFuture {
-                future.complete(Try(error: error))
-            }
+        if let future = self._weakFuture {
+            future.complete(Try(error: error))
         }
     }
 
@@ -204,38 +203,31 @@ public class Promise<T> {
      Resolve the promise with the given result and subsequently completes `self`'s 
      associated future with the same result. 
      
-     If the promise is already resolved an assertion is triggered.
-     
-     If its associated future has been prematurely deinitialized, the method has 
-     no effect.  
+     If the promise is already resolved or if its associated future has been
+     prematurely deinitialized, the method has no effect.
 
      - parameter result: The result which the promise will be bound to.
      */
     public final func resolve(_ result: Try<T>) {
-        _syncQueue.sync {
-            if let future = self._weakFuture {
-                future.complete(result)
-            }
+        if let future = self._weakFuture {
+            future.complete(result)
         }
     }
 
     /**
-     Attempt to resolve the promise with the given result. If the associated 
-     future is not yet completed, subsequently completes `self`'s associated 
+     Attempt to resolve the promise with the given result. If the associated
+     future is not yet completed, subsequently completes `self`'s associated
      future with the same result.
      If the promise is already resolved or if its associated future has been
      prematurely deinitialized, the method has no effect.
-     
+
      - parameter result: The result which the promise will be bound to.
      */
     public final func tryResolve(_ result: Try<T>) {
-        _syncQueue.sync {
-            if let future = _weakFuture {
-                _ = future.tryComplete(result)
-            }
+        if let future = _weakFuture {
+            _ = future.tryComplete(result)
         }
     }
-    
 
     /**
      Resolve the promise with a deferred result represented by a future.
@@ -247,10 +239,8 @@ public class Promise<T> {
      - parameter future: The future whose eventual result will complete `self`.
      */
     public final func resolve(_ future: Future<T>) {
-        _syncQueue.sync {
-            if let future = _weakFuture {
-                future.completeWith(future)
-            }
+        if let future = _weakFuture {
+            future.completeWith(future)
         }
     }
 
