@@ -19,6 +19,13 @@ internal var Log: Logger  = {
 
 
 
+/// Create a date time string from the given point in time specified as a `time_t` value and the micro seconds using the given format string.
+///
+/// - Parameters:
+///   - t: A Unix `time_t` data type which is an integral value holding the number of seconds (not counting leap seconds) since 00:00, Jan 1 1970 UTC.
+///   - usec: The amount of micro seconds which can be specified in order to increases the precision of the time.
+///   - format: A format string as specified in function `strftime`.
+/// - Returns: A string representing the time.
 internal func dateTimeString(_ t: time_t, usec: suseconds_t, format: String) -> String {
     let maxSize: Int = 64
     var buffer: [Int8] = [CChar](repeating: 0, count: Int(maxSize))
@@ -161,7 +168,7 @@ public protocol Flushable {
     func flush()
 }
 
-public protocol OStream {
+public protocol OutputStream {
     func write(_ string: String)    
 }
 
@@ -177,7 +184,7 @@ public protocol StreamEventTargetType: EventTargetType, Flushable {
 
 
 
-public protocol FlushableOutputStreamType: OStream, Flushable {
+public protocol FlushableOutputStreamType: OutputStream, Flushable {
 }
 
 
@@ -234,7 +241,7 @@ public class StreamEventTarget: StreamEventTargetType {
 
 
     public func writeEvent<T>(_ event: Event<T>) {
-        StreamEventTarget.writeEvent(&_ostream, event: event, writeOptions: writeOptions, eventOptions: eventOptions, dateFormat: dateFormat, executionQueue: executionQueue)
+        StreamEventTarget.writeEvent(_ostream, event: event, writeOptions: writeOptions, eventOptions: eventOptions, dateFormat: dateFormat, executionQueue: executionQueue)
     }
 
     public func flush() {
@@ -242,14 +249,14 @@ public class StreamEventTarget: StreamEventTargetType {
     }
 
 
-    internal static func writeMessage<T>(_ ostream: inout FlushableOutputStreamType, message: T, options: EventOptions) {
+    internal static func writeMessage<T>(_ ostream: FlushableOutputStreamType, message: T, options: EventOptions) {
         let messageString = String(describing: message)
         if !messageString.isEmpty {
             ostream.write(messageString)
         }
     }
 
-    internal static func writeVerboseMessage<T>(_ ostream: inout FlushableOutputStreamType, message: T, options: EventOptions) {
+    internal static func writeVerboseMessage<T>(_ ostream: FlushableOutputStreamType, message: T, options: EventOptions) {
         let messageString = String(reflecting: message)
         if !messageString.isEmpty {
             ostream.write(messageString)
@@ -258,7 +265,7 @@ public class StreamEventTarget: StreamEventTargetType {
 
 
 
-    internal static func writeEvent<T>(_ ostream: inout FlushableOutputStreamType, event: Event<T>, writeOptions: WriteOptions, eventOptions: EventOptions, dateFormat: @escaping (timeval)-> String, executionQueue eq: DispatchQueue) {
+    internal static func writeEvent<T>(_ ostream: FlushableOutputStreamType, event: Event<T>, writeOptions: WriteOptions, eventOptions: EventOptions, dateFormat: @escaping (timeval)-> String, executionQueue eq: DispatchQueue) {
         let f: ()->() = {
             var hasSeparator = true
             if eventOptions.contains(.TimeStamp) {
@@ -316,10 +323,10 @@ public class StreamEventTarget: StreamEventTargetType {
                 ostream.write(" ")
             }
             if eventOptions.contains(.Verbose) {
-                writeVerboseMessage(&ostream, message: event.message, options: eventOptions)
+                writeVerboseMessage(ostream, message: event.message, options: eventOptions)
             }
             else {
-                writeMessage(&ostream, message: event.message, options: eventOptions)
+                writeMessage(ostream, message: event.message, options: eventOptions)
             }
             ostream.write("\n")
         }
